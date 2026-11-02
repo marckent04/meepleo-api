@@ -1,0 +1,100 @@
+# golangci-lint v2. Architecture boundaries are checked twice:
+#   - depguard below for the simple, path-based rules;
+#   - tools/archcheck (run by `make lint`) for the rules relative to a
+#     package's own module (see docs/adr/0002-verification-des-frontieres.md).
+version: "2"
+
+run:
+  build-tags: [integration]
+
+linters:
+  default: standard # errcheck, govet, ineffassign, staticcheck, unused
+  enable:
+    - bodyclose
+    - depguard
+    - errorlint
+    - forbidigo
+    - gocritic
+    - gosec
+    - misspell
+    - nilerr
+    - noctx
+    - revive
+    - sloglint
+    - unconvert
+  settings:
+    depguard:
+      rules:
+        domain:
+          files: ["**/internal/*/domain/**", "!$test"]
+          list-mode: strict
+          allow: [$gostd]
+        contract:
+          files: ["**/internal/*/contract/**", "!$test"]
+          list-mode: strict
+          allow: [$gostd]
+        app:
+          files: ["**/internal/*/app/**", "!$test"]
+          list-mode: lax
+          deny:
+            - pkg: net/http
+              desc: the application layer is transport-agnostic; HTTP belongs to adapters/in
+            - pkg: database/sql
+              desc: persistence belongs to adapters/out
+            - pkg: github.com/jackc/pgx
+              desc: persistence belongs to adapters/out
+            - pkg: github.com/redis/go-redis
+              desc: caching is a decorator in adapters/out/rediscache
+            - pkg: github.com/go-chi/chi
+              desc: routing belongs to adapters/in
+            - pkg: github.com/anthropics/anthropic-sdk-go
+              desc: partner clients belong to adapters/out
+            - pkg: github.com/meepleo/meepleo-api/internal/platform
+              desc: the application layer only depends on its own domain
+    forbidigo:
+      analyze-types: true
+      forbid:
+        - pattern: ^http\.DefaultClient$
+          msg: use a dedicated client from internal/platform/httpclient
+        - pattern: ^http\.(Get|Post|PostForm|Head)$
+          msg: these use http.DefaultClient; use a dedicated client
+        - pattern: ^(fmt\.Print.*|print|println)$
+          msg: use log/slog
+    revive:
+      rules:
+        - name: exported
+        - name: package-comments
+        - name: var-naming
+        - name: context-as-argument
+        - name: error-return
+        - name: error-strings
+        - name: unexported-return
+          disabled: true
+    sloglint:
+      kv-only: false
+      attr-only: false
+      no-global: all
+      context: scope
+    misspell:
+      ignore-rules: [strat] # French "Stratégie"
+    gosec:
+      excludes:
+        - G104 # duplicates errcheck
+  exclusions:
+    generated: strict
+    presets: [comments, std-error-handling]
+    rules:
+      - path: _test\.go
+        linters: [gosec, noctx, forbidigo, bodyclose]
+      - path: (cmd/|tools/)
+        text: "fmt.Print"
+        linters: [forbidigo]
+      - path: (cmd/|tools/)
+        linters: [forbidigo]
+        text: "use log/slog"
+
+formatters:
+  enable: [gofmt, goimports]
+  settings:
+    goimports:
+      local-prefixes: [github.com/meepleo/meepleo-api]

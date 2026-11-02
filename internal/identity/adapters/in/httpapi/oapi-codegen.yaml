@@ -1,0 +1,10 @@
+# Generates the identity HTTP layer from the "identity" tag of api/openapi.yaml.
+# Run through `make generate`; never edit api.gen.go by hand.
+package: httpapi
+output: internal/identity/adapters/in/httpapi/api.gen.go
+generate:
+  chi-server: true
+  strict-server: true
+  models: true
+output-options:
+  include-tags: [identity]

@@ -1,0 +1,22 @@
+# One sqlc package per module. Each module only sees its own migrations, so a
+# query touching another module's tables fails at generation time.
+version: "2"
+sql:
+  - engine: postgresql
+    schema: migrations/catalog
+    queries: internal/catalog/adapters/out/postgres/queries.sql
+    gen:
+      go:
+        package: sqlcgen
+        out: internal/catalog/adapters/out/postgres/sqlcgen
+        sql_package: pgx/v5
+        emit_empty_slices: true
+  - engine: postgresql
+    schema: migrations/identity
+    queries: internal/identity/adapters/out/postgres/queries.sql
+    gen:
+      go:
+        package: sqlcgen
+        out: internal/identity/adapters/out/postgres/sqlcgen
+        sql_package: pgx/v5
+        emit_empty_slices: true

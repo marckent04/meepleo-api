@@ -1,0 +1,1050 @@
+openapi: 3.0.3
+info:
+  title: Meepleo API
+  version: 0.1.0
+  description: |
+    API REST de Meepleo, l'application qui accompagne les joueurs de jeux de société.
+
+    Conventions (voir docs/api-contract.md) :
+    - clés JSON en snake_case, dans les corps comme dans les paramètres ;
+    - authentification JWT : `Authorization: Bearer <access_token>` ; sur un 401, l'app appelle
+      `POST /auth/refresh` puis rejoue la requête une fois ;
+    - langue : en-tête `Accept-Language` (fr ou en) ; textes et messages d'erreur sont renvoyés dans cette langue ;
+    - erreurs : `{ "message": "…", "code": "…" }`, `message` déjà traduit et affichable ;
+    - pagination : `?page=1&page_size=20` → `{ "items": [...], "page": 1, "has_more": true }` ;
+    - dates ISO 8601 en UTC ; ressource absente : 204 quand le contrat le prévoit ;
+    - aucun prix n'est renvoyé.
+
+    Seuls les tags `ops`, `identity` et `catalog` sont implémentés pour l'instant. Les autres
+    opérations sont documentées pour servir de contrat avec l'app mobile et renvoient 404 tant
+    que leur module n'existe pas.
+servers:
+  - url: http://localhost:8080
+security:
+  - bearerAuth: []
+tags:
+  - name: ops
+    description: Sondes d'exploitation.
+  - name: identity
+    description: Authentification (module identity).
+  - name: catalog
+    description: Fiches de jeux, règles et recherche par code-barre (module catalog).
+  - name: booklet
+    description: Livrets de règles (module à venir).
+  - name: library
+    description: Ludothèque de l'utilisateur (module à venir).
+  - name: matches
+    description: Joueurs et parties (module à venir).
+  - name: assistant
+    description: Assistant Meepy (module à venir).
+  - name: discover
+    description: Recommandations et nouveautés (module à venir).
+  - name: profile
+    description: Profil et statistiques (module à venir).
+
+paths:
+  # ---------------------------------------------------------------- ops
+  /healthz:
+    get:
+      tags: [ops]
+      operationId: getLiveness
+      summary: Sonde de vivacité
+      security: []
+      responses:
+        "200":
+          description: Le processus est vivant.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Health"}
+  /readyz:
+    get:
+      tags: [ops]
+      operationId: getReadiness
+      summary: Sonde de disponibilité (Postgres et Redis)
+      security: []
+      responses:
+        "200":
+          description: Prêt à recevoir du trafic.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Health"}
+        "503":
+          description: Une dépendance est indisponible ou l'instance s'arrête.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Health"}
+
+  # ---------------------------------------------------------------- identity
+  /auth/guest:
+    post:
+      tags: [identity]
+      operationId: createGuest
+      summary: Crée un compte invité et renvoie ses jetons
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+      responses:
+        "200":
+          description: Jetons du nouvel invité.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AuthTokens"}
+        default: {$ref: "#/components/responses/Error"}
+  /auth/refresh:
+    post:
+      tags: [identity]
+      operationId: refreshTokens
+      summary: Renouvelle les jetons (rotation du refresh token)
+      description: |
+        Le refresh token présenté est révoqué et remplacé. Présenter de nouveau un refresh token
+        déjà utilisé révoque toute la famille de jetons (détection de vol).
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/RefreshRequest"}
+      responses:
+        "200":
+          description: Nouveaux jetons.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AuthTokens"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        default: {$ref: "#/components/responses/Error"}
+  /auth/logout:
+    post:
+      tags: [identity]
+      operationId: logout
+      summary: Révoque les refresh tokens de l'utilisateur
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+      responses:
+        "204": {description: Déconnecté.}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        default: {$ref: "#/components/responses/Error"}
+
+  # ---------------------------------------------------------------- catalog
+  /games/{game_id}:
+    get:
+      tags: [catalog]
+      operationId: getGame
+      summary: Fiche d'un jeu
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - $ref: "#/components/parameters/GameId"
+      responses:
+        "200":
+          description: La fiche du jeu.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Game"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "404": {$ref: "#/components/responses/NotFound"}
+        default: {$ref: "#/components/responses/Error"}
+  /games/{game_id}/rules:
+    get:
+      tags: [catalog]
+      operationId: getGameRules
+      summary: Règles structurées d'un jeu
+      description: |
+        **Changement cassant** par rapport à la première version du contrat : `sections: [string]`
+        est remplacé par un résumé et des listes d'éléments par section (voir ADR 0011).
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - $ref: "#/components/parameters/GameId"
+      responses:
+        "200":
+          description: Les règles, textes résolus dans la langue demandée.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/GameRules"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "404": {$ref: "#/components/responses/NotFound"}
+        default: {$ref: "#/components/responses/Error"}
+  /catalog/barcode/{code}:
+    get:
+      tags: [catalog]
+      operationId: lookupBarcode
+      summary: Recherche un jeu par son code-barre (EAN-13 ou UPC-A)
+      description: |
+        - 200 `found` : la fiche existe ;
+        - 200 `ambiguous` : plusieurs jeux possibles, l'utilisateur choisit parmi `candidates` ;
+        - 202 `pending` : code inconnu, la fiche est en cours de génération ; rappeler après
+          `retry_after_seconds` ;
+        - 404 `barcode_not_found` ou `not_board_game` ;
+        - 400 `barcode_invalid` : le code n'est pas un EAN-13 ou un UPC-A valide.
+
+        **Changement de contrat** : la réponse était un `GameDto` (voir ADR 0010).
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - name: code
+          in: path
+          required: true
+          schema: {type: string, pattern: "^[0-9]{12,13}$", example: "3558380077619"}
+      responses:
+        "200":
+          description: Jeu trouvé, ou plusieurs candidats.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/BarcodeLookup"}
+        "202":
+          description: Génération de la fiche en cours.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/BarcodeLookup"}
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "404": {$ref: "#/components/responses/NotFound"}
+        default: {$ref: "#/components/responses/Error"}
+  /catalog/games:
+    get:
+      tags: [catalog]
+      operationId: searchGames
+      summary: Recherche par nom (pas encore disponible)
+      description: Reportée au branchement de l'API BoardGameGeek. Répond 501 en attendant.
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - name: q
+          in: query
+          required: true
+          schema: {type: string, minLength: 1}
+      responses:
+        "200":
+          description: Jeux trouvés.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items: {$ref: "#/components/schemas/Game"}
+        "501": {$ref: "#/components/responses/NotImplemented"}
+        default: {$ref: "#/components/responses/Error"}
+
+  # ---------------------------------------------------------------- booklet
+  /games/{game_id}/booklet/download:
+    post:
+      tags: [booklet]
+      operationId: downloadBooklet
+      summary: Marque le livret comme téléchargé (à revoir avec le format d'interprétation)
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - $ref: "#/components/parameters/GameId"
+      responses:
+        "200":
+          description: Règles mises à jour.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/GameRules"}
+        default: {$ref: "#/components/responses/Error"}
+
+  # ---------------------------------------------------------------- library
+  /library/games:
+    get:
+      tags: [library]
+      operationId: listLibraryGames
+      summary: Jeux de la ludothèque
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - {name: search, in: query, schema: {type: string}}
+        - {name: category, in: query, schema: {type: string}}
+        - {name: sort, in: query, schema: {type: string, enum: [recent, name], default: recent}}
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: Une page de jeux.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/GamePage"}
+        default: {$ref: "#/components/responses/Error"}
+    post:
+      tags: [library]
+      operationId: addLibraryGame
+      summary: Ajoute un jeu à la ludothèque
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [game_id]
+              properties:
+                game_id: {type: string}
+      responses:
+        "200":
+          description: Le jeu ajouté.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Game"}
+        default: {$ref: "#/components/responses/Error"}
+  /library/summary:
+    get:
+      tags: [library]
+      operationId: getLibrarySummary
+      summary: Compteurs de la ludothèque
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+      responses:
+        "200":
+          description: Compteurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [game_count, match_count]
+                properties:
+                  game_count: {type: integer}
+                  match_count: {type: integer}
+        default: {$ref: "#/components/responses/Error"}
+  /library/games/{game_id}/favorite:
+    put:
+      tags: [library]
+      operationId: setFavorite
+      summary: Marque ou retire un favori
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - $ref: "#/components/parameters/GameId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [favorite]
+              properties:
+                favorite: {type: boolean}
+      responses:
+        "200":
+          description: Le jeu mis à jour.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Game"}
+        default: {$ref: "#/components/responses/Error"}
+
+  # ---------------------------------------------------------------- matches
+  /players:
+    get:
+      tags: [matches]
+      operationId: listPlayers
+      summary: Joueurs connus et dernière composition
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+      responses:
+        "200":
+          description: Joueurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [players, last_lineup_ids]
+                properties:
+                  players:
+                    type: array
+                    items: {$ref: "#/components/schemas/Player"}
+                  last_lineup_ids:
+                    type: array
+                    items: {type: string}
+        default: {$ref: "#/components/responses/Error"}
+    post:
+      tags: [matches]
+      operationId: createPlayer
+      summary: Crée un joueur
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name: {type: string, minLength: 1}
+      responses:
+        "200":
+          description: Le joueur créé.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Player"}
+        default: {$ref: "#/components/responses/Error"}
+  /games/{game_id}/first-player:
+    get:
+      tags: [matches]
+      operationId: suggestFirstPlayer
+      summary: Suggestion du premier joueur tirée du livret
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - $ref: "#/components/parameters/GameId"
+        - name: player_ids
+          in: query
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: array
+            items: {type: string}
+      responses:
+        "200":
+          description: Suggestion.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [player_id, rule_quote, booklet_page]
+                properties:
+                  player_id: {type: string}
+                  rule_quote: {type: string}
+                  booklet_page: {type: integer}
+        "204": {description: Pas de règle de premier joueur dans le livret.}
+        default: {$ref: "#/components/responses/Error"}
+  /matches:
+    get:
+      tags: [matches]
+      operationId: listMatches
+      summary: Parties (historique)
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - {name: status, in: query, schema: {type: string, enum: [finished]}}
+      responses:
+        "200":
+          description: Parties.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items: {$ref: "#/components/schemas/Match"}
+        default: {$ref: "#/components/responses/Error"}
+    post:
+      tags: [matches]
+      operationId: createMatch
+      summary: Crée une partie
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [game_id, player_ids, guided_setup]
+              properties:
+                game_id: {type: string}
+                player_ids:
+                  type: array
+                  minItems: 2
+                  maxItems: 4
+                  items: {type: string}
+                guided_setup: {type: boolean}
+                first_player_id: {type: string, description: Tiré par l'app si l'utilisateur ne l'a pas choisi.}
+      responses:
+        "200":
+          description: La partie créée.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Match"}
+        default: {$ref: "#/components/responses/Error"}
+  /matches/current:
+    get:
+      tags: [matches]
+      operationId: getCurrentMatch
+      summary: Partie en cours
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+      responses:
+        "200":
+          description: La partie en cours.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Match"}
+        "204": {description: Aucune partie en cours.}
+        default: {$ref: "#/components/responses/Error"}
+  /matches/{match_id}/setup:
+    get:
+      tags: [matches]
+      operationId: getSetupGuide
+      summary: Installation guidée
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - $ref: "#/components/parameters/MatchId"
+      responses:
+        "200":
+          description: Guide.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SetupGuide"}
+        default: {$ref: "#/components/responses/Error"}
+  /matches/{match_id}/setup/steps/complete:
+    post:
+      tags: [matches]
+      operationId: completeSetupStep
+      summary: Valide l'étape courante de l'installation
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - $ref: "#/components/parameters/MatchId"
+      responses:
+        "200":
+          description: Guide mis à jour.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SetupGuide"}
+        default: {$ref: "#/components/responses/Error"}
+  /matches/{match_id}/start:
+    post:
+      tags: [matches]
+      operationId: startMatch
+      summary: Lance la partie
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - $ref: "#/components/parameters/MatchId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [first_player_id]
+              properties:
+                first_player_id: {type: string}
+      responses:
+        "200":
+          description: Partie en cours (`started_at` remis à maintenant).
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Match"}
+        default: {$ref: "#/components/responses/Error"}
+  /matches/{match_id}/scores:
+    post:
+      tags: [matches]
+      operationId: addScore
+      summary: Ajoute des points
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - $ref: "#/components/parameters/MatchId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [player_id, category_id, delta]
+              properties:
+                player_id: {type: string}
+                category_id: {type: string}
+                delta: {type: integer}
+      responses:
+        "200":
+          description: Partie mise à jour.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Match"}
+        default: {$ref: "#/components/responses/Error"}
+  /matches/{match_id}/finish:
+    post:
+      tags: [matches]
+      operationId: finishMatch
+      summary: Termine la partie
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - $ref: "#/components/parameters/MatchId"
+      responses:
+        "200":
+          description: Résultat.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [match, duration_seconds]
+                properties:
+                  match: {$ref: "#/components/schemas/Match"}
+                  duration_seconds: {type: integer}
+                  previous_record: {type: integer, nullable: true}
+        default: {$ref: "#/components/responses/Error"}
+  /matches/{match_id}/save:
+    post:
+      tags: [matches]
+      operationId: saveMatch
+      summary: Enregistre la partie
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - $ref: "#/components/parameters/MatchId"
+      responses:
+        "204": {description: Enregistrée.}
+        default: {$ref: "#/components/responses/Error"}
+
+  # ---------------------------------------------------------------- assistant
+  /assistant/conversation:
+    get:
+      tags: [assistant]
+      operationId: getConversation
+      summary: Historique de la conversation avec Meepy
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - {name: game_id, in: query, schema: {type: string}}
+        - {name: match_id, in: query, schema: {type: string}}
+      responses:
+        "200":
+          description: Messages.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [messages]
+                properties:
+                  messages:
+                    type: array
+                    items: {$ref: "#/components/schemas/ChatMessage"}
+        default: {$ref: "#/components/responses/Error"}
+  /assistant/questions:
+    post:
+      tags: [assistant]
+      operationId: askQuestion
+      summary: Pose une question à Meepy
+      description: Avec `match_id`, le serveur incrémente `questions_answered` de la partie.
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [question]
+              properties:
+                game_id: {type: string}
+                match_id: {type: string}
+                question: {type: string, minLength: 1}
+      responses:
+        "200":
+          description: La réponse complète de Meepy.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ChatMessage"}
+        default: {$ref: "#/components/responses/Error"}
+
+  # ---------------------------------------------------------------- discover
+  /discover/recommendations:
+    get:
+      tags: [discover]
+      operationId: getRecommendations
+      summary: Recommandations selon les jeux possédés
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - {name: category, in: query, schema: {type: string}}
+      responses:
+        "200":
+          description: Recommandations (sans prix).
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [criteria, items]
+                properties:
+                  criteria: {type: string}
+                  items:
+                    type: array
+                    items: {$ref: "#/components/schemas/Recommendation"}
+        default: {$ref: "#/components/responses/Error"}
+  /discover/releases:
+    get:
+      tags: [discover]
+      operationId: getReleases
+      summary: Nouveautés
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+      responses:
+        "200":
+          description: Nouveautés (sans prix).
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items: {$ref: "#/components/schemas/NewRelease"}
+        default: {$ref: "#/components/responses/Error"}
+  /discover/member-offer:
+    get:
+      tags: [discover]
+      operationId: getMemberOffer
+      summary: Offre membre chez une boutique partenaire
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+      responses:
+        "200":
+          description: Offre.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [discount_label, shop_name, code]
+                properties:
+                  discount_label: {type: string}
+                  shop_name: {type: string}
+                  code: {type: string}
+        default: {$ref: "#/components/responses/Error"}
+
+  # ---------------------------------------------------------------- profile
+  /me/profile:
+    get:
+      tags: [profile]
+      operationId: getProfile
+      summary: Profil et statistiques
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguage"
+      responses:
+        "200":
+          description: Profil.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/UserProfile"}
+        default: {$ref: "#/components/responses/Error"}
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    AcceptLanguage:
+      name: Accept-Language
+      in: header
+      required: false
+      description: Langue de l'appareil (fr ou en ; défaut fr).
+      schema: {type: string, example: fr-FR}
+    GameId:
+      name: game_id
+      in: path
+      required: true
+      schema: {type: string, pattern: "^[0-9]{1,18}$"}
+    MatchId:
+      name: match_id
+      in: path
+      required: true
+      schema: {type: string}
+    Page:
+      name: page
+      in: query
+      schema: {type: integer, minimum: 1, default: 1}
+    PageSize:
+      name: page_size
+      in: query
+      schema: {type: integer, minimum: 1, maximum: 100, default: 20}
+
+  responses:
+    Error:
+      description: Erreur (message traduit selon Accept-Language).
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    BadRequest:
+      description: Requête invalide.
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    Unauthorized:
+      description: Jeton absent, invalide ou expiré.
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    NotFound:
+      description: Ressource introuvable.
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    NotImplemented:
+      description: Fonctionnalité pas encore disponible.
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+
+  schemas:
+    Error:
+      type: object
+      required: [message]
+      properties:
+        message: {type: string, description: "Message traduit, affichable tel quel."}
+        code: {type: string, description: "Code stable pour le client, par exemple game_not_found."}
+    Health:
+      type: object
+      required: [status]
+      properties:
+        status: {type: string, example: ok}
+        checks:
+          type: object
+          additionalProperties: {type: string}
+
+    AuthTokens:
+      type: object
+      required: [access_token, refresh_token]
+      properties:
+        access_token: {type: string}
+        refresh_token: {type: string}
+    RefreshRequest:
+      type: object
+      required: [refresh_token]
+      properties:
+        refresh_token: {type: string, minLength: 1}
+
+    RulesStatus:
+      type: string
+      enum: [ready, preparing]
+      description: "ready : les règles sont disponibles ; preparing : la fiche est en cours de préparation."
+    Category:
+      type: object
+      required: [id, label]
+      properties:
+        id: {type: string, example: strategy}
+        label: {type: string, example: Stratégie}
+    Game:
+      type: object
+      required: [id, name, publisher, categories, min_players, max_players, duration_minutes, rules_status, is_favorite, play_count]
+      properties:
+        id: {type: string}
+        name: {type: string, description: Nom localisé si disponible.}
+        publisher: {type: string}
+        categories:
+          type: array
+          items: {$ref: "#/components/schemas/Category"}
+        min_players: {type: integer}
+        max_players: {type: integer}
+        duration_minutes: {type: integer}
+        min_age: {type: integer, nullable: true}
+        rules_status: {$ref: "#/components/schemas/RulesStatus"}
+        art_key: {type: string, nullable: true}
+        image_url: {type: string, nullable: true}
+        record: {type: integer, nullable: true}
+        is_favorite: {type: boolean}
+        play_count: {type: integer}
+    GamePage:
+      type: object
+      required: [items, page, has_more]
+      properties:
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/Game"}
+        page: {type: integer}
+        has_more: {type: boolean}
+
+    RuleItem:
+      type: object
+      required: [key, text]
+      properties:
+        key: {type: string, example: setup-1}
+        title: {type: string, nullable: true}
+        text: {type: string}
+        player_counts:
+          type: array
+          nullable: true
+          description: Nombres de joueurs concernés ; absent si l'élément vaut pour toutes les configurations.
+          items: {type: integer}
+        optional: {type: boolean, nullable: true}
+    RulesSummary:
+      type: object
+      properties:
+        description: {type: string, nullable: true}
+        turn: {type: string, nullable: true}
+        end_timing: {type: string, nullable: true}
+        end_winner: {type: string, nullable: true}
+    Source:
+      type: object
+      required: [title, url]
+      properties:
+        title: {type: string}
+        url: {type: string}
+    GameRules:
+      type: object
+      required: [game_id, status, summary, setup, turn_steps, special_rules, end_triggers, scoring, tie_breakers, warnings, sources, booklet_downloaded]
+      properties:
+        game_id: {type: string}
+        status: {$ref: "#/components/schemas/RulesStatus"}
+        summary: {$ref: "#/components/schemas/RulesSummary"}
+        setup: {type: array, items: {$ref: "#/components/schemas/RuleItem"}}
+        turn_steps: {type: array, items: {$ref: "#/components/schemas/RuleItem"}}
+        special_rules: {type: array, items: {$ref: "#/components/schemas/RuleItem"}}
+        end_triggers: {type: array, items: {$ref: "#/components/schemas/RuleItem"}}
+        scoring: {type: array, items: {$ref: "#/components/schemas/RuleItem"}}
+        tie_breakers: {type: array, items: {$ref: "#/components/schemas/RuleItem"}}
+        warnings:
+          type: array
+          items: {type: string}
+        sources:
+          type: array
+          items: {$ref: "#/components/schemas/Source"}
+        booklet_pages: {type: integer, nullable: true}
+        booklet_downloaded: {type: boolean}
+
+    BarcodeCandidate:
+      type: object
+      required: [name]
+      properties:
+        name: {type: string}
+        edition: {type: string, nullable: true}
+        publisher: {type: string, nullable: true}
+        year: {type: integer, nullable: true}
+        game_id: {type: string, nullable: true, description: Présent si le candidat existe déjà au catalogue.}
+    BarcodeLookup:
+      type: object
+      required: [status]
+      properties:
+        status: {type: string, enum: [found, ambiguous, pending]}
+        game: {$ref: "#/components/schemas/Game"}
+        candidates:
+          type: array
+          items: {$ref: "#/components/schemas/BarcodeCandidate"}
+        retry_after_seconds: {type: integer, description: Présent si status = pending.}
+
+    Player:
+      type: object
+      required: [id, name, color, shape]
+      properties:
+        id: {type: string}
+        name: {type: string}
+        color: {type: string, pattern: "^#[0-9A-Fa-f]{6}$"}
+        shape: {type: string, enum: [circle, rounded_square, triangle, diamond]}
+    ScoreCategory:
+      type: object
+      required: [id, label, unit]
+      properties:
+        id: {type: string}
+        label: {type: string}
+        unit: {type: string}
+    Match:
+      type: object
+      required: [id, game_id, game_name, players, categories, scores, started_at, status, guided_setup, questions_answered]
+      properties:
+        id: {type: string}
+        game_id: {type: string}
+        game_name: {type: string}
+        players:
+          type: array
+          items: {$ref: "#/components/schemas/Player"}
+        categories:
+          type: array
+          items: {$ref: "#/components/schemas/ScoreCategory"}
+        scores:
+          type: object
+          description: "player_id → category_id → points"
+          additionalProperties:
+            type: object
+            additionalProperties: {type: integer}
+        started_at: {type: string, format: date-time}
+        status: {type: string, enum: [setup, in_progress, finished]}
+        guided_setup: {type: boolean}
+        first_player_id: {type: string, nullable: true}
+        active_player_id: {type: string, nullable: true}
+        active_category_id: {type: string, nullable: true}
+        questions_answered: {type: integer}
+        ended_at: {type: string, format: date-time, nullable: true}
+    SetupGuide:
+      type: object
+      required: [match_id, completed_count, steps]
+      properties:
+        match_id: {type: string}
+        completed_count: {type: integer}
+        steps:
+          type: array
+          items:
+            type: object
+            required: [title, player_count_specific, estimated_minutes]
+            properties:
+              title: {type: string}
+              explanation: {type: string, nullable: true}
+              player_count_specific: {type: boolean}
+              booklet_page: {type: integer, nullable: true}
+              estimated_minutes: {type: integer}
+
+    ChatMessage:
+      type: object
+      required: [id, role, text, actions]
+      properties:
+        id: {type: string}
+        role: {type: string, enum: [user, assistant]}
+        text: {type: string}
+        source:
+          type: object
+          nullable: true
+          required: [page, section]
+          properties:
+            page: {type: integer}
+            section: {type: string}
+        actions:
+          type: array
+          items:
+            type: object
+            required: [id, label, kind]
+            properties:
+              id: {type: string}
+              label: {type: string}
+              kind: {type: string, enum: [add_to_score, dismiss]}
+              category_id: {type: string, nullable: true}
+
+    Recommendation:
+      type: object
+      required: [id, name, min_players, max_players, duration_minutes, reason, category_ids]
+      properties:
+        id: {type: string}
+        name: {type: string}
+        min_players: {type: integer}
+        max_players: {type: integer}
+        duration_minutes: {type: integer}
+        reason: {type: string}
+        category_ids:
+          type: array
+          items: {type: string}
+        art_key: {type: string, nullable: true}
+        image_url: {type: string, nullable: true}
+    NewRelease:
+      type: object
+      required: [id, name, release_date_label, publisher, sponsored]
+      properties:
+        id: {type: string}
+        name: {type: string}
+        release_date_label: {type: string}
+        publisher: {type: string}
+        sponsored: {type: boolean}
+        art_key: {type: string, nullable: true}
+        image_url: {type: string, nullable: true}
+
+    UserProfile:
+      type: object
+      required: [name, member_since_label, match_count, win_count, game_count, monthly_plays]
+      properties:
+        name: {type: string}
+        member_since_label: {type: string}
+        match_count: {type: integer}
+        win_count: {type: integer}
+        game_count: {type: integer}
+        monthly_plays:
+          type: array
+          items:
+            type: object
+            required: [label, count, is_current]
+            properties:
+              label: {type: string}
+              count: {type: integer}
+              is_current: {type: boolean}
+        favorite_game:
+          type: object
+          nullable: true
+          required: [game_id, name, play_count]
+          properties:
+            game_id: {type: string}
+            name: {type: string}
+            play_count: {type: integer}
+            art_key: {type: string, nullable: true}

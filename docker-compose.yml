@@ -1,0 +1,59 @@
+# Local stack. `make up` starts Postgres and Redis; the "app" profile also
+# runs the API and the worker from the image:  docker compose --profile app up
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: meepleo
+      POSTGRES_PASSWORD: meepleo
+      POSTGRES_DB: meepleo
+    ports: ["${POSTGRES_PORT:-5432}:5432"]
+    volumes: [postgres-data:/var/lib/postgresql]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U meepleo -d meepleo"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:8-alpine
+    ports: ["${REDIS_PORT:-6379}:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  migrate:
+    profiles: [app]
+    build: .
+    entrypoint: ["/usr/local/bin/migrate"]
+    environment: &app-env
+      DATABASE_URL: postgres://meepleo:meepleo@postgres:5432/meepleo?sslmode=disable
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: ${JWT_SECRET:-local-development-secret-change-me-0123456789}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      LOG_LEVEL: info
+    depends_on:
+      postgres: {condition: service_healthy}
+
+  api:
+    profiles: [app]
+    build: .
+    environment: *app-env
+    ports: ["${API_PORT:-8080}:8080"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+
+  worker:
+    profiles: [app]
+    build: .
+    entrypoint: ["/usr/local/bin/worker"]
+    environment: *app-env
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+
+volumes:
+  postgres-data:
