@@ -11,3 +11,125 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+// ---------------------------------------------------------------------------
+// Jeux et fiches de règles
+//
+// Textes traduits : colonnes Json au format LocalizedText `{ "fr": "...", "en": "..." }`,
+// parsées uniquement dans les mappers.
+// `playerCounts` vide = la règle s'applique à toutes les configurations de joueurs.
+// ---------------------------------------------------------------------------
+
+enum GameCategory {
+  ABSTRACT
+  CARD
+  CHILDREN
+  FAMILY
+  PARTY
+  STRATEGY
+  THEMATIC
+  WAR
+
+  @@map("game_category")
+}
+
+enum RuleType {
+  SETUP // mise en place
+  TURN // étapes / actions d'un tour
+  SPECIAL // règles spéciales
+  END_TRIGGER // déclencheurs de fin de manche / partie
+  SCORING // décompte
+  WINNER // condition de victoire
+  TIE_BREAKER // départage
+
+  @@map("rule_type")
+}
+
+enum SheetConfidence {
+  LOW
+  MEDIUM
+  HIGH
+
+  @@map("sheet_confidence")
+}
+
+model Game {
+  id                 String         @id @default(uuid(7)) @db.Uuid
+  bggId              Int?           @unique @map("bgg_id")
+  /// Nom canonique (BGG)
+  name               String
+  /// LocalizedText
+  localizedNames     Json?          @map("localized_names")
+  /// LocalizedText
+  description        Json?
+  year               Int?
+  designers          String[]
+  publisher          String?
+  edition            String?
+  imageUrl           String?        @map("image_url")
+  categories         GameCategory[]
+  minPlayers         Int?           @map("min_players")
+  maxPlayers         Int?           @map("max_players")
+  recommendedPlayers Int[]          @map("recommended_players")
+  minAge             Int?           @map("min_age")
+  minDuration        Int?           @map("min_duration_minutes")
+  maxDuration        Int?           @map("max_duration_minutes")
+
+  // Fiche de règles : null tant qu'elle n'a pas été générée.
+  /// LocalizedText
+  turnSummary      Json?            @map("turn_summary")
+  /// LocalizedText
+  endTiming        Json?            @map("end_timing")
+  sheetConfidence  SheetConfidence? @map("sheet_confidence")
+  /// Array<{ title: string, url: string }>
+  sheetSources     Json?            @map("sheet_sources")
+  /// LocalizedText[]
+  sheetWarnings    Json?            @map("sheet_warnings")
+  /// Date du remplissage de la fiche par l'IA
+  sheetGeneratedAt DateTime?        @map("sheet_generated_at") @db.Timestamptz(6)
+  /// Modèle d'IA ayant rempli la fiche (ex. "claude-opus-5-5")
+  sheetGeneratedBy String?          @map("sheet_generated_by")
+
+  barcodes GameBarcode[]
+  rules    GameRule[]
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  @@index([name])
+  @@map("games")
+}
+
+model GameBarcode {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  /// EAN / UPC
+  code      String   @unique
+  gameId    String   @map("game_id") @db.Uuid
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([gameId])
+  @@map("game_barcodes")
+}
+
+model GameRule {
+  id           String   @id @default(uuid(7)) @db.Uuid
+  gameId       String   @map("game_id") @db.Uuid
+  game         Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  type         RuleType
+  /// Non unique : plusieurs alternatives selon le nombre de joueurs peuvent partager un ordre.
+  order        Int
+  /// [] = tous les joueurs
+  playerCounts Int[]    @map("player_counts")
+  optional     Boolean  @default(false)
+  /// LocalizedText
+  title        Json?
+  /// LocalizedText
+  text         Json
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([gameId, type, order])
+  @@map("game_rules")
+}
