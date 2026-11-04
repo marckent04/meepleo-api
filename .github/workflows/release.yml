@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  quality:
+    uses: ./.github/workflows/quality.yml
+
+  release:
+    needs: quality
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+        env:
+          DATABASE_URL: postgresql://app:app@localhost:5432/app?schema=public
+      - run: yarn semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

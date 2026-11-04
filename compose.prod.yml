@@ -1,0 +1,25 @@
+# Exemple de déploiement : migrations (one-shot) puis API.
+# DATABASE_URL et les autres variables viennent de .env (cf. .env.example).
+name: meepleo-api-prod
+
+services:
+  migrate:
+    build:
+      context: .
+      target: migrate
+    env_file: .env
+    restart: 'no'
+
+  api:
+    build:
+      context: .
+      target: runtime
+    env_file: .env
+    environment:
+      NODE_ENV: production
+    ports:
+      - '${PORT:-3000}:3000'
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully

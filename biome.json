@@ -1,0 +1,128 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "files": {
+    "includes": [
+      "src/**",
+      "prisma/**/*.ts",
+      "*.ts",
+      "*.mts",
+      "*.json",
+      "!src/infrastructure/database/generated"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 80
+  },
+  "javascript": {
+    "parser": { "unsafeParameterDecoratorsEnabled": true },
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "asNeeded",
+      "trailingCommas": "all",
+      "arrowParentheses": "always"
+    }
+  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "none",
+      "correctness": {
+        "noUnusedVariables": "error",
+        "noUnusedImports": "error",
+        "noUnreachable": "error",
+        "noUnusedPrivateClassMembers": "error",
+        "noConstAssign": "error",
+        "noSwitchDeclarations": "error",
+        "noUndeclaredVariables": "off",
+        "noInvalidUseBeforeDeclaration": "error"
+      },
+      "style": {
+        "noCommonJs": "error",
+        "noNamespace": "error",
+        "useConst": "error",
+        "useImportType": "off",
+        "useNodejsImportProtocol": "error",
+        "useConsistentMemberAccessibility": {
+          "level": "error",
+          "options": { "accessibility": "noPublic" }
+        },
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "paths": {
+              "joi": "Joi n'est pas utilisé : Zod est la seule bibliothèque de schémas.",
+              "typeorm": "TypeORM n'est pas utilisé : la persistance passe par Prisma."
+            },
+            "patterns": [
+              {
+                "group": ["**/generated/prisma", "**/generated/prisma/**"],
+                "message": "Le client Prisma généré ne s'importe que dans src/infrastructure/database/."
+              }
+            ]
+          }
+        }
+      },
+      "suspicious": {
+        "noDebugger": "error",
+        "noConsole": "error",
+        "noDoubleEquals": "error",
+        "noExplicitAny": "error",
+        "noDuplicateObjectKeys": "error",
+        "noFallthroughSwitchClause": "error",
+        "noRedeclare": "error"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["src/infrastructure/database/**", "prisma/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "joi": "Joi n'est pas utilisé : Zod est la seule bibliothèque de schémas.",
+                  "typeorm": "TypeORM n'est pas utilisé : la persistance passe par Prisma."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/api/rest/**", "src/shared/config/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "joi": "Joi n'est pas utilisé : Zod est la seule bibliothèque de schémas.",
+                  "typeorm": "TypeORM n'est pas utilisé : la persistance passe par Prisma.",
+                  "class-validator": "La couche REST et la config valident avec Zod uniquement.",
+                  "class-transformer": "La couche REST et la config valident avec Zod uniquement."
+                },
+                "patterns": [
+                  {
+                    "group": ["**/generated/prisma", "**/generated/prisma/**"],
+                    "message": "Le client Prisma généré ne s'importe que dans src/infrastructure/database/."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

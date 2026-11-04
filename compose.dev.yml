@@ -1,0 +1,38 @@
+name: meepleo-api
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+    ports:
+      - '${POSTGRES_PORT:-5432}:5432'
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U app -d app']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    image: node:24-bookworm
+    working_dir: /app
+    command: sh -c "yarn install && yarn db:deploy && yarn db:seed && yarn start:dev"
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://app:app@db:5432/app?schema=public
+      CHOKIDAR_USEPOLLING: 'true'
+    ports:
+      - '${PORT:-3000}:3000'
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  node_modules:

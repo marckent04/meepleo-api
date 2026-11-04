@@ -1,0 +1,12 @@
+{
+  "BAD_REQUEST": "La requête est invalide.",
+  "UNAUTHENTICATED": "Vous devez être authentifié pour effectuer cette action.",
+  "FORBIDDEN": "Vous n'êtes pas autorisé à effectuer cette action.",
+  "NOT_FOUND": "La ressource demandée est introuvable.",
+  "CONFLICT": "Cette ressource existe déjà.",
+  "UNPROCESSABLE_ENTITY": "Cette action ne respecte pas les règles métier.",
+  "TOO_MANY_REQUESTS": "Trop de requêtes. Réessayez dans quelques instants.",
+  "VALIDATION_FAILED": "Certaines données envoyées sont invalides.",
+  "INTERNAL_SERVER_ERROR": "Une erreur inattendue est survenue. Réessayez plus tard.",
+  "HEALTH_CHECK_FAILED": "Le service est momentanément indisponible."
+}

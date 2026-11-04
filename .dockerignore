@@ -1,0 +1,11 @@
+node_modules
+dist
+coverage
+db-data
+.env
+.env.*
+!.env.example
+.git
+.github
+*.log
+src/infrastructure/database/generated

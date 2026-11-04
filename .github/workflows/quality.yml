@@ -1,0 +1,60 @@
+name: Quality
+
+on:
+  workflow_call:
+
+env:
+  # Les commandes Prisma valident DATABASE_URL via prisma.config.ts.
+  DATABASE_URL: postgresql://app:app@localhost:5432/app?schema=public
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: yarn
+      - uses: biomejs/setup-biome@v2
+        with:
+          version: latest
+      - run: biome ci .
+      - run: yarn install --frozen-lockfile
+      - run: yarn db:validate
+      - run: yarn build
+      - run: yarn test
+
+  migrations:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: app
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U app -d app"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - name: Apply migrations on an empty database
+        run: yarn db:deploy
+      - name: Check that no migration is missing
+        run: >-
+          yarn prisma migrate diff
+          --from-config-datasource
+          --to-schema prisma/schema.prisma
+          --exit-code
+      - name: Seed twice (must be idempotent)
+        run: yarn db:seed && yarn db:seed

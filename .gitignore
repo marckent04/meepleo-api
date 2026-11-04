@@ -1,0 +1,26 @@
+# Build / dépendances
+/dist
+/node_modules
+/coverage
+*.tsbuildinfo
+
+# Client Prisma généré (prisma generate)
+/src/infrastructure/database/generated/
+
+# Données Postgres locales (compose.dev.yml)
+/db-data/
+
+# Environnement
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# OS / IDE
+.DS_Store
+/.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json

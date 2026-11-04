@@ -1,0 +1,13 @@
+// Conventions : modèles PascalCase singulier + @@map("snake_case_pluriel"),
+// champs camelCase + @map("snake_case"), ids String @id @db.Uuid,
+// dates DateTime @db.Timestamptz(6). Voir ARCHITECTURE.md.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/infrastructure/database/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
