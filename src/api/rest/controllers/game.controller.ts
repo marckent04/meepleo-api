@@ -1,15 +1,20 @@
-import { Controller, Get, Headers, Param } from '@nestjs/common'
+import { Controller, Get, Param } from '@nestjs/common'
 import { QueryBus } from '@nestjs/cqrs'
 import { ApiHeader, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ZodResponse } from 'nestjs-zod'
 import { GetGameQuery } from '@/domain/game'
 import { ErrorCode } from '@/shared/errors'
-import { resolveLocale, SUPPORTED_LOCALES } from '@/shared/i18n/locale'
-import { ErrorCodeOnFailure } from '../../common/decorators'
+import { type Locale, SUPPORTED_LOCALES } from '@/shared/i18n/locale'
+import { ErrorCodeOnFailure, Language } from '../../common/decorators'
 import { GameIdParamDto, GameResponseDto } from '../dto'
 import { ApiErrorResponses } from '../errors'
 
 @ApiTags('games')
+@ApiHeader({
+  name: 'accept-language',
+  required: true,
+  description: `Langue des contenus (${SUPPORTED_LOCALES.join(', ')}). Absente : 400 LANGUAGE_REQUIRED ; aucune langue supportée : 400 UNSUPPORTED_LANGUAGE.`,
+})
 @Controller({ path: 'games', version: '1' })
 export class GameController {
   constructor(private readonly queryBus: QueryBus) {}
@@ -20,23 +25,15 @@ export class GameController {
     description:
       "La fiche est rédigée dans la langue d'Accept-Language. À la première demande dans une langue, elle est générée par IA (ou traduite si elle existe déjà dans une autre langue) : la réponse peut alors prendre plusieurs dizaines de secondes.",
   })
-  @ApiHeader({
-    name: 'accept-language',
-    required: false,
-    description: `Langue de la fiche (${SUPPORTED_LOCALES.join(', ')}) ; fr par défaut`,
-  })
   @ZodResponse({ status: 200, type: GameResponseDto })
   @ApiErrorResponses(400, 404, 500)
   @ErrorCodeOnFailure(ErrorCode.GAME_SHEET_GENERATION_FAILED)
   async findOne(
     @Param() params: GameIdParamDto,
-    @Headers('accept-language') acceptLanguage?: string,
+    @Language() language: Locale,
   ): Promise<GameResponseDto> {
     const sheet = await this.queryBus.execute(
-      new GetGameQuery({
-        gameId: params.id,
-        language: resolveLocale(acceptLanguage),
-      }),
+      new GetGameQuery({ gameId: params.id, language }),
     )
     return GameResponseDto.fromDomain(sheet)
   }

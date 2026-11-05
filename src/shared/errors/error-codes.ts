@@ -17,6 +17,8 @@ export enum ErrorCode {
   GAME_NOT_FOUND = 'GAME_NOT_FOUND',
   GAME_SHEET_GENERATION_FAILED = 'GAME_SHEET_GENERATION_FAILED',
   GAME_SHEET_TRANSLATION_FAILED = 'GAME_SHEET_TRANSLATION_FAILED',
+  LANGUAGE_REQUIRED = 'LANGUAGE_REQUIRED',
+  UNSUPPORTED_LANGUAGE = 'UNSUPPORTED_LANGUAGE',
 }
 
 export const ERROR_CODES: Record<
@@ -74,6 +76,14 @@ export const ERROR_CODES: Record<
   [ErrorCode.GAME_SHEET_TRANSLATION_FAILED]: {
     expected: false,
     description: "La traduction de la fiche de règles par l'IA a échoué",
+  },
+  [ErrorCode.LANGUAGE_REQUIRED]: {
+    expected: true,
+    description: "L'en-tête Accept-Language est obligatoire",
+  },
+  [ErrorCode.UNSUPPORTED_LANGUAGE]: {
+    expected: true,
+    description: "Aucune langue d'Accept-Language n'est supportée",
   },
 }
 

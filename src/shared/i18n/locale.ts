@@ -7,14 +7,14 @@ function isSupportedLocale(value: string): value is Locale {
 }
 
 /**
- * Résout la langue depuis un en-tête Accept-Language : tri par q-value,
- * région ignorée (`en-GB` → `en`), repli sur DEFAULT_LOCALE.
+ * Langue supportée préférée d'un en-tête Accept-Language : tri par q-value,
+ * région ignorée (`en-GB` → `en`). `null` si aucune n'est supportée.
  */
-export function resolveLocale(acceptLanguage?: string | string[]): Locale {
+export function parseLocale(acceptLanguage?: string | string[]): Locale | null {
   const header = Array.isArray(acceptLanguage)
     ? acceptLanguage.join(',')
     : acceptLanguage
-  if (!header) return DEFAULT_LOCALE
+  if (!header) return null
 
   const candidates = header
     .split(',')
@@ -33,6 +33,11 @@ export function resolveLocale(acceptLanguage?: string | string[]): Locale {
 
   return (
     (candidates.find((candidate) => isSupportedLocale(candidate.language))
-      ?.language as Locale | undefined) ?? DEFAULT_LOCALE
+      ?.language as Locale | undefined) ?? null
   )
+}
+
+/** Comme `parseLocale`, avec repli sur DEFAULT_LOCALE. */
+export function resolveLocale(acceptLanguage?: string | string[]): Locale {
+  return parseLocale(acceptLanguage) ?? DEFAULT_LOCALE
 }

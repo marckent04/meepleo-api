@@ -95,6 +95,7 @@ describe('REST errors (integration)', () => {
     const response = await app.inject({
       method: 'POST',
       url: '/v1/echo',
+      headers: { 'accept-language': 'fr' },
       payload: { name: '   ' },
     })
 
@@ -116,7 +117,7 @@ describe('REST errors (integration)', () => {
     const response = await app.inject({
       method: 'POST',
       url: '/v1/echo',
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json', 'accept-language': 'fr' },
       payload: '{"name":',
     })
 
@@ -140,6 +141,21 @@ describe('REST errors (integration)', () => {
     expect(en.json()).toMatchObject({
       code: 'NOT_FOUND',
       message: 'The requested resource could not be found.',
+    })
+  })
+
+  it('returns 400 UNSUPPORTED_LANGUAGE for an unsupported language', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: '/v1/games/0195d1a2-0000-7000-8000-000000000001',
+      headers: { 'accept-language': 'de' },
+    })
+
+    expect(response.statusCode).toBe(400)
+    expect(response.json()).toMatchObject({
+      code: 'UNSUPPORTED_LANGUAGE',
+      message:
+        "Cette langue n'est pas prise en charge. Langues disponibles : fr, en.",
     })
   })
 

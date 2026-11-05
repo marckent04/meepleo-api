@@ -11,5 +11,7 @@
   "HEALTH_CHECK_FAILED": "The service is temporarily unavailable.",
   "GAME_NOT_FOUND": "This game could not be found.",
   "GAME_SHEET_GENERATION_FAILED": "The rule sheet could not be generated. Please try again later.",
-  "GAME_SHEET_TRANSLATION_FAILED": "The rule sheet could not be translated. Please try again later."
+  "GAME_SHEET_TRANSLATION_FAILED": "The rule sheet could not be translated. Please try again later.",
+  "LANGUAGE_REQUIRED": "The Accept-Language header is required.",
+  "UNSUPPORTED_LANGUAGE": "This language is not supported. Available languages: {supported}."
 }

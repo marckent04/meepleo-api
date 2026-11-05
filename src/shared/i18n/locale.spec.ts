@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, resolveLocale } from './locale'
+import { DEFAULT_LOCALE, parseLocale, resolveLocale } from './locale'
 
 describe('resolveLocale', () => {
   it.each([
@@ -13,5 +13,18 @@ describe('resolveLocale', () => {
     [['en-US', 'fr'], 'en'],
   ])('resolves %j to %s', (header, expected) => {
     expect(resolveLocale(header)).toBe(expected)
+  })
+})
+
+describe('parseLocale', () => {
+  it.each([
+    [undefined, null],
+    ['', null],
+    ['de, es', null],
+    ['en;q=0', null],
+    ['en-GB', 'en'],
+    ['fr;q=0.1, en;q=0.9', 'en'],
+  ])('parses %j to %s', (header, expected) => {
+    expect(parseLocale(header)).toBe(expected)
   })
 })
