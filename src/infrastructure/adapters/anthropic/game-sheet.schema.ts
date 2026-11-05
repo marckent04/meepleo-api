@@ -4,17 +4,17 @@ import { z } from 'zod'
  * Sortie structurée demandée au modèle (snake_case, forme de src/dnup.json).
  * Envoyée comme JSON Schema via `output_config.format` : pas de schéma
  * récursif, et les contraintes numériques ne sont vérifiées que côté client.
+ * Pas de champ nullable : `''` et `0` signifient « inconnu ».
  */
-const PlayerCountsSchema = z
-  .array(z.number().int())
-  .nullable()
-  .describe(
-    'Player counts this entry applies to; null when it applies to every player count',
-  )
+const UnknownText = z.string().describe('Empty string when unknown')
+const UnknownInt = z.number().int().describe('0 when unknown')
 
 const EntrySchema = z.object({
-  id: z.string(),
-  player_counts: PlayerCountsSchema,
+  player_counts: z
+    .array(z.number().int())
+    .describe(
+      'Player counts this entry applies to; empty when it applies to every player count',
+    ),
   text: z.string(),
 })
 
@@ -23,19 +23,19 @@ const OrderedEntrySchema = EntrySchema.extend({ order: z.number().int() })
 export const GameSheetOutputSchema = z.object({
   game: z.object({
     localized_name: z.string(),
-    edition: z.string().nullable(),
-    publisher: z.string().nullable(),
-    rule_book_url: z.string().nullable(),
+    edition: UnknownText,
+    publisher: UnknownText,
+    rule_book_url: UnknownText,
   }),
   players: z.object({
-    min: z.number().int().nullable(),
-    max: z.number().int().nullable(),
+    min: UnknownInt,
+    max: UnknownInt,
     recommended: z.array(z.number().int()),
   }),
-  min_age: z.number().int().nullable(),
+  min_age: UnknownInt,
   duration_minutes: z.object({
-    min: z.number().int().nullable(),
-    max: z.number().int().nullable(),
+    min: UnknownInt,
+    max: UnknownInt,
   }),
   description: z.string(),
   setup: z.array(OrderedEntrySchema),

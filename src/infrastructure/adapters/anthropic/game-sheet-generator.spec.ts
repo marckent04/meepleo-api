@@ -72,7 +72,8 @@ describe('GameSheetGenerator', () => {
       language: 'fr',
       generatedBy: 'claude-haiku-5-5',
       confidence: 'high',
-      game: { localizedName: 'Dnup' },
+      game: { localizedName: 'Dnup', edition: null, publisher: null },
+      players: { min: 2, max: 5 },
       minAge: 8,
     })
     expect(sheet.setup[0]).toEqual({
@@ -81,7 +82,21 @@ describe('GameSheetGenerator', () => {
       playerCounts: [5],
       text: 'Gardez les 40 cartes du paquet.',
     })
-    expect(sheet.turn.steps).toHaveLength(6)
+    expect(
+      sheet.setup.find((s) => s.id !== 'setup-1' && s.playerCounts === null),
+    ).toBeDefined()
+    expect(sheet.turn.steps.map((s) => s.id)).toEqual([
+      'turn-1',
+      'turn-2',
+      'turn-3',
+      'turn-4',
+      'turn-5',
+      'turn-6',
+    ])
+    expect(sheet.endOfGame.winner.map((w) => w.id)).toEqual([
+      'winner-1',
+      'winner-2',
+    ])
     expect(sheet.specialRules[0].title).toBe('Le doup')
   })
 

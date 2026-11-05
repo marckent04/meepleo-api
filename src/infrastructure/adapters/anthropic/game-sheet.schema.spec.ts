@@ -32,4 +32,28 @@ describe('GameSheetOutputSchema', () => {
       expect(object.additionalProperties).toBe(false)
     }
   })
+
+  it('fits the structured-output complexity budget', () => {
+    // La grammaire compilée par l'API est plafonnée (schéma + outils web) :
+    // la version avec champs nullables et `id` sur les entrées était refusée
+    // en 400 « compiled grammar is too large ». Voir game-sheet.schema.ts.
+    const { schema } = zodOutputFormat(GameSheetOutputSchema)
+    let unions = 0
+    let ids = 0
+    const walk = (node: unknown): void => {
+      if (Array.isArray(node)) return node.forEach(walk)
+      if (node === null || typeof node !== 'object') return
+      const record = node as Record<string, unknown>
+      if (Array.isArray(record.anyOf) || Array.isArray(record.type)) unions++
+      const properties = record.properties as
+        | Record<string, unknown>
+        | undefined
+      if (properties && 'id' in properties) ids++
+      Object.values(record).forEach(walk)
+    }
+    walk(schema)
+
+    expect(unions).toBe(0)
+    expect(ids).toBe(0)
+  })
 })

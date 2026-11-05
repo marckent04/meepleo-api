@@ -134,54 +134,68 @@ export class GameSheetGenerator {
   }
 }
 
+/** Le schéma n'a pas de champ nullable : `''` et `0` signifient « inconnu ». */
+const textOrNull = (value: string): string | null => value.trim() || null
+const intOrNull = (value: number): number | null => (value > 0 ? value : null)
+
 export function toGameSheet(
   gameId: string,
   language: string,
   model: string,
   output: GameSheetOutput,
 ): GameSheet {
-  const entry = (e: {
-    id: string
-    player_counts: number[] | null
-    text: string
-  }) => ({
-    id: e.id,
-    playerCounts: e.player_counts,
-    text: e.text,
-  })
+  // Identifiants positionnels (`setup-1`, `turn-2`…) : stables et uniques
+  // par section, sans les demander au modèle.
+  const entry =
+    (prefix: string) =>
+    (e: { player_counts: number[]; text: string }, index: number) => ({
+      id: `${prefix}-${index + 1}`,
+      playerCounts: e.player_counts.length > 0 ? e.player_counts : null,
+      text: e.text,
+    })
   return new GameSheet(
     gameId,
     language,
     {
       localizedName: output.game.localized_name,
-      edition: output.game.edition,
-      publisher: output.game.publisher,
-      ruleBookUrl: output.game.rule_book_url,
+      edition: textOrNull(output.game.edition),
+      publisher: textOrNull(output.game.publisher),
+      ruleBookUrl: textOrNull(output.game.rule_book_url),
     },
-    output.players,
-    output.min_age,
-    output.duration_minutes,
+    {
+      min: intOrNull(output.players.min),
+      max: intOrNull(output.players.max),
+      recommended: output.players.recommended,
+    },
+    intOrNull(output.min_age),
+    {
+      min: intOrNull(output.duration_minutes.min),
+      max: intOrNull(output.duration_minutes.max),
+    },
     output.description,
-    output.setup.map((s) => ({ ...entry(s), order: s.order })),
+    output.setup.map((s, i) => ({ ...entry('setup')(s, i), order: s.order })),
     {
       summary: output.turn.summary,
-      steps: output.turn.steps.map((s) => ({
-        ...entry(s),
+      steps: output.turn.steps.map((s, i) => ({
+        ...entry('turn')(s, i),
         order: s.order,
         optional: s.optional,
         title: s.title,
       })),
     },
-    output.special_rules.map((r) => ({ ...entry(r), title: r.title })),
+    output.special_rules.map((r, i) => ({
+      ...entry('rule')(r, i),
+      title: r.title,
+    })),
     {
-      triggers: output.end_of_game.triggers.map(entry),
+      triggers: output.end_of_game.triggers.map(entry('end')),
       timing: output.end_of_game.timing,
-      scoring: output.end_of_game.scoring.map((s) => ({
-        ...entry(s),
+      scoring: output.end_of_game.scoring.map((s, i) => ({
+        ...entry('score')(s, i),
         order: s.order,
         title: s.title,
       })),
-      winner: output.end_of_game.winner.map(entry),
+      winner: output.end_of_game.winner.map(entry('winner')),
     },
     output.confidence,
     output.sources,
