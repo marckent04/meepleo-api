@@ -76,19 +76,21 @@ model Game {
   maxDuration        Int?           @map("max_duration_minutes")
 
   // Fiche de règles : null tant qu'elle n'a pas été générée.
+  /// Codes ISO 639-1 des langues disponibles (ex. ["fr", "en"]), validés dans le code
+  supportedLanguages String[]         @default([]) @map("supported_languages")
   /// LocalizedText
-  turnSummary      Json?            @map("turn_summary")
+  turnSummary        Json?            @map("turn_summary")
   /// LocalizedText
-  endTiming        Json?            @map("end_timing")
-  sheetConfidence  SheetConfidence? @map("sheet_confidence")
+  endTiming          Json?            @map("end_timing")
+  sheetConfidence    SheetConfidence? @map("sheet_confidence")
   /// Array<{ title: string, url: string }>
-  sheetSources     Json?            @map("sheet_sources")
+  sheetSources       Json?            @map("sheet_sources")
   /// LocalizedText[]
-  sheetWarnings    Json?            @map("sheet_warnings")
+  sheetWarnings      Json?            @map("sheet_warnings")
   /// Date du remplissage de la fiche par l'IA
-  sheetGeneratedAt DateTime?        @map("sheet_generated_at") @db.Timestamptz(6)
+  sheetGeneratedAt   DateTime?        @map("sheet_generated_at") @db.Timestamptz(6)
   /// Modèle d'IA ayant rempli la fiche (ex. "claude-opus-5-5")
-  sheetGeneratedBy String?          @map("sheet_generated_by")
+  sheetGeneratedBy   String?          @map("sheet_generated_by")
 
   barcodes GameBarcode[]
   rules    GameRule[]
