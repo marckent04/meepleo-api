@@ -58,3 +58,11 @@ export class GameSheet {
     readonly generatedAt: Date,
   ) {}
 }
+
+/** État d'agrégation de la fiche d'un jeu, toutes langues confondues. */
+export type GameSheetStatus = {
+  /** `sheetGeneratedAt` et `sheetGeneratedBy` sont renseignés. */
+  generated: boolean
+  /** Langues dans lesquelles la fiche est disponible, la langue de génération en premier. */
+  supportedLanguages: string[]
+}

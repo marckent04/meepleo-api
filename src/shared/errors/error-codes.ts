@@ -16,6 +16,7 @@ export enum ErrorCode {
   HEALTH_CHECK_FAILED = 'HEALTH_CHECK_FAILED',
   GAME_NOT_FOUND = 'GAME_NOT_FOUND',
   GAME_SHEET_GENERATION_FAILED = 'GAME_SHEET_GENERATION_FAILED',
+  GAME_SHEET_TRANSLATION_FAILED = 'GAME_SHEET_TRANSLATION_FAILED',
 }
 
 export const ERROR_CODES: Record<
@@ -69,6 +70,10 @@ export const ERROR_CODES: Record<
   [ErrorCode.GAME_SHEET_GENERATION_FAILED]: {
     expected: false,
     description: "La génération de la fiche de règles par l'IA a échoué",
+  },
+  [ErrorCode.GAME_SHEET_TRANSLATION_FAILED]: {
+    expected: false,
+    description: "La traduction de la fiche de règles par l'IA a échoué",
   },
 }
 

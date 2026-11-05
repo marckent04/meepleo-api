@@ -1,6 +1,8 @@
 import { createTransactionHostMock } from '@/__tests__/utils/prisma.mock'
 import { ErrorCode, NotFoundError } from '@/shared/errors'
-import { Game } from '@/shared/types'
+import { Game, GameSheetTranslation } from '@/shared/types'
+import { GAME_ID, gameRecord } from '../__fixtures__/game-record.fixture'
+import { toStoredGameSheet } from '../mappers'
 import { GameRepository } from './game.repository'
 
 const id = '0195d1a2-0000-7000-8000-000000000001'
@@ -37,5 +39,157 @@ describe('GameRepository', () => {
 
     expect(error).toBeInstanceOf(NotFoundError)
     expect(error.code).toBe(ErrorCode.GAME_NOT_FOUND)
+  })
+})
+
+describe('GameRepository — game sheet', () => {
+  const generatedAt = new Date('2026-02-01T00:00:00.000Z')
+  const aggregated = gameRecord({
+    supportedLanguages: ['fr'],
+    sheetGeneratedAt: generatedAt,
+    sheetGeneratedBy: 'claude-haiku-5-5',
+    description: { fr: 'Description' },
+  })
+
+  it('returns null when the sheet is not aggregated in the language', async () => {
+    const { host, tx } = createTransactionHostMock({
+      game: { findFirst: vi.fn().mockResolvedValue(aggregated) },
+    })
+
+    const sheet = await new GameRepository(host).findSheet(GAME_ID, 'en')
+
+    expect(tx.game.findFirst).toHaveBeenCalledWith({
+      where: { id: GAME_ID, deletedAt: null },
+      include: { rules: true },
+    })
+    expect(sheet).toBeNull()
+  })
+
+  it('returns the stored sheet when it is aggregated in the language', async () => {
+    const { host } = createTransactionHostMock({
+      game: { findFirst: vi.fn().mockResolvedValue(aggregated) },
+    })
+
+    const sheet = await new GameRepository(host).findSheet(GAME_ID, 'fr')
+
+    expect(sheet).toMatchObject({
+      gameId: GAME_ID,
+      language: 'fr',
+      description: 'Description',
+      generatedAt,
+    })
+  })
+
+  it('throws GAME_NOT_FOUND when reading the sheet of a missing game', async () => {
+    const { host } = createTransactionHostMock({
+      game: { findFirst: vi.fn().mockResolvedValue(null) },
+    })
+
+    await expect(
+      new GameRepository(host).findSheet(GAME_ID, 'fr'),
+    ).rejects.toMatchObject({ code: ErrorCode.GAME_NOT_FOUND })
+  })
+
+  it('reports the sheet status', async () => {
+    const { host } = createTransactionHostMock({
+      game: { findFirst: vi.fn().mockResolvedValue(aggregated) },
+    })
+
+    await expect(
+      new GameRepository(host).findSheetStatus(GAME_ID),
+    ).resolves.toEqual({ generated: true, supportedLanguages: ['fr'] })
+  })
+
+  it('locks the game row', async () => {
+    const { host, tx } = createTransactionHostMock({
+      $queryRaw: vi.fn().mockResolvedValue([{ id: GAME_ID }]),
+    })
+
+    await new GameRepository(host).lockById(GAME_ID)
+
+    const [strings, ...values] = tx.$queryRaw.mock.calls[0]
+    expect(strings.join('?')).toContain('FOR UPDATE')
+    expect(values).toEqual([GAME_ID])
+  })
+
+  it('throws GAME_NOT_FOUND when there is no row to lock', async () => {
+    const { host } = createTransactionHostMock({
+      $queryRaw: vi.fn().mockResolvedValue([]),
+    })
+
+    await expect(
+      new GameRepository(host).lockById(GAME_ID),
+    ).rejects.toMatchObject({ code: ErrorCode.GAME_NOT_FOUND })
+  })
+
+  it('replaces the rules when saving a generated sheet', async () => {
+    const { host, tx } = createTransactionHostMock({
+      game: {
+        findFirst: vi.fn().mockResolvedValue(gameRecord()),
+        update: vi.fn(),
+      },
+      gameRule: { deleteMany: vi.fn(), createMany: vi.fn() },
+    })
+    const sheet = toStoredGameSheet(aggregated, 'fr')
+
+    await new GameRepository(host).saveGeneratedSheet(sheet)
+
+    expect(tx.gameRule.deleteMany).toHaveBeenCalledWith({
+      where: { gameId: GAME_ID },
+    })
+    expect(tx.game.update).toHaveBeenCalledWith({
+      where: { id: GAME_ID },
+      data: expect.objectContaining({
+        supportedLanguages: ['fr'],
+        sheetGeneratedBy: 'claude-haiku-5-5',
+      }),
+    })
+    expect(tx.gameRule.createMany).toHaveBeenCalledWith({ data: [] })
+  })
+
+  it('adds the language and updates each rule when saving a translation', async () => {
+    const rule = {
+      id: 'rule-1',
+      gameId: GAME_ID,
+      type: 'SETUP',
+      order: 1,
+      position: 0,
+      playerCounts: [],
+      optional: false,
+      title: null,
+      text: { fr: 'Mélangez.' },
+      createdAt: generatedAt,
+      updatedAt: generatedAt,
+    }
+    const { host, tx } = createTransactionHostMock({
+      game: {
+        findFirst: vi.fn().mockResolvedValue({ ...aggregated, rules: [rule] }),
+        update: vi.fn(),
+      },
+      gameRule: { update: vi.fn() },
+    })
+
+    await new GameRepository(host).saveTranslation(
+      new GameSheetTranslation(
+        GAME_ID,
+        'fr',
+        'en',
+        'Dnup',
+        'D',
+        'S',
+        'T',
+        [],
+        [{ id: 'rule-1', title: null, text: 'Shuffle.' }],
+      ),
+    )
+
+    expect(tx.game.update).toHaveBeenCalledWith({
+      where: { id: GAME_ID },
+      data: expect.objectContaining({ supportedLanguages: ['fr', 'en'] }),
+    })
+    expect(tx.gameRule.update).toHaveBeenCalledWith({
+      where: { id: 'rule-1' },
+      data: { text: { fr: 'Mélangez.', en: 'Shuffle.' } },
+    })
   })
 })

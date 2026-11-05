@@ -19,6 +19,7 @@ const game = new Game(
 const config: AnthropicConfig = {
   apiKey: 'test',
   sheetModel: 'claude-haiku-5-5',
+  sheetTranslationModel: 'claude-haiku-5-5',
 }
 
 function response(overrides: Record<string, unknown> = {}) {

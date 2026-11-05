@@ -46,8 +46,13 @@ export class GameSheetGenerator {
     this.logger.setContext(GameSheetGenerator.name)
   }
 
+  /** Modèle d'IA utilisé pour générer les fiches. */
+  get model(): string {
+    return this.config.sheetModel
+  }
+
   async generate(game: Game, language: string): Promise<GameSheet> {
-    const model = this.config.sheetModel
+    const model = this.model
     const messages: Anthropic.MessageParam[] = [
       { role: 'user', content: buildGameSheetUserPrompt(game, language) },
     ]

@@ -53,6 +53,13 @@ enum SheetConfidence {
   @@map("sheet_confidence")
 }
 
+enum GameAggregationOperation {
+  GENERATION // génération complète (recherche web + extraction)
+  TRANSLATION // traduction d'une fiche existante
+
+  @@map("game_aggregation_operation")
+}
+
 model Game {
   id                 String         @id @default(uuid(7)) @db.Uuid
   bggId              Int?           @unique @map("bgg_id")
@@ -67,6 +74,8 @@ model Game {
   publisher          String?
   edition            String?
   imageUrl           String?        @map("image_url")
+  /// URL de la règle officielle trouvée lors de la génération
+  ruleBookUrl        String?        @map("rule_book_url")
   categories         GameCategory[]
   minPlayers         Int?           @map("min_players")
   maxPlayers         Int?           @map("max_players")
@@ -92,8 +101,9 @@ model Game {
   /// Modèle d'IA ayant rempli la fiche (ex. "claude-opus-5-5")
   sheetGeneratedBy   String?          @map("sheet_generated_by")
 
-  barcodes GameBarcode[]
-  rules    GameRule[]
+  barcodes          GameBarcode[]
+  rules             GameRule[]
+  aggregationErrors GameAggregationError[]
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -122,6 +132,8 @@ model GameRule {
   type         RuleType
   /// Non unique : plusieurs alternatives selon le nombre de joueurs peuvent partager un ordre.
   order        Int
+  /// Rang d'affichage parmi les règles du même type (départage les ordres égaux)
+  position     Int      @default(0)
   /// [] = tous les joueurs
   playerCounts Int[]    @map("player_counts")
   optional     Boolean  @default(false)
@@ -132,6 +144,30 @@ model GameRule {
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  @@index([gameId, type, order])
+  @@index([gameId, type, position])
   @@map("game_rules")
+}
+
+/// Échec d'une agrégation de fiche (génération ou traduction), conservé pour diagnostic.
+model GameAggregationError {
+  id             String                    @id @default(uuid(7)) @db.Uuid
+  gameId         String                    @map("game_id") @db.Uuid
+  game           Game                      @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  /// Code ISO 639-1 de la langue demandée
+  language       String
+  /// null si l'échec est survenu avant l'appel à l'IA (verrou, base de données…)
+  operation      GameAggregationOperation?
+  /// Langue source d'une traduction
+  sourceLanguage String?                   @map("source_language")
+  /// Modèle d'IA utilisé (ex. "claude-haiku-5-5"), null sans appel à l'IA
+  model          String?
+  /// ErrorCode de l'AppError, sinon INTERNAL_SERVER_ERROR
+  code           String
+  message        String
+  /// Contexte technique (AppError.details, secrets masqués)
+  details        Json?
+  createdAt      DateTime                  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([gameId, createdAt])
+  @@map("game_aggregation_errors")
 }

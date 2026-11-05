@@ -1,4 +1,5 @@
 export * from './app-error'
 export * from './cqrs-validation.exception'
 export * from './error-codes'
+export * from './game-aggregation-failed.error'
 export * from './validation-fields'
