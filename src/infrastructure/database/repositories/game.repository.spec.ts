@@ -3,6 +3,7 @@ import { ErrorCode, NotFoundError } from '@/shared/errors'
 import { Game, GameSheetTranslation } from '@/shared/types'
 import { GAME_ID, gameRecord } from '../__fixtures__/game-record.fixture'
 import { toStoredGameSheet } from '../mappers'
+import { lockGameSql, searchGamesSql } from '../queries'
 import { GameRepository } from './game.repository'
 
 const id = '0195d1a2-0000-7000-8000-000000000001'
@@ -107,9 +108,43 @@ describe('GameRepository — game sheet', () => {
 
     await new GameRepository(host).lockById(GAME_ID)
 
-    const [strings, ...values] = tx.$queryRaw.mock.calls[0]
-    expect(strings.join('?')).toContain('FOR UPDATE')
-    expect(values).toEqual([GAME_ID])
+    expect(tx.$queryRaw).toHaveBeenCalledWith(lockGameSql(GAME_ID))
+  })
+
+  it('searches games by name and maps localized names', async () => {
+    const { host, tx } = createTransactionHostMock({
+      $queryRaw: vi.fn().mockResolvedValue([
+        {
+          id: GAME_ID,
+          name: 'Catan',
+          localized_name: 'Catane',
+          year: 1995,
+          categories: ['STRATEGY', 'FAMILY'],
+        },
+        {
+          id,
+          name: 'Catan: Seafarers',
+          localized_name: null,
+          year: null,
+          categories: [],
+        },
+      ]),
+    })
+
+    const results = await new GameRepository(host).search(' CAT ', 'fr', 5)
+
+    expect(results).toEqual([
+      {
+        id: GAME_ID,
+        name: 'Catane',
+        year: 1995,
+        categories: ['strategy', 'family'],
+      },
+      { id, name: 'Catan: Seafarers', year: null, categories: [] },
+    ])
+    expect(tx.$queryRaw).toHaveBeenCalledWith(
+      searchGamesSql({ text: ' CAT ', language: 'fr', limit: 5 }),
+    )
   })
 
   it('throws GAME_NOT_FOUND when there is no row to lock', async () => {

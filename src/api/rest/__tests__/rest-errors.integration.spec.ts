@@ -9,7 +9,10 @@ import { z } from 'zod'
 import { mockLoggerService } from '@/__tests__/utils/logger-service.mock'
 import { AppModule } from '@/app.module'
 import { PrismaService } from '@/infrastructure/database/prisma.service'
-import { HealthRepository } from '@/infrastructure/database/repositories'
+import {
+  GameRepository,
+  HealthRepository,
+} from '@/infrastructure/database/repositories'
 import { LoggerService } from '@/infrastructure/logger/logger.service'
 
 const EchoSchema = z.strictObject({
@@ -29,6 +32,7 @@ class EchoController {
 describe('REST errors (integration)', () => {
   let app: NestFastifyApplication
   const healthRepository = { ping: vi.fn() }
+  const gameRepository = { search: vi.fn() }
 
   beforeAll(async () => {
     vi.stubEnv('NODE_ENV', 'test')
@@ -44,6 +48,8 @@ describe('REST errors (integration)', () => {
       .useValue({ $connect: vi.fn(), $disconnect: vi.fn() })
       .overrideProvider(HealthRepository)
       .useValue(healthRepository)
+      .overrideProvider(GameRepository)
+      .useValue(gameRepository)
       .overrideProvider(LoggerService)
       .useValue(mockLoggerService)
       .compile()
@@ -142,6 +148,60 @@ describe('REST errors (integration)', () => {
       code: 'NOT_FOUND',
       message: 'The requested resource could not be found.',
     })
+  })
+
+  it('GET /v1/games returns the search results in the requested language', async () => {
+    gameRepository.search.mockResolvedValue([
+      {
+        id: '0195d1a2-0000-7000-8000-000000000001',
+        name: 'Catane',
+        year: 1995,
+        categories: ['strategy'],
+      },
+    ])
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/v1/games?search=%20cat%20',
+      headers: { 'accept-language': 'fr-FR,fr;q=0.9' },
+    })
+
+    expect(response.statusCode).toBe(200)
+    expect(response.json()).toEqual([
+      {
+        id: '0195d1a2-0000-7000-8000-000000000001',
+        name: 'Catane',
+        year: 1995,
+        categories: ['strategy'],
+      },
+    ])
+    expect(gameRepository.search).toHaveBeenCalledWith('cat', 'fr', 10)
+  })
+
+  it('GET /v1/games rejects a too short search', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: '/v1/games?search=c',
+      headers: { 'accept-language': 'en' },
+    })
+
+    expect(response.statusCode).toBe(400)
+    expect(response.json()).toMatchObject({ code: 'VALIDATION_FAILED' })
+    expect(gameRepository.search).not.toHaveBeenCalled()
+  })
+
+  it('returns 400 LANGUAGE_REQUIRED without Accept-Language', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: '/v1/games?search=cat',
+    })
+
+    expect(response.statusCode).toBe(400)
+    expect(response.json()).toMatchObject({
+      code: 'LANGUAGE_REQUIRED',
+      message: "L'en-tête Accept-Language est obligatoire.",
+    })
+    expect(gameRepository.search).not.toHaveBeenCalled()
   })
 
   it('returns 400 UNSUPPORTED_LANGUAGE for an unsupported language', async () => {

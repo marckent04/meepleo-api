@@ -4,14 +4,17 @@ import type { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapt
 import { ErrorCode, NotFoundError } from '@/shared/errors'
 import type {
   Game,
+  GameSearchResult,
   GameSheet,
   GameSheetStatus,
   GameSheetTranslation,
 } from '@/shared/types'
 import {
+  type GameSearchRow,
   type GameWithRulesRecord,
   isGameSheetAggregated,
   toGame,
+  toGameSearchResult,
   toGameSheetStatus,
   toGameSheetTranslationData,
   toGeneratedGameSheetData,
@@ -19,6 +22,7 @@ import {
 } from '../mappers'
 import type { PrismaService } from '../prisma.service'
 import { rethrowPrismaError } from '../prisma-errors'
+import { lockGameSql, searchGamesSql } from '../queries'
 
 function gameNotFound(id: string): NotFoundError {
   return new NotFoundError('Game not found', {
@@ -42,6 +46,22 @@ export class GameRepository {
     })
     if (!record) throw gameNotFound(id)
     return toGame(record)
+  }
+
+  /**
+   * Jeux non supprimés dont le nom canonique ou le nom dans `language`
+   * contient `text` (casse et accents ignorés), les plus pertinents en
+   * premier. Voir `searchGamesSql`.
+   */
+  async search(
+    text: string,
+    language: string,
+    limit: number,
+  ): Promise<GameSearchResult[]> {
+    const rows = await this.txHost.tx.$queryRaw<GameSearchRow[]>(
+      searchGamesSql({ text, language, limit }),
+    )
+    return rows.map(toGameSearchResult)
   }
 
   /**
@@ -76,8 +96,9 @@ export class GameRepository {
    * Lève NotFoundError (GAME_NOT_FOUND) si le jeu n'existe pas.
    */
   async lockById(id: string): Promise<void> {
-    const rows = await this.txHost.tx.$queryRaw<{ id: string }[]>`
-      SELECT id FROM games WHERE id = ${id}::uuid AND deleted_at IS NULL FOR UPDATE`
+    const rows = await this.txHost.tx.$queryRaw<{ id: string }[]>(
+      lockGameSql(id),
+    )
     if (rows.length === 0) throw gameNotFound(id)
   }
 

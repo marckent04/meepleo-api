@@ -3,6 +3,8 @@ import {
   GameIdParamSchema,
   GameResponseDto,
   GameResponseSchema,
+  GameSearchResponseSchema,
+  SearchGamesQuerySchema,
 } from './game.dto'
 
 const id = (n: number) =>
@@ -84,5 +86,42 @@ describe('GameIdParamSchema', () => {
   it('accepts a UUID and rejects anything else', () => {
     expect(GameIdParamSchema.safeParse({ id: id(0) }).success).toBe(true)
     expect(GameIdParamSchema.safeParse({ id: '42' }).success).toBe(false)
+  })
+})
+
+describe('SearchGamesQuerySchema', () => {
+  it('trims the search and defaults the limit', () => {
+    expect(SearchGamesQuerySchema.parse({ search: '  cat ' })).toEqual({
+      search: 'cat',
+      limit: 10,
+    })
+  })
+
+  it('coerces the limit from the query string', () => {
+    expect(
+      SearchGamesQuerySchema.parse({ search: 'cat', limit: '5' }).limit,
+    ).toBe(5)
+  })
+
+  it.each([
+    [{}],
+    [{ search: ' c ' }],
+    [{ search: 'x'.repeat(101) }],
+    [{ search: 'cat', limit: '0' }],
+    [{ search: 'cat', limit: '21' }],
+    [{ search: 'cat', limit: 'abc' }],
+  ])('rejects %j', (query) => {
+    expect(SearchGamesQuerySchema.safeParse(query).success).toBe(false)
+  })
+})
+
+describe('GameSearchResponseSchema', () => {
+  it('accepts search results', () => {
+    expect(
+      GameSearchResponseSchema.safeParse([
+        { id: id(0), name: 'Catane', year: 1995, categories: ['strategy'] },
+        { id: id(1), name: 'Dnup', year: null, categories: [] },
+      ]).success,
+    ).toBe(true)
   })
 })

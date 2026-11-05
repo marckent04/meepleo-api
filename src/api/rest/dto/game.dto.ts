@@ -1,6 +1,15 @@
 import { createZodDto } from 'nestjs-zod'
 import { z } from 'zod'
-import type { GameSheet } from '@/shared/types'
+import {
+  SEARCH_GAMES_MAX_LENGTH,
+  SEARCH_GAMES_MAX_LIMIT,
+  SEARCH_GAMES_MIN_LENGTH,
+} from '@/domain/game/queries/search-games.query'
+import {
+  GAME_CATEGORIES,
+  type GameSearchResult,
+  type GameSheet,
+} from '@/shared/types'
 
 export const GameIdParamSchema = z.object({
   id: z
@@ -10,6 +19,52 @@ export const GameIdParamSchema = z.object({
 })
 
 export class GameIdParamDto extends createZodDto(GameIdParamSchema) {}
+
+export const SearchGamesQuerySchema = z.object({
+  search: z
+    .string()
+    .trim()
+    .min(SEARCH_GAMES_MIN_LENGTH)
+    .max(SEARCH_GAMES_MAX_LENGTH)
+    .describe('Texte contenu dans le nom du jeu (casse et accents ignorés)')
+    .meta({ example: 'catan' }),
+  limit: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(SEARCH_GAMES_MAX_LIMIT)
+    .default(10)
+    .describe('Nombre maximal de résultats'),
+})
+
+export class SearchGamesQueryDto extends createZodDto(SearchGamesQuerySchema) {}
+
+export const GameSearchResultSchema = z.object({
+  id: z.uuid().describe('Identifiant du jeu'),
+  name: z
+    .string()
+    .describe(
+      "Nom dans la langue d'Accept-Language si la fiche y a été générée, sinon nom canonique",
+    )
+    .meta({ example: 'Catan' }),
+  year: z.number().int().nullable().describe('Année de publication'),
+  categories: z.array(z.enum(GAME_CATEGORIES)).describe('Catégories du jeu'),
+})
+
+export const GameSearchResponseSchema = z
+  .array(GameSearchResultSchema)
+  .describe('Jeux correspondant à la recherche, les plus pertinents en premier')
+
+export class GameSearchResponseDto extends createZodDto(
+  GameSearchResponseSchema,
+) {
+  static fromDomain(results: GameSearchResult[]): GameSearchResponseDto {
+    return results.map((result) => ({
+      ...result,
+      categories: [...result.categories],
+    }))
+  }
+}
 
 const PlayerCountsSchema = z
   .array(z.number().int().positive())
