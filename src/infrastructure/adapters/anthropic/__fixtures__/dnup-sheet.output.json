@@ -1,0 +1,218 @@
+{
+  "game": {
+    "localized_name": "Dnup",
+    "edition": null,
+    "publisher": null,
+    "rule_book_url": "https://www.regles-du-jeu.net/regles-de-dnup/"
+  },
+  "players": {
+    "min": 2,
+    "max": 5,
+    "recommended": []
+  },
+  "min_age": 8,
+  "duration_minutes": {
+    "min": 20,
+    "max": 20
+  },
+  "description": "Jeu de cartes rapide où chaque carte possède deux valeurs, une sur chaque face. Les joueurs posent des séries, contrent celles des adversaires et retournent leurs cartes pour changer leur valeur, avec un objectif : vider sa main avant les autres.",
+  "setup": [
+    {
+      "id": "setup-1",
+      "order": 1,
+      "player_counts": [5],
+      "text": "Gardez les 40 cartes du paquet."
+    },
+    {
+      "id": "setup-2",
+      "order": 1,
+      "player_counts": [4],
+      "text": "Retirez du paquet les cartes portant le symbole indiqué pour 4 joueurs."
+    },
+    {
+      "id": "setup-3",
+      "order": 1,
+      "player_counts": [2, 3],
+      "text": "Retirez du paquet les cartes portant les symboles indiqués pour 3 joueurs (même retrait à 2 joueurs)."
+    },
+    {
+      "id": "setup-4",
+      "order": 2,
+      "player_counts": [3, 4, 5],
+      "text": "Donnez une carte Aide de jeu à chaque joueur."
+    },
+    {
+      "id": "setup-5",
+      "order": 2,
+      "player_counts": [2],
+      "text": "Chaque joueur place devant lui deux cartes Aide de jeu de la même couleur : elles forment sa zone 1 et sa zone 2."
+    },
+    {
+      "id": "setup-6",
+      "order": 3,
+      "player_counts": null,
+      "text": "Mélangez puis distribuez toutes les cartes."
+    },
+    {
+      "id": "setup-7",
+      "order": 4,
+      "player_counts": null,
+      "text": "Prenez votre main sans retourner les cartes : la face reçue vers le haut donne leur valeur active."
+    },
+    {
+      "id": "setup-8",
+      "order": 5,
+      "player_counts": null,
+      "text": "Le joueur qui a la carte étoile ★ (valeur 1/5) commence, puis on joue dans le sens horaire."
+    }
+  ],
+  "turn": {
+    "summary": "Défaussez votre série du tour précédent, puis faites une seule action parmi quatre.",
+    "steps": [
+      {
+        "id": "turn-0",
+        "order": 0,
+        "player_counts": [2],
+        "optional": false,
+        "title": "Deux tours d'affilée",
+        "text": "À 2 joueurs, vous jouez deux tours consécutifs, un par zone. Les étapes suivantes s'appliquent à chaque zone."
+      },
+      {
+        "id": "turn-1",
+        "order": 1,
+        "player_counts": null,
+        "optional": false,
+        "title": "Défausser",
+        "text": "Si vous avez une série posée depuis votre tour précédent, placez-la face cachée sur la défausse."
+      },
+      {
+        "id": "turn-2",
+        "order": 2,
+        "player_counts": null,
+        "optional": true,
+        "title": "Action A : poser une série",
+        "text": "Posez devant vous des cartes de même valeur active. Si une série de même taille est déjà sur la table, la vôtre doit avoir une valeur strictement supérieure."
+      },
+      {
+        "id": "turn-3",
+        "order": 3,
+        "player_counts": null,
+        "optional": true,
+        "title": "Action B : compléter une série adverse",
+        "text": "Ajoutez une carte de même valeur sur la série d'un adversaire. La série obtenue doit battre toute autre série de même taille sur la table."
+      },
+      {
+        "id": "turn-4",
+        "order": 4,
+        "player_counts": null,
+        "optional": true,
+        "title": "Action C : voler une série",
+        "text": "Prenez la série d'un adversaire, retournez toutes ses cartes et ajoutez-les à votre main."
+      },
+      {
+        "id": "turn-5",
+        "order": 5,
+        "player_counts": null,
+        "optional": true,
+        "title": "Action D : retourner sa main",
+        "text": "Retournez toutes les cartes de votre main : les valeurs actives et cachées s'inversent."
+      }
+    ]
+  },
+  "special_rules": [
+    {
+      "id": "rule-1",
+      "player_counts": null,
+      "title": "Le doup",
+      "text": "Toute carte reprise de la table doit être retournée avant de revenir dans votre main."
+    },
+    {
+      "id": "rule-2",
+      "player_counts": null,
+      "title": "Pas de retournement libre",
+      "text": "Vous ne pouvez jamais retourner une carte, sauf quand une règle vous l'impose ou vous le permet."
+    },
+    {
+      "id": "rule-3",
+      "player_counts": null,
+      "title": "Série battue",
+      "text": "Quand une série est battue par une série de même taille, son propriétaire la reprend en main en retournant les cartes."
+    },
+    {
+      "id": "rule-4",
+      "player_counts": null,
+      "title": "Dernière série du premier joueur sorti",
+      "text": "La dernière série du joueur qui vide sa main reste sur la table pendant un tour complet, puis part à la défausse (plus tôt si elle est battue)."
+    },
+    {
+      "id": "rule-5",
+      "player_counts": [2],
+      "title": "Conflit entre ses propres zones",
+      "text": "Vos deux séries peuvent s'affronter entre elles, comme avec celles de l'adversaire."
+    },
+    {
+      "id": "rule-6",
+      "player_counts": [2],
+      "title": "Premier tour",
+      "text": "Au tout début, le joueur avec la carte ★ ne joue qu'un seul tour, dans sa zone 2."
+    }
+  ],
+  "end_of_game": {
+    "triggers": [
+      {
+        "id": "end-1",
+        "player_counts": [3, 4, 5],
+        "text": "La manche s'arrête dès que le deuxième joueur vide sa main. La partie s'arrête dès qu'un joueur atteint 4 points."
+      },
+      {
+        "id": "end-2",
+        "player_counts": [2],
+        "text": "La manche s'arrête dès qu'un joueur vide sa main. La partie se joue en deux manches gagnantes."
+      }
+    ],
+    "timing": "Fin immédiate : la manche et la partie s'arrêtent sans terminer le tour en cours.",
+    "scoring": [
+      {
+        "id": "score-1",
+        "order": 1,
+        "player_counts": [3, 4, 5],
+        "title": "Premier sorti",
+        "text": "Le premier joueur à vider sa main marque 2 points et ne joue plus de la manche."
+      },
+      {
+        "id": "score-2",
+        "order": 2,
+        "player_counts": [3, 4, 5],
+        "title": "Deuxième sorti",
+        "text": "Le deuxième joueur à vider sa main marque 1 point. Les autres ne marquent rien."
+      },
+      {
+        "id": "score-3",
+        "order": 1,
+        "player_counts": [2],
+        "title": "Manche gagnée",
+        "text": "Le premier joueur à vider sa main remporte la manche."
+      }
+    ],
+    "winner": [
+      {
+        "id": "winner-1",
+        "player_counts": [3, 4, 5],
+        "text": "Le premier à 4 points ou plus gagne."
+      },
+      {
+        "id": "winner-2",
+        "player_counts": [2],
+        "text": "Le premier à remporter deux manches gagne."
+      }
+    ]
+  },
+  "confidence": "high",
+  "sources": [
+    {
+      "title": "Règles de Dnup",
+      "url": "https://www.regles-du-jeu.net/regles-de-dnup/"
+    }
+  ],
+  "warnings": []
+}

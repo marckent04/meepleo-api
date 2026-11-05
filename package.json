@@ -30,6 +30,7 @@
     "semantic-release": "semantic-release"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.5.0",
     "@fastify/static": "^10.1.9",
     "@nestjs-cls/transactional": "^4.0.2",
     "@nestjs-cls/transactional-adapter-prisma": "^2.0.2",

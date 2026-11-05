@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common'
+import { ConfigModule } from '@nestjs/config'
+import { ANTHROPIC_CONFIG } from '@/shared/config'
+import { anthropicClientProvider, GameSheetGenerator } from './anthropic'
 
 /**
  * Intégrations externes hors base de données (API tierces, SDK…). Chaque
@@ -6,7 +9,8 @@ import { Module } from '@nestjs/common'
  * ConfigModule.forFeature(...).
  */
 @Module({
-  providers: [],
-  exports: [],
+  imports: [ConfigModule.forFeature(ANTHROPIC_CONFIG)],
+  providers: [anthropicClientProvider, GameSheetGenerator],
+  exports: [GameSheetGenerator],
 })
 export class AdaptersModule {}

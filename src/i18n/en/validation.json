@@ -20,6 +20,8 @@
   "maxLength": "This text is too long.",
   "nestedValidation": "This object is invalid.",
   "whitelistValidation": "This field is not allowed.",
+  "isUuid": "This field must be a valid UUID.",
+  "isISO6391": "This field must be an ISO 639-1 language code (e.g. fr, en).",
   "zod": {
     "invalid_type": "This field is required or has the wrong type.",
     "too_small": "This value is too small or too short.",

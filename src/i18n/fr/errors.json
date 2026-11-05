@@ -8,5 +8,7 @@
   "TOO_MANY_REQUESTS": "Trop de requêtes. Réessayez dans quelques instants.",
   "VALIDATION_FAILED": "Certaines données envoyées sont invalides.",
   "INTERNAL_SERVER_ERROR": "Une erreur inattendue est survenue. Réessayez plus tard.",
-  "HEALTH_CHECK_FAILED": "Le service est momentanément indisponible."
+  "HEALTH_CHECK_FAILED": "Le service est momentanément indisponible.",
+  "GAME_NOT_FOUND": "Ce jeu est introuvable.",
+  "GAME_SHEET_GENERATION_FAILED": "La fiche de règles n'a pas pu être générée. Réessayez plus tard."
 }

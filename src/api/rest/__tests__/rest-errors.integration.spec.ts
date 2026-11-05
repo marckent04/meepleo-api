@@ -34,6 +34,7 @@ describe('REST errors (integration)', () => {
     vi.stubEnv('NODE_ENV', 'test')
     vi.stubEnv('DATABASE_URL', 'postgresql://app:app@localhost:5432/app')
     vi.stubEnv('LOG_LEVELS', 'fatal')
+    vi.stubEnv('ANTHROPIC_API_KEY', 'test-key')
 
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],

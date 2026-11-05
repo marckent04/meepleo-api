@@ -14,6 +14,8 @@ export enum ErrorCode {
   VALIDATION_FAILED = 'VALIDATION_FAILED',
   INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
   HEALTH_CHECK_FAILED = 'HEALTH_CHECK_FAILED',
+  GAME_NOT_FOUND = 'GAME_NOT_FOUND',
+  GAME_SHEET_GENERATION_FAILED = 'GAME_SHEET_GENERATION_FAILED',
 }
 
 export const ERROR_CODES: Record<
@@ -59,6 +61,14 @@ export const ERROR_CODES: Record<
   [ErrorCode.HEALTH_CHECK_FAILED]: {
     expected: false,
     description: "Le contrôle de santé de l'API a échoué",
+  },
+  [ErrorCode.GAME_NOT_FOUND]: {
+    expected: true,
+    description: 'Jeu introuvable',
+  },
+  [ErrorCode.GAME_SHEET_GENERATION_FAILED]: {
+    expected: false,
+    description: "La génération de la fiche de règles par l'IA a échoué",
   },
 }
 

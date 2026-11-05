@@ -8,5 +8,7 @@
   "TOO_MANY_REQUESTS": "Too many requests. Please try again shortly.",
   "VALIDATION_FAILED": "Some of the submitted data is invalid.",
   "INTERNAL_SERVER_ERROR": "An unexpected error occurred. Please try again later.",
-  "HEALTH_CHECK_FAILED": "The service is temporarily unavailable."
+  "HEALTH_CHECK_FAILED": "The service is temporarily unavailable.",
+  "GAME_NOT_FOUND": "This game could not be found.",
+  "GAME_SHEET_GENERATION_FAILED": "The rule sheet could not be generated. Please try again later."
 }
