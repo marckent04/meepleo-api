@@ -47,6 +47,8 @@ describe('GET /v1/games/:id (integration)', () => {
     vi.stubEnv('DATABASE_URL', 'postgresql://app:app@localhost:5432/app')
     vi.stubEnv('LOG_LEVELS', 'fatal')
     vi.stubEnv('ANTHROPIC_API_KEY', 'test-key')
+    vi.stubEnv('JWT_ACCESS_SECRET', 'a'.repeat(32))
+    vi.stubEnv('JWT_REFRESH_SECRET', 'b'.repeat(32))
 
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
       .overrideProvider(PrismaService)

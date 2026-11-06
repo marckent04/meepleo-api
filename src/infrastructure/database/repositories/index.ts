@@ -1,3 +1,5 @@
 export * from './game.repository'
 export * from './game-aggregation-run.repository'
 export * from './health.repository'
+export * from './refresh-token.repository'
+export * from './user.repository'

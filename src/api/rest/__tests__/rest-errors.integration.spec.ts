@@ -14,6 +14,7 @@ import {
   HealthRepository,
 } from '@/infrastructure/database/repositories'
 import { LoggerService } from '@/infrastructure/logger/logger.service'
+import { Public } from '../../common/decorators'
 
 const EchoSchema = z.strictObject({
   name: z.string().trim().min(1).describe('Nom'),
@@ -21,6 +22,7 @@ const EchoSchema = z.strictObject({
 class EchoDto extends createZodDto(EchoSchema) {}
 
 /** Route de test : vérifie la validation Zod de bout en bout. */
+@Public()
 @Controller({ path: 'echo', version: '1' })
 class EchoController {
   @Post()
@@ -39,6 +41,8 @@ describe('REST errors (integration)', () => {
     vi.stubEnv('DATABASE_URL', 'postgresql://app:app@localhost:5432/app')
     vi.stubEnv('LOG_LEVELS', 'fatal')
     vi.stubEnv('ANTHROPIC_API_KEY', 'test-key')
+    vi.stubEnv('JWT_ACCESS_SECRET', 'a'.repeat(32))
+    vi.stubEnv('JWT_REFRESH_SECRET', 'b'.repeat(32))
 
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],

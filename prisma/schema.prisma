@@ -205,3 +205,40 @@ model GameAggregationRun {
   @@index([status, createdAt])
   @@map("game_aggregation_runs")
 }
+
+// ---------------------------------------------------------------------------
+// Authentification
+//
+// `email` et `username` sont stockés normalisés (minuscules) : l'unicité et le
+// login sont donc insensibles à la casse. Les refresh tokens ne sont jamais
+// stockés en clair, seulement leur empreinte SHA-256.
+// ---------------------------------------------------------------------------
+
+model User {
+  id            String         @id @default(uuid(7)) @db.Uuid
+  email         String         @unique
+  username      String         @unique
+  passwordHash  String         @map("password_hash")
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt     DateTime?      @map("deleted_at") @db.Timestamptz(6)
+  refreshTokens RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  /// Identifiant du token (claim `jti` du JWT)
+  id        String    @id @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Empreinte SHA-256 du refresh token
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(6)
+  /// Renseigné à la rotation ou à la déconnexion ; un token révoqué présenté à nouveau signale un vol
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}

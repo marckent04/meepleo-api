@@ -5,11 +5,16 @@ import { SkipThrottle } from '@nestjs/throttler'
 import { ZodResponse } from 'nestjs-zod'
 import { GetHealthQuery } from '@/domain/health'
 import { ErrorCode } from '@/shared/errors'
-import { ErrorCodeOnFailure, SkipAcceptLanguage } from '../../common/decorators'
+import {
+  ErrorCodeOnFailure,
+  Public,
+  SkipAcceptLanguage,
+} from '../../common/decorators'
 import { HealthResponseDto } from '../dto'
 import { ApiErrorResponses } from '../errors'
 
 @ApiTags('health')
+@Public()
 @SkipAcceptLanguage()
 @Controller({ path: 'health', version: '1' })
 export class HealthController {

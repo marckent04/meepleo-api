@@ -19,6 +19,10 @@ export enum ErrorCode {
   GAME_SHEET_TRANSLATION_FAILED = 'GAME_SHEET_TRANSLATION_FAILED',
   LANGUAGE_REQUIRED = 'LANGUAGE_REQUIRED',
   UNSUPPORTED_LANGUAGE = 'UNSUPPORTED_LANGUAGE',
+  EMAIL_ALREADY_USED = 'EMAIL_ALREADY_USED',
+  USERNAME_ALREADY_USED = 'USERNAME_ALREADY_USED',
+  INVALID_CREDENTIALS = 'INVALID_CREDENTIALS',
+  INVALID_REFRESH_TOKEN = 'INVALID_REFRESH_TOKEN',
 }
 
 export const ERROR_CODES: Record<
@@ -84,6 +88,22 @@ export const ERROR_CODES: Record<
   [ErrorCode.UNSUPPORTED_LANGUAGE]: {
     expected: true,
     description: "Aucune langue d'Accept-Language n'est supportée",
+  },
+  [ErrorCode.EMAIL_ALREADY_USED]: {
+    expected: true,
+    description: 'Un compte existe déjà avec cet email',
+  },
+  [ErrorCode.USERNAME_ALREADY_USED]: {
+    expected: true,
+    description: "Ce nom d'utilisateur est déjà pris",
+  },
+  [ErrorCode.INVALID_CREDENTIALS]: {
+    expected: true,
+    description: "Nom d'utilisateur ou mot de passe incorrect",
+  },
+  [ErrorCode.INVALID_REFRESH_TOKEN]: {
+    expected: true,
+    description: 'Refresh token invalide, expiré ou révoqué',
   },
 }
 

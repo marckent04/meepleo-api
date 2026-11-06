@@ -13,5 +13,9 @@
   "GAME_SHEET_GENERATION_FAILED": "The rule sheet could not be generated. Please try again later.",
   "GAME_SHEET_TRANSLATION_FAILED": "The rule sheet could not be translated. Please try again later.",
   "LANGUAGE_REQUIRED": "The Accept-Language header is required.",
-  "UNSUPPORTED_LANGUAGE": "This language is not supported. Available languages: {supported}."
+  "UNSUPPORTED_LANGUAGE": "This language is not supported. Available languages: {supported}.",
+  "EMAIL_ALREADY_USED": "An account already exists with this email.",
+  "USERNAME_ALREADY_USED": "This username is already taken.",
+  "INVALID_CREDENTIALS": "Incorrect username or password.",
+  "INVALID_REFRESH_TOKEN": "Your session has expired. Please sign in again."
 }

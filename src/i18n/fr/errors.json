@@ -13,5 +13,9 @@
   "GAME_SHEET_GENERATION_FAILED": "La fiche de règles n'a pas pu être générée. Réessayez plus tard.",
   "GAME_SHEET_TRANSLATION_FAILED": "La fiche de règles n'a pas pu être traduite. Réessayez plus tard.",
   "LANGUAGE_REQUIRED": "L'en-tête Accept-Language est obligatoire.",
-  "UNSUPPORTED_LANGUAGE": "Cette langue n'est pas prise en charge. Langues disponibles : {supported}."
+  "UNSUPPORTED_LANGUAGE": "Cette langue n'est pas prise en charge. Langues disponibles : {supported}.",
+  "EMAIL_ALREADY_USED": "Un compte existe déjà avec cet email.",
+  "USERNAME_ALREADY_USED": "Ce nom d'utilisateur est déjà pris.",
+  "INVALID_CREDENTIALS": "Nom d'utilisateur ou mot de passe incorrect.",
+  "INVALID_REFRESH_TOKEN": "Votre session a expiré. Reconnectez-vous."
 }

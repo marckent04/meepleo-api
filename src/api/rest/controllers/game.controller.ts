@@ -10,7 +10,7 @@ import {
 } from '@/domain/game'
 import { ErrorCode } from '@/shared/errors'
 import { type Locale, SUPPORTED_LOCALES } from '@/shared/i18n/locale'
-import { ErrorCodeOnFailure, Language } from '../../common/decorators'
+import { ErrorCodeOnFailure, Language, Public } from '../../common/decorators'
 import {
   GameIdParamDto,
   GameLookupResponseSchema,
@@ -22,6 +22,7 @@ import {
 import { ApiErrorResponses } from '../errors'
 
 @ApiTags('games')
+@Public()
 @ApiHeader({
   name: 'accept-language',
   required: true,
