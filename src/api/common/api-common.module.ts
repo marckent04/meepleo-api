@@ -1,10 +1,10 @@
-import { Module } from "@nestjs/common";
-import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
-import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
-import { AppExceptionFilter } from "./filters/app-exception.filter";
-import { AcceptLanguageGuard } from "./guards/accept-language.guard";
-import { JwtAuthGuard } from "./guards/jwt-auth.guard";
-import { ErrorCodeOnFailureInterceptor } from "./interceptors/error-code-on-failure.interceptor";
+import { Module } from '@nestjs/common'
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core'
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
+import { AppExceptionFilter } from './filters/app-exception.filter'
+import { AcceptLanguageGuard } from './guards/accept-language.guard'
+import { JwtAuthGuard } from './guards/jwt-auth.guard'
+import { ErrorCodeOnFailureInterceptor } from './interceptors/error-code-on-failure.interceptor'
 
 /** Comportements transverses aux transports, déclarés une seule fois. */
 @Module({

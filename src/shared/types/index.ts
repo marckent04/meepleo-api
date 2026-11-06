@@ -1,5 +1,6 @@
 export * from './ai-trace.type'
 export * from './catalog-entry.type'
+export * from './favorite-entry.type'
 export * from './game.type'
 export * from './game-sheet.type'
 export * from './game-sheet-aggregation.type'
