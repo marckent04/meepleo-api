@@ -148,6 +148,9 @@ export const GameResponseSchema = z
     specialRules: z
       .array(EntrySchema.extend({ title: TitleSchema }))
       .describe('Règles spéciales et exceptions'),
+    variants: z
+      .array(EntrySchema.extend({ title: TitleSchema }))
+      .describe('Variantes et règles optionnelles'),
     endOfGame: z
       .object({
         triggers: z
@@ -200,6 +203,7 @@ export class GameResponseDto extends createZodDto(GameResponseSchema, {
       setup: sheet.setup,
       turn: sheet.turn,
       specialRules: sheet.specialRules,
+      variants: sheet.variants,
       endOfGame: sheet.endOfGame,
       confidence: sheet.confidence,
       sources: sheet.sources,

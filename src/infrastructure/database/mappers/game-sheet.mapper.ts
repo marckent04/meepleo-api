@@ -170,6 +170,7 @@ export function toStoredGameSheet(
       })),
     },
     rulesOf(RuleType.SPECIAL).map((r) => ({ ...entry(r), title: title(r) })),
+    rulesOf(RuleType.VARIANT).map((r) => ({ ...entry(r), title: title(r) })),
     {
       triggers: rulesOf(RuleType.END_TRIGGER).map(entry),
       timing: localized(record.endTiming, language) ?? '',
@@ -274,6 +275,9 @@ export function toGeneratedGameSheetData(
       ),
       ...sheet.specialRules.map((e, i) =>
         rule(RuleType.SPECIAL, i + 1, i, e, { title: e.title }),
+      ),
+      ...sheet.variants.map((e, i) =>
+        rule(RuleType.VARIANT, i + 1, i, e, { title: e.title }),
       ),
       ...sheet.endOfGame.triggers.map((e, i) =>
         rule(RuleType.END_TRIGGER, i + 1, i, e),

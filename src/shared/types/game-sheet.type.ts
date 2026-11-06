@@ -44,6 +44,7 @@ export class GameSheet {
     readonly setup: GameSheetOrderedEntry[],
     readonly turn: { summary: string; steps: GameSheetTurnStep[] },
     readonly specialRules: GameSheetTitledEntry[],
+    readonly variants: GameSheetTitledEntry[],
     readonly endOfGame: {
       triggers: GameSheetEntry[]
       timing: string

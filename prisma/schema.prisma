@@ -37,6 +37,7 @@ enum RuleType {
   SETUP // mise en place
   TURN // étapes / actions d'un tour
   SPECIAL // règles spéciales
+  VARIANT // variantes et règles optionnelles choisies par les joueurs
   END_TRIGGER // déclencheurs de fin de manche / partie
   SCORING // décompte
   WINNER // condition de victoire

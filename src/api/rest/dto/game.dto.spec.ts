@@ -38,6 +38,7 @@ const sheet = new GameSheet(
     ],
   },
   [{ id: id(3), playerCounts: null, title: 'Le doup', text: 'Doup !' }],
+  [{ id: id(7), playerCounts: null, title: 'Mode solo', text: 'Jouez seul.' }],
   {
     triggers: [{ id: id(4), playerCounts: null, text: 'Main vide.' }],
     timing: 'Immédiatement',

@@ -68,6 +68,9 @@ describe('game sheet mapper', () => {
     expect(sheet.specialRules.map((r) => r.title)).toEqual(
       generated.specialRules.map((r) => r.title),
     )
+    expect(sheet.variants.map((r) => r.title)).toEqual(
+      generated.variants.map((r) => r.title),
+    )
     expect(withoutIds(sheet.endOfGame.winner)).toEqual(
       withoutIds(generated.endOfGame.winner),
     )

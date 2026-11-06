@@ -99,6 +99,7 @@ describe('GameSheetGenerator', () => {
       'winner-2',
     ])
     expect(sheet.specialRules[0].title).toBe('Le doup')
+    expect(sheet.variants.map((v) => v.id)).toEqual(['variant-1'])
 
     expect(trace).toMatchObject({
       model: 'claude-haiku-5-5',

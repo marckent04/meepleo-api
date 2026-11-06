@@ -39,6 +39,14 @@ const sheet = new GameSheet(
     ],
   },
   [],
+  [
+    {
+      id: 'variant',
+      playerCounts: null,
+      title: 'Mode solo',
+      text: 'Jouez seul.',
+    },
+  ],
   {
     triggers: [{ id: 'end', playerCounts: null, text: 'Main vide.' }],
     timing: 'Immédiatement',
@@ -61,6 +69,7 @@ const output: GameSheetTranslationOutput = {
   rules: [
     { id: 'setup', title: null, text: 'Shuffle.' },
     { id: 'turn', title: 'Play', text: 'Play a card.' },
+    { id: 'variant', title: 'Solo mode', text: 'Play alone.' },
     { id: 'end', title: null, text: 'Empty hand.' },
   ],
 }

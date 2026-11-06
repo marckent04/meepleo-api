@@ -51,6 +51,7 @@ export function listSourceRules(sheet: GameSheet): SourceRule[] {
     ...sheet.setup.map((r) => ({ ...r, section: 'setup', title: null })),
     ...sheet.turn.steps.map((r) => ({ ...r, section: 'turn' })),
     ...sheet.specialRules.map((r) => ({ ...r, section: 'special_rules' })),
+    ...sheet.variants.map((r) => ({ ...r, section: 'variants' })),
     ...sheet.endOfGame.triggers.map((r) => ({
       ...r,
       section: 'end_triggers',

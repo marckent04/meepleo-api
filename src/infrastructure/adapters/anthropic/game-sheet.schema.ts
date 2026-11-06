@@ -45,7 +45,14 @@ export const GameSheetOutputSchema = z.object({
       OrderedEntrySchema.extend({ optional: z.boolean(), title: z.string() }),
     ),
   }),
-  special_rules: z.array(EntrySchema.extend({ title: z.string() })),
+  // Une seule liste pour les deux : un second tableau d'objets ferait dépasser
+  // la taille maximale de grammaire acceptée par l'API.
+  special_rules: z.array(
+    EntrySchema.extend({
+      kind: z.enum(['special', 'variant']),
+      title: z.string(),
+    }),
+  ),
   end_of_game: z.object({
     triggers: z.array(EntrySchema),
     timing: z.string(),

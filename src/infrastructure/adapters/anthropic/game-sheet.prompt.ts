@@ -18,7 +18,7 @@ Writing:
 - Short sentences in the imperative, addressed to the player (in French, use "vous"). One idea per entry.
 - Keep the game's own terms (card, action and zone names) as they appear in the rulebook for that language.
 - player_counts is an empty list when an entry applies to every player count; otherwise list the player counts it applies to. Variants that depend on the player count share the same order (e.g. removing cards at 2, 3 and 4 players).
-- setup: setup steps in order. turn.steps: how a turn unfolds; set optional: true on actions the player chooses among. special_rules: exceptions and rules that do not fit in the turn. end_of_game: triggers, the exact moment play stops (timing), scoring and the win condition. Include tie-breaking in scoring or winner when the rules define it.
+- setup: setup steps in order. turn.steps: how a turn unfolds; set optional: true on actions the player chooses among. special_rules: every rule that does not fit in the turn, each with a kind. Use kind "special" for exceptions and rules that always apply. Use kind "variant" for alternative modes or optional rules that players choose to enable (solo mode, expert mode, shorter game, optional rules); only add variants the source describes, never invent one. end_of_game: triggers, the exact moment play stops (timing), scoring and the win condition. Include tie-breaking in scoring or winner when the rules define it.
 - players.recommended, min_age and duration_minutes come from the box or the rulebook; use 0 or an empty list if they are not stated.
 
 Metadata:

@@ -109,32 +109,44 @@
     {
       "player_counts": [],
       "title": "Le doup",
-      "text": "Toute carte reprise de la table doit être retournée avant de revenir dans votre main."
+      "text": "Toute carte reprise de la table doit être retournée avant de revenir dans votre main.",
+      "kind": "special"
     },
     {
       "player_counts": [],
       "title": "Pas de retournement libre",
-      "text": "Vous ne pouvez jamais retourner une carte, sauf quand une règle vous l'impose ou vous le permet."
+      "text": "Vous ne pouvez jamais retourner une carte, sauf quand une règle vous l'impose ou vous le permet.",
+      "kind": "special"
     },
     {
       "player_counts": [],
       "title": "Série battue",
-      "text": "Quand une série est battue par une série de même taille, son propriétaire la reprend en main en retournant les cartes."
+      "text": "Quand une série est battue par une série de même taille, son propriétaire la reprend en main en retournant les cartes.",
+      "kind": "special"
     },
     {
       "player_counts": [],
       "title": "Dernière série du premier joueur sorti",
-      "text": "La dernière série du joueur qui vide sa main reste sur la table pendant un tour complet, puis part à la défausse (plus tôt si elle est battue)."
+      "text": "La dernière série du joueur qui vide sa main reste sur la table pendant un tour complet, puis part à la défausse (plus tôt si elle est battue).",
+      "kind": "special"
     },
     {
       "player_counts": [2],
       "title": "Conflit entre ses propres zones",
-      "text": "Vos deux séries peuvent s'affronter entre elles, comme avec celles de l'adversaire."
+      "text": "Vos deux séries peuvent s'affronter entre elles, comme avec celles de l'adversaire.",
+      "kind": "special"
     },
     {
       "player_counts": [2],
       "title": "Premier tour",
-      "text": "Au tout début, le joueur avec la carte ★ ne joue qu'un seul tour, dans sa zone 2."
+      "text": "Au tout début, le joueur avec la carte ★ ne joue qu'un seul tour, dans sa zone 2.",
+      "kind": "special"
+    },
+    {
+      "player_counts": [],
+      "title": "Partie en plusieurs manches",
+      "text": "Jouez plusieurs manches et additionnez les points de chaque manche.",
+      "kind": "variant"
     }
   ],
   "end_of_game": {

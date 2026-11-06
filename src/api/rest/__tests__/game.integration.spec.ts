@@ -29,6 +29,7 @@ const sheet = new GameSheet(
   [],
   { summary: 'Jouez une carte.', steps: [] },
   [],
+  [],
   { triggers: [], timing: 'Fin du paquet.', scoring: [], winner: [] },
   'high',
   [],

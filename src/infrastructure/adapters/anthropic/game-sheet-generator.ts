@@ -194,6 +194,8 @@ export function toGameSheet(
       playerCounts: e.player_counts.length > 0 ? e.player_counts : null,
       text: e.text,
     })
+  const ofKind = (kind: 'special' | 'variant') =>
+    output.special_rules.filter((r) => r.kind === kind)
   return new GameSheet(
     gameId,
     language,
@@ -224,8 +226,12 @@ export function toGameSheet(
         title: s.title,
       })),
     },
-    output.special_rules.map((r, i) => ({
+    ofKind('special').map((r, i) => ({
       ...entry('rule')(r, i),
+      title: r.title,
+    })),
+    ofKind('variant').map((r, i) => ({
+      ...entry('variant')(r, i),
       title: r.title,
     })),
     {
