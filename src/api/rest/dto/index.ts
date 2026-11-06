@@ -1,3 +1,4 @@
 export * from './auth.dto'
+export * from './catalog.dto'
 export * from './game.dto'
 export * from './health.dto'

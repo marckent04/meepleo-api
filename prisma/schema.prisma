@@ -110,6 +110,7 @@ model Game {
   rules           GameRule[]
   /// La fiche est générée dès qu'un run SUCCESS / GENERATION existe (date et modèle du plus récent).
   aggregationRuns GameAggregationRun[]
+  catalogEntries  UserGame[]
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -223,6 +224,7 @@ model User {
   updatedAt     DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt     DateTime?      @map("deleted_at") @db.Timestamptz(6)
   refreshTokens RefreshToken[]
+  catalog       UserGame[]
 
   @@map("users")
 }
@@ -241,4 +243,18 @@ model RefreshToken {
 
   @@index([userId])
   @@map("refresh_tokens")
+}
+
+/// Jeu ajouté au catalogue personnel d'un utilisateur
+model UserGame {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameId    String   @map("game_id") @db.Uuid
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@unique([userId, gameId])
+  @@index([userId])
+  @@map("user_games")
 }

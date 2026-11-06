@@ -1,4 +1,5 @@
 export * from './auth'
+export * from './catalog'
 export * from './game'
 export * from './game-sheet'
 export * from './health'
