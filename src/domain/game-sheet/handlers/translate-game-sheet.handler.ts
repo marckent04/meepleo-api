@@ -3,14 +3,14 @@ import { GameSheetTranslator } from '@/infrastructure/adapters/anthropic'
 import { GameRepository } from '@/infrastructure/database/repositories'
 import { LoggerService } from '@/infrastructure/logger/logger.service'
 import { NotFoundError } from '@/shared/errors'
-import type { GameSheetTranslation } from '@/shared/types'
+import type { GameSheetTranslation, Traced } from '@/shared/types'
 import { AppCommandHandler } from '@/utils/cqrs.utils'
 import { TranslateGameSheetCommand } from '../commands'
 
 @CommandHandler(TranslateGameSheetCommand)
 export class TranslateGameSheetHandler extends AppCommandHandler<
   TranslateGameSheetCommand,
-  GameSheetTranslation
+  Traced<GameSheetTranslation>
 > {
   constructor(
     private readonly gameRepository: GameRepository,
@@ -23,7 +23,7 @@ export class TranslateGameSheetHandler extends AppCommandHandler<
 
   async handle(
     command: TranslateGameSheetCommand,
-  ): Promise<GameSheetTranslation> {
+  ): Promise<Traced<GameSheetTranslation>> {
     const sheet = await this.gameRepository.findSheet(
       command.gameId,
       command.sourceLanguage,

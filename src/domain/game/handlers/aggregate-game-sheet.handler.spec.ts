@@ -1,13 +1,18 @@
 import { CommandBus } from '@nestjs/cqrs'
 import { Test } from '@nestjs/testing'
+import { buildAiTrace } from '@/__tests__/utils/ai-trace.fixture'
 import { mockLoggerService } from '@/__tests__/utils/logger-service.mock'
 import {
   GameSheetGenerator,
   GameSheetTranslator,
 } from '@/infrastructure/adapters/anthropic'
-import { GameRepository } from '@/infrastructure/database/repositories'
+import {
+  GameAggregationRunRepository,
+  GameRepository,
+} from '@/infrastructure/database/repositories'
 import { LoggerService } from '@/infrastructure/logger/logger.service'
 import {
+  AiCallFailedError,
   ErrorCode,
   GameAggregationFailedError,
   InternalError,
@@ -28,6 +33,7 @@ vi.mock('@nestjs-cls/transactional', async (importOriginal) => ({
 
 const gameId = '0195d1a2-0000-7000-8000-000000000001'
 const stored = { gameId, language: 'en' } as GameSheet
+const trace = buildAiTrace()
 
 describe('AggregateGameSheetHandler', () => {
   let handler: AggregateGameSheetHandler
@@ -39,6 +45,7 @@ describe('AggregateGameSheetHandler', () => {
     saveGeneratedSheet: vi.fn(),
     saveTranslation: vi.fn(),
   }
+  const gameAggregationRunRepository = { recordSuccess: vi.fn() }
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -46,6 +53,10 @@ describe('AggregateGameSheetHandler', () => {
         AggregateGameSheetHandler,
         { provide: CommandBus, useValue: commandBus },
         { provide: GameRepository, useValue: gameRepository },
+        {
+          provide: GameAggregationRunRepository,
+          useValue: gameAggregationRunRepository,
+        },
         { provide: GameSheetGenerator, useValue: { model: 'claude-opus-5-5' } },
         {
           provide: GameSheetTranslator,
@@ -74,6 +85,7 @@ describe('AggregateGameSheetHandler', () => {
       gameRepository.findSheet.mock.invocationCallOrder[0],
     )
     expect(commandBus.execute).not.toHaveBeenCalled()
+    expect(gameAggregationRunRepository.recordSuccess).not.toHaveBeenCalled()
   })
 
   it('generates the sheet of a game that has none', async () => {
@@ -85,7 +97,7 @@ describe('AggregateGameSheetHandler', () => {
       generated: false,
       supportedLanguages: [],
     })
-    commandBus.execute.mockResolvedValue(generated)
+    commandBus.execute.mockResolvedValue({ result: generated, trace })
 
     await expect(execute()).resolves.toBe(stored)
 
@@ -94,6 +106,22 @@ describe('AggregateGameSheetHandler', () => {
     )
     expect(gameRepository.saveGeneratedSheet).toHaveBeenCalledWith(generated)
     expect(gameRepository.saveTranslation).not.toHaveBeenCalled()
+    expect(gameAggregationRunRepository.recordSuccess).toHaveBeenCalledWith({
+      gameId,
+      language: 'en',
+      operation: 'generation',
+      durationMs: expect.any(Number),
+      trace,
+    })
+    // Le run marque la fiche comme générée : il doit précéder la relecture.
+    const recordOrder =
+      gameAggregationRunRepository.recordSuccess.mock.invocationCallOrder[0]
+    expect(
+      gameRepository.saveGeneratedSheet.mock.invocationCallOrder[0],
+    ).toBeLessThan(recordOrder)
+    expect(recordOrder).toBeLessThan(
+      gameRepository.findSheet.mock.invocationCallOrder[1],
+    )
   })
 
   it('translates from the generation language when a sheet exists', async () => {
@@ -105,7 +133,7 @@ describe('AggregateGameSheetHandler', () => {
       generated: true,
       supportedLanguages: ['fr', 'de'],
     })
-    commandBus.execute.mockResolvedValue(translation)
+    commandBus.execute.mockResolvedValue({ result: translation, trace })
 
     await expect(execute()).resolves.toBe(stored)
 
@@ -118,6 +146,14 @@ describe('AggregateGameSheetHandler', () => {
     )
     expect(gameRepository.saveTranslation).toHaveBeenCalledWith(translation)
     expect(gameRepository.saveGeneratedSheet).not.toHaveBeenCalled()
+    expect(gameAggregationRunRepository.recordSuccess).toHaveBeenCalledWith({
+      gameId,
+      language: 'en',
+      operation: 'translation',
+      sourceLanguage: 'fr',
+      durationMs: expect.any(Number),
+      trace,
+    })
   })
 
   it.each([
@@ -148,8 +184,30 @@ describe('AggregateGameSheetHandler', () => {
       expect(error).toBeInstanceOf(GameAggregationFailedError)
       expect(error).toMatchObject({ operation, model, sourceLanguage, cause })
       expect(error.code).toBe(ErrorCode.GAME_SHEET_GENERATION_FAILED)
+      expect(error.durationMs).toEqual(expect.any(Number))
+      expect(gameAggregationRunRepository.recordSuccess).not.toHaveBeenCalled()
     },
   )
+
+  it('keeps the AI trace of a failed generation', async () => {
+    gameRepository.findSheet.mockResolvedValue(null)
+    gameRepository.findSheetStatus.mockResolvedValue({
+      generated: false,
+      supportedLanguages: [],
+    })
+    commandBus.execute.mockRejectedValue(
+      new AiCallFailedError({
+        code: ErrorCode.GAME_SHEET_GENERATION_FAILED,
+        trace,
+        cause: new InternalError('Unexpected stop reason'),
+      }),
+    )
+
+    const error = await execute().catch((e) => e)
+
+    expect(error).toBeInstanceOf(GameAggregationFailedError)
+    expect(error.trace).toBe(trace)
+  })
 
   it('does not wrap a missing game', async () => {
     const notFound = Object.assign(new Error('Game not found'), {

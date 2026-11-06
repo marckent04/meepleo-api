@@ -1,6 +1,6 @@
 import { CommandBus, QueryHandler } from '@nestjs/cqrs'
 import {
-  GameAggregationErrorRepository,
+  GameAggregationRunRepository,
   GameRepository,
 } from '@/infrastructure/database/repositories'
 import { LoggerService } from '@/infrastructure/logger/logger.service'
@@ -15,7 +15,7 @@ export class GetGameHandler extends AppQueryHandler<GetGameQuery, GameSheet> {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly gameRepository: GameRepository,
-    private readonly gameAggregationErrorRepository: GameAggregationErrorRepository,
+    private readonly gameAggregationRunRepository: GameAggregationRunRepository,
     logger: LoggerService,
   ) {
     super(logger, 'user', GetGameQuery.name)
@@ -47,7 +47,7 @@ export class GetGameHandler extends AppQueryHandler<GetGameQuery, GameSheet> {
       return
     }
     try {
-      await this.gameAggregationErrorRepository.record({
+      await this.gameAggregationRunRepository.recordFailure({
         gameId,
         language,
         error,

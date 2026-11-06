@@ -13,6 +13,7 @@ import {
   type GameSearchRow,
   type GameWithRulesRecord,
   isGameSheetAggregated,
+  LATEST_GENERATION_RUN,
   toGame,
   toGameSearchResult,
   toGameSheetStatus,
@@ -81,9 +82,8 @@ export class GameRepository {
     const record = await this.txHost.tx.game.findFirst({
       where: { id, deletedAt: null },
       select: {
-        sheetGeneratedAt: true,
-        sheetGeneratedBy: true,
         supportedLanguages: true,
+        aggregationRuns: LATEST_GENERATION_RUN,
       },
     })
     if (!record) throw gameNotFound(id)
@@ -104,7 +104,8 @@ export class GameRepository {
 
   /**
    * Enregistre une fiche générée : remplace les règles existantes et fait de
-   * `sheet.language` la seule langue disponible. À appeler dans une transaction.
+   * `sheet.language` la seule langue disponible. À appeler dans une transaction,
+   * avec l'enregistrement du run de génération qui marque la fiche comme générée.
    */
   async saveGeneratedSheet(sheet: GameSheet): Promise<void> {
     const current = await this.findWithRules(sheet.gameId)
@@ -146,7 +147,7 @@ export class GameRepository {
   private async findWithRules(id: string): Promise<GameWithRulesRecord> {
     const record = await this.txHost.tx.game.findFirst({
       where: { id, deletedAt: null },
-      include: { rules: true },
+      include: { rules: true, aggregationRuns: LATEST_GENERATION_RUN },
     })
     if (!record) throw gameNotFound(id)
     return record

@@ -4,8 +4,18 @@ import { Inject, Injectable } from '@nestjs/common'
 import type { ConfigType } from '@nestjs/config'
 import { LoggerService } from '@/infrastructure/logger/logger.service'
 import { ANTHROPIC_CONFIG } from '@/shared/config'
-import { ErrorCode, InternalError } from '@/shared/errors'
-import { type GameSheet, GameSheetTranslation } from '@/shared/types'
+import { AiCallFailedError, ErrorCode, InternalError } from '@/shared/errors'
+import {
+  type AiTrace,
+  type GameSheet,
+  GameSheetTranslation,
+  type Traced,
+} from '@/shared/types'
+import {
+  AiTraceRecorder,
+  promptVersion,
+  toAiCallSettings,
+} from './ai-trace.util'
 import { ANTHROPIC_CLIENT } from './anthropic.client'
 import {
   buildGameSheetTranslationUserPrompt,
@@ -16,6 +26,15 @@ import {
   type GameSheetTranslationOutput,
   GameSheetTranslationOutputSchema,
 } from './game-sheet-translation.schema'
+
+const MAX_TOKENS = 16_000
+const EFFORT = 'low'
+const OUTPUT_FORMAT = zodOutputFormat(GameSheetTranslationOutputSchema)
+const PROMPT_VERSION = promptVersion(
+  GAME_SHEET_TRANSLATION_SYSTEM_PROMPT,
+  OUTPUT_FORMAT,
+)
+const SETTINGS = toAiCallSettings({ effort: EFFORT, maxTokens: MAX_TOKENS })
 
 /**
  * Traduit une fiche existante dans une autre langue : un seul appel, sans
@@ -37,20 +56,39 @@ export class GameSheetTranslator {
     return this.config.sheetTranslationModel
   }
 
+  /**
+   * Lève une AiCallFailedError portant la trace (tokens consommés, sortie
+   * brute…) en cas d'échec, y compris quand la traduction est incomplète.
+   */
   async translate(
     sheet: GameSheet,
     targetLanguage: string,
-  ): Promise<GameSheetTranslation> {
-    const response = await this.request(sheet, targetLanguage)
+  ): Promise<Traced<GameSheetTranslation>> {
+    const recorder = new AiTraceRecorder(this.model, PROMPT_VERSION, SETTINGS)
+    try {
+      const result = await this.run(sheet, targetLanguage, recorder)
+      const trace = recorder.trace()
+      this.logTrace(sheet, targetLanguage, trace)
+      return { result, trace }
+    } catch (cause) {
+      const trace = recorder.trace()
+      this.logTrace(sheet, targetLanguage, trace)
+      throw new AiCallFailedError({
+        code: ErrorCode.GAME_SHEET_TRANSLATION_FAILED,
+        trace,
+        cause,
+      })
+    }
+  }
 
-    this.logger.info({
-      gameId: sheet.gameId,
-      sourceLanguage: sheet.language,
-      language: targetLanguage,
-      model: response.model,
-      stopReason: response.stop_reason,
-      usage: response.usage,
-    })
+  private async run(
+    sheet: GameSheet,
+    targetLanguage: string,
+    recorder: AiTraceRecorder,
+  ): Promise<GameSheetTranslation> {
+    const response = await recorder.call(() =>
+      this.request(sheet, targetLanguage),
+    )
 
     if (response.stop_reason !== 'end_turn' || !response.parsed_output) {
       throw this.failure('Translation output is missing or truncated', sheet, {
@@ -74,11 +112,26 @@ export class GameSheetTranslator {
     )
   }
 
+  /** La sortie brute, volumineuse, n'est conservée qu'en base. */
+  private logTrace(
+    sheet: GameSheet,
+    targetLanguage: string,
+    trace: AiTrace,
+  ): void {
+    const { output: _output, rawText: _rawText, ...summary } = trace
+    this.logger.info({
+      gameId: sheet.gameId,
+      sourceLanguage: sheet.language,
+      language: targetLanguage,
+      ...summary,
+    })
+  }
+
   private async request(sheet: GameSheet, targetLanguage: string) {
     try {
       return await this.client.messages.parse({
         model: this.model,
-        max_tokens: 16_000,
+        max_tokens: MAX_TOKENS,
         system: GAME_SHEET_TRANSLATION_SYSTEM_PROMPT,
         messages: [
           {
@@ -86,10 +139,7 @@ export class GameSheetTranslator {
             content: buildGameSheetTranslationUserPrompt(sheet, targetLanguage),
           },
         ],
-        output_config: {
-          effort: 'low',
-          format: zodOutputFormat(GameSheetTranslationOutputSchema),
-        },
+        output_config: { effort: EFFORT, format: OUTPUT_FORMAT },
       })
     } catch (error) {
       if (error instanceof Anthropic.APIError) {

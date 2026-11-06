@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import { mockLoggerService } from '@/__tests__/utils/logger-service.mock'
 import type { LoggerService } from '@/infrastructure/logger/logger.service'
 import type { AnthropicConfig } from '@/shared/config'
-import { ErrorCode, InternalError } from '@/shared/errors'
+import { AiCallFailedError, ErrorCode, InternalError } from '@/shared/errors'
 import { GameSheet, GameSheetTranslation } from '@/shared/types'
 import { GAME_SHEET_TRANSLATION_SYSTEM_PROMPT } from './game-sheet-translation.prompt'
 import type { GameSheetTranslationOutput } from './game-sheet-translation.schema'
@@ -69,6 +69,7 @@ function response(overrides: Record<string, unknown> = {}) {
     model: 'claude-haiku-5-5',
     stop_reason: 'end_turn',
     stop_details: null,
+    content: [{ type: 'text', text: JSON.stringify(output) }],
     parsed_output: output,
     usage: { input_tokens: 10, output_tokens: 20 },
     ...overrides,
@@ -95,7 +96,10 @@ describe('GameSheetTranslator', () => {
   it('translates the sheet in a single call without web tools', async () => {
     parse.mockResolvedValue(response())
 
-    const translation = await translator.translate(sheet, 'en')
+    const { result: translation, trace } = await translator.translate(
+      sheet,
+      'en',
+    )
 
     expect(parse).toHaveBeenCalledTimes(1)
     const request = parse.mock.calls[0][0]
@@ -122,6 +126,14 @@ describe('GameSheetTranslator', () => {
         output.rules,
       ),
     )
+    expect(trace).toMatchObject({
+      model: 'claude-haiku-5-5',
+      requestCount: 1,
+      stopReason: 'end_turn',
+      output,
+      settings: { effort: 'low', maxTokens: 16_000, tools: [] },
+      usage: { inputTokens: 10, outputTokens: 20 },
+    })
   })
 
   it.each([
@@ -139,8 +151,11 @@ describe('GameSheetTranslator', () => {
 
     const error = await translator.translate(sheet, 'en').catch((e) => e)
 
-    expect(error).toBeInstanceOf(InternalError)
+    expect(error).toBeInstanceOf(AiCallFailedError)
+    expect(error.cause).toBeInstanceOf(InternalError)
     expect(error.code).toBe(ErrorCode.GAME_SHEET_TRANSLATION_FAILED)
+    // La sortie incomplète est conservée pour diagnostic.
+    expect(error.trace.output).toEqual({ ...output, ...changes })
   })
 
   it.each([
@@ -161,8 +176,9 @@ describe('GameSheetTranslator', () => {
 
     const error = await translator.translate(sheet, 'en').catch((e) => e)
 
-    expect(error).toBeInstanceOf(InternalError)
+    expect(error).toBeInstanceOf(AiCallFailedError)
     expect(error.code).toBe(ErrorCode.GAME_SHEET_TRANSLATION_FAILED)
     expect(error.details).toMatchObject({ status: 529 })
+    expect(error.trace).toMatchObject({ requestCount: 1, stopReason: null })
   })
 })

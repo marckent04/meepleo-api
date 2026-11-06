@@ -43,6 +43,10 @@ function storeGenerated(): GameWithRulesRecord {
     ...current,
     ...data.game,
     rules: rules.reverse(),
+    // Run de génération enregistré dans la même transaction.
+    aggregationRuns: [
+      { model: generated.generatedBy, createdAt: generated.generatedAt },
+    ],
   } as GameWithRulesRecord
 }
 
@@ -173,5 +177,16 @@ describe('game sheet mapper', () => {
 
   it('refuses to read a sheet that was never generated', () => {
     expect(() => toStoredGameSheet(gameRecord(), 'fr')).toThrow()
+  })
+
+  it('does not consider a sheet aggregated without a successful generation run', () => {
+    const record = { ...storeGenerated(), aggregationRuns: [] }
+    expect(isGameSheetAggregated(record, 'fr')).toBe(false)
+  })
+
+  it('no longer stores the generation date and model on the game', () => {
+    const data = toGeneratedGameSheetData(generated, gameRecord())
+    expect(data.game).not.toHaveProperty('sheetGeneratedAt')
+    expect(data.game).not.toHaveProperty('sheetGeneratedBy')
   })
 })

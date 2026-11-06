@@ -1,3 +1,4 @@
+export * from './ai-call-failed.error'
 export * from './app-error'
 export * from './cqrs-validation.exception'
 export * from './error-codes'

@@ -1,3 +1,5 @@
+import { buildAiTrace } from '@/__tests__/utils/ai-trace.fixture'
+import { AiCallFailedError } from './ai-call-failed.error'
 import { InternalError, NotFoundError } from './app-error'
 import { ErrorCode } from './error-codes'
 import { GameAggregationFailedError } from './game-aggregation-failed.error'
@@ -12,6 +14,7 @@ describe('GameAggregationFailedError', () => {
       operation: 'translation',
       model: 'claude-haiku-5-5',
       sourceLanguage: 'fr',
+      durationMs: 42,
       cause,
     })
 
@@ -33,6 +36,7 @@ describe('GameAggregationFailedError', () => {
     const error = new GameAggregationFailedError({
       operation,
       model: 'm',
+      durationMs: 1,
       cause: new TypeError('boom'),
     })
 
@@ -40,12 +44,39 @@ describe('GameAggregationFailedError', () => {
     expect(error.code).toBe(code)
     expect(error.message).toContain('boom')
     expect(error.sourceLanguage).toBeNull()
+    expect(error.trace).toBeNull()
+  })
+
+  it('keeps the AI trace and the duration of an AiCallFailedError cause', () => {
+    const trace = buildAiTrace({ stopReason: 'max_tokens' })
+    const cause = new AiCallFailedError({
+      code: ErrorCode.GAME_SHEET_GENERATION_FAILED,
+      trace,
+      cause: new InternalError('Unexpected stop reason', {
+        code: ErrorCode.GAME_SHEET_GENERATION_FAILED,
+        details: { stopReason: 'max_tokens' },
+      }),
+    })
+
+    const error = new GameAggregationFailedError({
+      operation: 'generation',
+      model: 'claude-haiku-5-5',
+      durationMs: 5000,
+      cause,
+    })
+
+    expect(error.trace).toBe(trace)
+    expect(error.durationMs).toBe(5000)
+    expect(error.code).toBe(ErrorCode.GAME_SHEET_GENERATION_FAILED)
+    expect(error.statusCode).toBe(500)
+    expect(error.details).toMatchObject({ stopReason: 'max_tokens' })
   })
 
   it('is not mistaken for its cause', () => {
     const error = new GameAggregationFailedError({
       operation: 'generation',
       model: 'm',
+      durationMs: 1,
       cause: new InternalError('x'),
     })
     expect(error).not.toBeInstanceOf(InternalError)

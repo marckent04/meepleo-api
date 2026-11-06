@@ -12,11 +12,37 @@ import type {
   Prisma,
 } from '../generated/prisma/client'
 import {
+  GameAggregationOperation,
+  GameAggregationStatus,
   RuleType,
   SheetConfidence as SheetConfidenceRecord,
 } from '../generated/prisma/client'
 
-export type GameWithRulesRecord = GameRecord & { rules: GameRuleRecord[] }
+/**
+ * Relation `aggregationRuns` réduite à la dernière génération réussie : sa
+ * présence marque la fiche comme générée, et en donne la date et le modèle.
+ */
+export const LATEST_GENERATION_RUN = {
+  where: {
+    status: GameAggregationStatus.SUCCESS,
+    operation: GameAggregationOperation.GENERATION,
+  },
+  orderBy: { createdAt: 'desc' },
+  take: 1,
+  select: { model: true, createdAt: true },
+} satisfies Prisma.Game$aggregationRunsArgs
+
+export type GenerationRunRecord = { model: string | null; createdAt: Date }
+
+/** `aggregationRuns` : chargé avec `LATEST_GENERATION_RUN`. */
+export type GameSheetStatusRecord = Pick<GameRecord, 'supportedLanguages'> & {
+  aggregationRuns: GenerationRunRecord[]
+}
+
+export type GameWithRulesRecord = GameRecord & {
+  rules: GameRuleRecord[]
+  aggregationRuns: GenerationRunRecord[]
+}
 
 /** `{ "fr": "...", "en": "..." }` */
 type LocalizedText = Record<string, string>
@@ -81,24 +107,17 @@ function compareRules(a: GameRuleRecord, b: GameRuleRecord): number {
 }
 
 export function toGameSheetStatus(
-  record: Pick<
-    GameRecord,
-    'sheetGeneratedAt' | 'sheetGeneratedBy' | 'supportedLanguages'
-  >,
+  record: GameSheetStatusRecord,
 ): GameSheetStatus {
   return {
-    generated:
-      record.sheetGeneratedAt !== null && record.sheetGeneratedBy !== null,
+    generated: record.aggregationRuns.length > 0,
     supportedLanguages: record.supportedLanguages,
   }
 }
 
 /** La fiche est agrégée dans `language` : générée, et disponible dans cette langue. */
 export function isGameSheetAggregated(
-  record: Pick<
-    GameRecord,
-    'sheetGeneratedAt' | 'sheetGeneratedBy' | 'supportedLanguages'
-  >,
+  record: GameSheetStatusRecord,
   language: string,
 ): boolean {
   const status = toGameSheetStatus(record)
@@ -110,7 +129,8 @@ export function toStoredGameSheet(
   record: GameWithRulesRecord,
   language: string,
 ): GameSheet {
-  if (!record.sheetGeneratedAt || !record.sheetGeneratedBy) {
+  const [generation] = record.aggregationRuns
+  if (!generation) {
     throw new Error(`Game ${record.id} has no generated sheet`)
   }
   const rulesOf = (type: RuleType) =>
@@ -168,8 +188,8 @@ export function toStoredGameSheet(
       const text = localized(warning, language)
       return text === null ? [] : [text]
     }),
-    record.sheetGeneratedBy,
-    record.sheetGeneratedAt,
+    generation.model ?? 'unknown',
+    generation.createdAt,
   )
 }
 
@@ -243,8 +263,6 @@ export function toGeneratedGameSheetData(
       sheetConfidence: CONFIDENCE_TO_RECORD[sheet.confidence],
       sheetSources: sheet.sources,
       sheetWarnings: sheet.warnings.map((warning) => ({ [language]: warning })),
-      sheetGeneratedAt: sheet.generatedAt,
-      sheetGeneratedBy: sheet.generatedBy,
     },
     rules: [
       ...sheet.setup.map((e, i) => rule(RuleType.SETUP, e.order, i, e)),

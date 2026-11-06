@@ -2,7 +2,7 @@ import { createTransactionHostMock } from '@/__tests__/utils/prisma.mock'
 import { ErrorCode, NotFoundError } from '@/shared/errors'
 import { Game, GameSheetTranslation } from '@/shared/types'
 import { GAME_ID, gameRecord } from '../__fixtures__/game-record.fixture'
-import { toStoredGameSheet } from '../mappers'
+import { LATEST_GENERATION_RUN, toStoredGameSheet } from '../mappers'
 import { lockGameSql, searchGamesSql } from '../queries'
 import { GameRepository } from './game.repository'
 
@@ -47,8 +47,7 @@ describe('GameRepository — game sheet', () => {
   const generatedAt = new Date('2026-02-01T00:00:00.000Z')
   const aggregated = gameRecord({
     supportedLanguages: ['fr'],
-    sheetGeneratedAt: generatedAt,
-    sheetGeneratedBy: 'claude-haiku-5-5',
+    aggregationRuns: [{ model: 'claude-haiku-5-5', createdAt: generatedAt }],
     description: { fr: 'Description' },
   })
 
@@ -61,7 +60,7 @@ describe('GameRepository — game sheet', () => {
 
     expect(tx.game.findFirst).toHaveBeenCalledWith({
       where: { id: GAME_ID, deletedAt: null },
-      include: { rules: true },
+      include: { rules: true, aggregationRuns: LATEST_GENERATION_RUN },
     })
     expect(sheet).toBeNull()
   })
@@ -77,6 +76,7 @@ describe('GameRepository — game sheet', () => {
       gameId: GAME_ID,
       language: 'fr',
       description: 'Description',
+      generatedBy: 'claude-haiku-5-5',
       generatedAt,
     })
   })
@@ -91,14 +91,35 @@ describe('GameRepository — game sheet', () => {
     ).rejects.toMatchObject({ code: ErrorCode.GAME_NOT_FOUND })
   })
 
-  it('reports the sheet status', async () => {
-    const { host } = createTransactionHostMock({
+  it('reports the sheet status from the latest successful generation run', async () => {
+    const { host, tx } = createTransactionHostMock({
       game: { findFirst: vi.fn().mockResolvedValue(aggregated) },
     })
 
     await expect(
       new GameRepository(host).findSheetStatus(GAME_ID),
     ).resolves.toEqual({ generated: true, supportedLanguages: ['fr'] })
+    expect(tx.game.findFirst).toHaveBeenCalledWith({
+      where: { id: GAME_ID, deletedAt: null },
+      select: {
+        supportedLanguages: true,
+        aggregationRuns: LATEST_GENERATION_RUN,
+      },
+    })
+  })
+
+  it('reports a sheet as not generated without a successful generation run', async () => {
+    const { host } = createTransactionHostMock({
+      game: {
+        findFirst: vi
+          .fn()
+          .mockResolvedValue({ ...aggregated, aggregationRuns: [] }),
+      },
+    })
+
+    await expect(
+      new GameRepository(host).findSheetStatus(GAME_ID),
+    ).resolves.toEqual({ generated: false, supportedLanguages: ['fr'] })
   })
 
   it('locks the game row', async () => {
@@ -176,7 +197,6 @@ describe('GameRepository — game sheet', () => {
       where: { id: GAME_ID },
       data: expect.objectContaining({
         supportedLanguages: ['fr'],
-        sheetGeneratedBy: 'claude-haiku-5-5',
       }),
     })
     expect(tx.gameRule.createMany).toHaveBeenCalledWith({ data: [] })

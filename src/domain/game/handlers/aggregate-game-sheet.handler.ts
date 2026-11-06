@@ -5,7 +5,10 @@ import {
   GameSheetGenerator,
   GameSheetTranslator,
 } from '@/infrastructure/adapters/anthropic'
-import { GameRepository } from '@/infrastructure/database/repositories'
+import {
+  GameAggregationRunRepository,
+  GameRepository,
+} from '@/infrastructure/database/repositories'
 import { LoggerService } from '@/infrastructure/logger/logger.service'
 import { GameAggregationFailedError } from '@/shared/errors'
 import type { GameSheet } from '@/shared/types'
@@ -29,6 +32,7 @@ export class AggregateGameSheetHandler extends AppCommandHandler<
   constructor(
     private readonly commandBus: CommandBus,
     private readonly gameRepository: GameRepository,
+    private readonly gameAggregationRunRepository: GameAggregationRunRepository,
     private readonly gameSheetGenerator: GameSheetGenerator,
     private readonly gameSheetTranslator: GameSheetTranslator,
     logger: LoggerService,
@@ -40,6 +44,8 @@ export class AggregateGameSheetHandler extends AppCommandHandler<
   /**
    * Le verrou de ligne fait attendre les requêtes concurrentes sur le même
    * jeu ; après l'attente, elles trouvent la fiche déjà enregistrée.
+   * Le run SUCCESS est écrit dans la même transaction que la fiche : c'est lui
+   * qui la marque comme générée.
    */
   @Transactional<TransactionalAdapterPrisma>({
     timeout: AGGREGATION_TIMEOUT_MS,
@@ -75,15 +81,24 @@ export class AggregateGameSheetHandler extends AppCommandHandler<
   private async generate(gameId: string, language: string): Promise<void> {
     const model = this.gameSheetGenerator.model
     this.logger.info({ gameId, language, model }, 'Generating game sheet')
+    const start = performance.now()
     try {
-      const sheet = await this.commandBus.execute(
+      const { result: sheet, trace } = await this.commandBus.execute(
         new GenerateGameSheetCommand({ gameId, language }),
       )
       await this.gameRepository.saveGeneratedSheet(sheet)
+      await this.gameAggregationRunRepository.recordSuccess({
+        gameId,
+        language,
+        operation: 'generation',
+        durationMs: performance.now() - start,
+        trace,
+      })
     } catch (cause) {
       throw new GameAggregationFailedError({
         operation: 'generation',
         model,
+        durationMs: performance.now() - start,
         cause,
       })
     }
@@ -99,8 +114,9 @@ export class AggregateGameSheetHandler extends AppCommandHandler<
       { gameId, sourceLanguage, language, model },
       'Translating game sheet',
     )
+    const start = performance.now()
     try {
-      const translation = await this.commandBus.execute(
+      const { result: translation, trace } = await this.commandBus.execute(
         new TranslateGameSheetCommand({
           gameId,
           sourceLanguage,
@@ -108,11 +124,20 @@ export class AggregateGameSheetHandler extends AppCommandHandler<
         }),
       )
       await this.gameRepository.saveTranslation(translation)
+      await this.gameAggregationRunRepository.recordSuccess({
+        gameId,
+        language,
+        operation: 'translation',
+        sourceLanguage,
+        durationMs: performance.now() - start,
+        trace,
+      })
     } catch (cause) {
       throw new GameAggregationFailedError({
         operation: 'translation',
         model,
         sourceLanguage,
+        durationMs: performance.now() - start,
         cause,
       })
     }

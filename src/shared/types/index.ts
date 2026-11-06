@@ -1,3 +1,4 @@
+export * from './ai-trace.type'
 export * from './game.type'
 export * from './game-sheet.type'
 export * from './game-sheet-translation.type'

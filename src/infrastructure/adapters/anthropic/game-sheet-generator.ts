@@ -4,8 +4,13 @@ import { Inject, Injectable } from '@nestjs/common'
 import type { ConfigType } from '@nestjs/config'
 import { LoggerService } from '@/infrastructure/logger/logger.service'
 import { ANTHROPIC_CONFIG } from '@/shared/config'
-import { ErrorCode, InternalError } from '@/shared/errors'
-import { type Game, GameSheet } from '@/shared/types'
+import { AiCallFailedError, ErrorCode, InternalError } from '@/shared/errors'
+import { type AiTrace, type Game, GameSheet, type Traced } from '@/shared/types'
+import {
+  AiTraceRecorder,
+  promptVersion,
+  toAiCallSettings,
+} from './ai-trace.util'
 import { ANTHROPIC_CLIENT } from './anthropic.client'
 import {
   buildGameSheetUserPrompt,
@@ -18,6 +23,8 @@ import {
 
 /** Relances maximales quand la boucle d'outils serveur s'interrompt (`pause_turn`). */
 const MAX_CONTINUATIONS = 5
+const MAX_TOKENS = 16_000
+const EFFORT = 'medium'
 
 /**
  * Variantes de base : les variantes `_20260209` (filtrage dynamique) ne
@@ -33,6 +40,14 @@ const WEB_TOOLS: Anthropic.ToolUnion[] = [
     max_content_tokens: 60_000,
   },
 ]
+
+const OUTPUT_FORMAT = zodOutputFormat(GameSheetOutputSchema)
+const PROMPT_VERSION = promptVersion(GAME_SHEET_SYSTEM_PROMPT, OUTPUT_FORMAT)
+const SETTINGS = toAiCallSettings({
+  effort: EFFORT,
+  maxTokens: MAX_TOKENS,
+  tools: WEB_TOOLS,
+})
 
 /** Génère une fiche de règles : recherche d'une règle sur le web, puis extraction typée. */
 @Injectable()
@@ -51,29 +66,47 @@ export class GameSheetGenerator {
     return this.config.sheetModel
   }
 
-  async generate(game: Game, language: string): Promise<GameSheet> {
+  /**
+   * Lève une AiCallFailedError portant la trace (tokens consommés, sortie
+   * brute…) en cas d'échec, y compris après des appels réussis.
+   */
+  async generate(game: Game, language: string): Promise<Traced<GameSheet>> {
+    const recorder = new AiTraceRecorder(this.model, PROMPT_VERSION, SETTINGS)
+    try {
+      const result = await this.run(game, language, recorder)
+      const trace = recorder.trace()
+      this.logTrace(game, language, trace)
+      return { result, trace }
+    } catch (cause) {
+      const trace = recorder.trace()
+      this.logTrace(game, language, trace)
+      throw new AiCallFailedError({
+        code: ErrorCode.GAME_SHEET_GENERATION_FAILED,
+        trace,
+        cause,
+      })
+    }
+  }
+
+  private async run(
+    game: Game,
+    language: string,
+    recorder: AiTraceRecorder,
+  ): Promise<GameSheet> {
     const model = this.model
     const messages: Anthropic.MessageParam[] = [
       { role: 'user', content: buildGameSheetUserPrompt(game, language) },
     ]
 
-    let response = await this.request(model, messages)
+    let response = await recorder.call(() => this.request(model, messages))
     for (let i = 0; response.stop_reason === 'pause_turn'; i++) {
       if (i >= MAX_CONTINUATIONS) {
         throw this.failure('Too many pause_turn continuations', game, response)
       }
       // La reprise se fait sur le bloc server_tool_use final, sans nouveau message utilisateur.
       messages.push({ role: 'assistant', content: response.content })
-      response = await this.request(model, messages)
+      response = await recorder.call(() => this.request(model, messages))
     }
-
-    this.logger.info({
-      gameId: game.id,
-      language,
-      model: response.model,
-      stopReason: response.stop_reason,
-      usage: response.usage,
-    })
 
     if (response.stop_reason !== 'end_turn') {
       throw this.failure(`Unexpected stop reason`, game, response)
@@ -93,18 +126,21 @@ export class GameSheetGenerator {
     )
   }
 
+  /** La sortie brute, volumineuse, n'est conservée qu'en base. */
+  private logTrace(game: Game, language: string, trace: AiTrace): void {
+    const { output: _output, rawText: _rawText, ...summary } = trace
+    this.logger.info({ gameId: game.id, language, ...summary })
+  }
+
   private async request(model: string, messages: Anthropic.MessageParam[]) {
     try {
       return await this.client.messages.parse({
         model,
-        max_tokens: 16_000,
+        max_tokens: MAX_TOKENS,
         system: GAME_SHEET_SYSTEM_PROMPT,
         messages,
         tools: WEB_TOOLS,
-        output_config: {
-          effort: 'medium',
-          format: zodOutputFormat(GameSheetOutputSchema),
-        },
+        output_config: { effort: EFFORT, format: OUTPUT_FORMAT },
       })
     } catch (error) {
       if (error instanceof Anthropic.APIError) {

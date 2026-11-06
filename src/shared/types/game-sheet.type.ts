@@ -61,7 +61,7 @@ export class GameSheet {
 
 /** État d'agrégation de la fiche d'un jeu, toutes langues confondues. */
 export type GameSheetStatus = {
-  /** `sheetGeneratedAt` et `sheetGeneratedBy` sont renseignés. */
+  /** Une génération réussie a été enregistrée (`game_aggregation_runs`). */
   generated: boolean
   /** Langues dans lesquelles la fiche est disponible, la langue de génération en premier. */
   supportedLanguages: string[]

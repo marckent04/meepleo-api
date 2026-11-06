@@ -2,7 +2,7 @@ import { CommandBus } from '@nestjs/cqrs'
 import { Test } from '@nestjs/testing'
 import { mockLoggerService } from '@/__tests__/utils/logger-service.mock'
 import {
-  GameAggregationErrorRepository,
+  GameAggregationRunRepository,
   GameRepository,
 } from '@/infrastructure/database/repositories'
 import { LoggerService } from '@/infrastructure/logger/logger.service'
@@ -24,7 +24,7 @@ describe('GetGameHandler', () => {
   let handler: GetGameHandler
   const commandBus = { execute: vi.fn() }
   const gameRepository = { findSheet: vi.fn() }
-  const gameAggregationErrorRepository = { record: vi.fn() }
+  const gameAggregationRunRepository = { recordFailure: vi.fn() }
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -33,8 +33,8 @@ describe('GetGameHandler', () => {
         { provide: CommandBus, useValue: commandBus },
         { provide: GameRepository, useValue: gameRepository },
         {
-          provide: GameAggregationErrorRepository,
-          useValue: gameAggregationErrorRepository,
+          provide: GameAggregationRunRepository,
+          useValue: gameAggregationRunRepository,
         },
         { provide: LoggerService, useValue: mockLoggerService },
       ],
@@ -73,6 +73,7 @@ describe('GetGameHandler', () => {
     const error = new GameAggregationFailedError({
       operation: 'generation',
       model: 'claude-haiku-5-5',
+      durationMs: 10,
       cause: new Error('boom'),
     })
     gameRepository.findSheet.mockResolvedValue(null)
@@ -80,7 +81,7 @@ describe('GetGameHandler', () => {
 
     await expect(execute()).rejects.toBe(error)
 
-    expect(gameAggregationErrorRepository.record).toHaveBeenCalledWith({
+    expect(gameAggregationRunRepository.recordFailure).toHaveBeenCalledWith({
       gameId,
       language: 'fr',
       error,
@@ -91,7 +92,7 @@ describe('GetGameHandler', () => {
     const error = new Error('boom')
     gameRepository.findSheet.mockResolvedValue(null)
     commandBus.execute.mockRejectedValue(error)
-    gameAggregationErrorRepository.record.mockRejectedValue(
+    gameAggregationRunRepository.recordFailure.mockRejectedValue(
       new Error('db down'),
     )
 
@@ -108,7 +109,7 @@ describe('GetGameHandler', () => {
     await expect(execute()).rejects.toMatchObject({
       code: ErrorCode.GAME_NOT_FOUND,
     })
-    expect(gameAggregationErrorRepository.record).not.toHaveBeenCalled()
+    expect(gameAggregationRunRepository.recordFailure).not.toHaveBeenCalled()
   })
 
   it('propagates GAME_NOT_FOUND for an unknown game', async () => {

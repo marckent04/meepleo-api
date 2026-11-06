@@ -1,6 +1,6 @@
 import { Command } from '@nestjs/cqrs'
 import { IsISO6391, IsUUID } from 'class-validator'
-import type { GameSheetTranslation } from '@/shared/types'
+import type { GameSheetTranslation, Traced } from '@/shared/types'
 
 export type TranslateGameSheetCommandParams = {
   gameId: string
@@ -10,8 +10,11 @@ export type TranslateGameSheetCommandParams = {
   targetLanguage: string
 }
 
-/** Traduit par IA une fiche existante dans une autre langue, sans la persister. */
-export class TranslateGameSheetCommand extends Command<GameSheetTranslation> {
+/** Traduit par IA une fiche existante dans une autre langue, sans la persister.
+ * Renvoie aussi la trace de l'appel à l'IA (durée, tokens, sortie brute). */
+export class TranslateGameSheetCommand extends Command<
+  Traced<GameSheetTranslation>
+> {
   @IsUUID()
   readonly gameId: string
 

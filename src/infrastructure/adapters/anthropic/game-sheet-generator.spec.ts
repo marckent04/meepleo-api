@@ -2,7 +2,7 @@ import type Anthropic from '@anthropic-ai/sdk'
 import { mockLoggerService } from '@/__tests__/utils/logger-service.mock'
 import type { LoggerService } from '@/infrastructure/logger/logger.service'
 import type { AnthropicConfig } from '@/shared/config'
-import { ErrorCode, InternalError } from '@/shared/errors'
+import { AiCallFailedError, ErrorCode, InternalError } from '@/shared/errors'
 import { Game, GameSheet } from '@/shared/types'
 import dnupOutput from './__fixtures__/dnup-sheet.output.json'
 import { GAME_SHEET_SYSTEM_PROMPT } from './game-sheet.prompt'
@@ -50,7 +50,7 @@ describe('GameSheetGenerator', () => {
   it('asks the model with web tools and maps the structured output', async () => {
     parse.mockResolvedValue(response())
 
-    const sheet = await generator.generate(game, 'fr')
+    const { result: sheet, trace } = await generator.generate(game, 'fr')
 
     expect(parse).toHaveBeenCalledTimes(1)
     const request = parse.mock.calls[0][0]
@@ -98,6 +98,41 @@ describe('GameSheetGenerator', () => {
       'winner-2',
     ])
     expect(sheet.specialRules[0].title).toBe('Le doup')
+
+    expect(trace).toMatchObject({
+      model: 'claude-haiku-5-5',
+      requestCount: 1,
+      stopReason: 'end_turn',
+      output: dnupOutput,
+      rawText: null,
+      promptVersion: expect.stringMatching(/^[0-9a-f]{12}$/),
+      settings: {
+        effort: 'medium',
+        maxTokens: 16_000,
+        tools: [
+          { name: 'web_search', maxUses: 5 },
+          { name: 'web_fetch', maxUses: 3 },
+        ],
+      },
+      usage: {
+        inputTokens: 10,
+        outputTokens: 20,
+        cacheCreationInputTokens: 0,
+        cacheReadInputTokens: 0,
+        webSearchRequests: 0,
+        webFetchRequests: 0,
+      },
+    })
+    expect(trace.durationMs).toBeGreaterThanOrEqual(0)
+  })
+
+  it('keeps the same prompt version between calls', async () => {
+    parse.mockResolvedValue(response())
+
+    const first = await generator.generate(game, 'fr')
+    const second = await generator.generate(game, 'en')
+
+    expect(second.trace.promptVersion).toBe(first.trace.promptVersion)
   })
 
   it('resumes a paused server tool loop', async () => {
@@ -106,11 +141,35 @@ describe('GameSheetGenerator', () => {
       content: [{ type: 'server_tool_use', id: 'srv_1', name: 'web_search' }],
       parsed_output: null,
     })
-    parse.mockResolvedValueOnce(paused).mockResolvedValueOnce(response())
+    parse.mockResolvedValueOnce(paused).mockResolvedValueOnce(
+      response({
+        model: 'claude-haiku-5-5-20261001',
+        usage: {
+          input_tokens: 300,
+          output_tokens: 400,
+          cache_creation_input_tokens: 5,
+          cache_read_input_tokens: 6,
+          server_tool_use: { web_search_requests: 1, web_fetch_requests: 2 },
+        },
+      }),
+    )
 
-    await generator.generate(game, 'fr')
+    const { trace } = await generator.generate(game, 'fr')
 
     expect(parse).toHaveBeenCalledTimes(2)
+    // Consommation cumulée sur les deux appels, modèle de la dernière réponse.
+    expect(trace).toMatchObject({
+      model: 'claude-haiku-5-5-20261001',
+      requestCount: 2,
+      usage: {
+        inputTokens: 310,
+        outputTokens: 420,
+        cacheCreationInputTokens: 5,
+        cacheReadInputTokens: 6,
+        webSearchRequests: 1,
+        webFetchRequests: 2,
+      },
+    })
     const resumed = parse.mock.calls[1][0].messages
     expect(resumed).toHaveLength(2)
     expect(resumed[1]).toEqual({ role: 'assistant', content: paused.content })
@@ -125,8 +184,40 @@ describe('GameSheetGenerator', () => {
 
     const error = await generator.generate(game, 'fr').catch((e) => e)
 
-    expect(error).toBeInstanceOf(InternalError)
+    expect(error).toBeInstanceOf(AiCallFailedError)
     expect(error.code).toBe(ErrorCode.GAME_SHEET_GENERATION_FAILED)
+    expect(error.statusCode).toBe(500)
+    expect(error.cause).toBeInstanceOf(InternalError)
+    expect(error.trace).toMatchObject({ requestCount: 1, output: null })
+    expect(error.trace.usage.inputTokens).toBe(10)
+  })
+
+  it('keeps the raw text of an output that could not be parsed', async () => {
+    parse.mockResolvedValue(
+      response({
+        parsed_output: null,
+        content: [{ type: 'text', text: 'Sorry, not JSON' }],
+      }),
+    )
+
+    const error = await generator.generate(game, 'fr').catch((e) => e)
+
+    expect(error.trace.rawText).toBe('Sorry, not JSON')
+  })
+
+  it('traces a failed API call', async () => {
+    parse.mockRejectedValue(new Error('network down'))
+
+    const error = await generator.generate(game, 'fr').catch((e) => e)
+
+    expect(error).toBeInstanceOf(AiCallFailedError)
+    expect(error.message).toBe('network down')
+    expect(error.trace).toMatchObject({
+      model: 'claude-haiku-5-5',
+      requestCount: 1,
+      stopReason: null,
+      usage: { inputTokens: 0, outputTokens: 0 },
+    })
   })
 
   it('gives up after too many pause_turn continuations', async () => {
@@ -134,9 +225,11 @@ describe('GameSheetGenerator', () => {
       response({ stop_reason: 'pause_turn', parsed_output: null }),
     )
 
-    await expect(generator.generate(game, 'fr')).rejects.toMatchObject({
-      code: ErrorCode.GAME_SHEET_GENERATION_FAILED,
-    })
+    const error = await generator.generate(game, 'fr').catch((e) => e)
+
+    expect(error.code).toBe(ErrorCode.GAME_SHEET_GENERATION_FAILED)
     expect(parse).toHaveBeenCalledTimes(6)
+    expect(error.trace.requestCount).toBe(6)
+    expect(error.trace.usage.inputTokens).toBe(60)
   })
 })
