@@ -1,4 +1,4 @@
-import { CommandBus } from '@nestjs/cqrs'
+import { CommandBus, EventBus } from '@nestjs/cqrs'
 import { Test } from '@nestjs/testing'
 import { buildAiTrace } from '@/__tests__/utils/ai-trace.fixture'
 import { mockLoggerService } from '@/__tests__/utils/logger-service.mock'
@@ -17,41 +17,64 @@ import {
   GameAggregationFailedError,
   InternalError,
 } from '@/shared/errors'
-import type { GameSheet, GameSheetTranslation } from '@/shared/types'
+import type {
+  GameSheet,
+  GameSheetAggregationJob,
+  GameSheetTranslation,
+} from '@/shared/types'
 import {
   GenerateGameSheetCommand,
   TranslateGameSheetCommand,
 } from '../../game-sheet/commands'
 import { AggregateGameSheetCommand } from '../commands'
+import {
+  GameSheetAggregatedEvent,
+  GameSheetAggregationFailedEvent,
+} from '../events'
 import { AggregateGameSheetHandler } from './aggregate-game-sheet.handler'
 
-// La transaction est testée de bout en bout ; ici, on teste la décision.
+// La transaction est testée de bout en bout ; ici, on teste l'enchaînement.
 vi.mock('@nestjs-cls/transactional', async (importOriginal) => ({
   ...(await importOriginal<object>()),
   Transactional: () => () => undefined,
 }))
 
 const gameId = '0195d1a2-0000-7000-8000-000000000001'
-const stored = { gameId, language: 'en' } as GameSheet
+const runId = '0195d1a2-0000-7000-8000-0000000000aa'
 const trace = buildAiTrace()
+const generationJob: GameSheetAggregationJob = {
+  runId,
+  gameId,
+  language: 'en',
+  operation: 'generation',
+  sourceLanguage: null,
+}
+const translationJob: GameSheetAggregationJob = {
+  ...generationJob,
+  operation: 'translation',
+  sourceLanguage: 'fr',
+}
 
 describe('AggregateGameSheetHandler', () => {
   let handler: AggregateGameSheetHandler
   const commandBus = { execute: vi.fn() }
+  const eventBus = { publish: vi.fn() }
   const gameRepository = {
     lockById: vi.fn(),
-    findSheet: vi.fn(),
-    findSheetStatus: vi.fn(),
     saveGeneratedSheet: vi.fn(),
     saveTranslation: vi.fn(),
   }
-  const gameAggregationRunRepository = { recordSuccess: vi.fn() }
+  const gameAggregationRunRepository = {
+    recordSuccess: vi.fn(),
+    recordFailure: vi.fn(),
+  }
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         AggregateGameSheetHandler,
         { provide: CommandBus, useValue: commandBus },
+        { provide: EventBus, useValue: eventBus },
         { provide: GameRepository, useValue: gameRepository },
         {
           provide: GameAggregationRunRepository,
@@ -72,34 +95,14 @@ describe('AggregateGameSheetHandler', () => {
     vi.resetAllMocks()
   })
 
-  const execute = () =>
-    handler.execute(new AggregateGameSheetCommand({ gameId, language: 'en' }))
+  const execute = (job: GameSheetAggregationJob) =>
+    handler.execute(new AggregateGameSheetCommand(job))
 
-  it('returns the sheet aggregated while waiting for the lock', async () => {
-    gameRepository.findSheet.mockResolvedValue(stored)
-
-    await expect(execute()).resolves.toBe(stored)
-
-    expect(gameRepository.lockById).toHaveBeenCalledWith(gameId)
-    expect(gameRepository.lockById.mock.invocationCallOrder[0]).toBeLessThan(
-      gameRepository.findSheet.mock.invocationCallOrder[0],
-    )
-    expect(commandBus.execute).not.toHaveBeenCalled()
-    expect(gameAggregationRunRepository.recordSuccess).not.toHaveBeenCalled()
-  })
-
-  it('generates the sheet of a game that has none', async () => {
+  it('generates the sheet, saves it under lock and closes the run', async () => {
     const generated = { gameId } as GameSheet
-    gameRepository.findSheet
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce(stored)
-    gameRepository.findSheetStatus.mockResolvedValue({
-      generated: false,
-      supportedLanguages: [],
-    })
     commandBus.execute.mockResolvedValue({ result: generated, trace })
 
-    await expect(execute()).resolves.toBe(stored)
+    await execute(generationJob)
 
     expect(commandBus.execute).toHaveBeenCalledWith(
       new GenerateGameSheetCommand({ gameId, language: 'en' }),
@@ -107,35 +110,30 @@ describe('AggregateGameSheetHandler', () => {
     expect(gameRepository.saveGeneratedSheet).toHaveBeenCalledWith(generated)
     expect(gameRepository.saveTranslation).not.toHaveBeenCalled()
     expect(gameAggregationRunRepository.recordSuccess).toHaveBeenCalledWith({
-      gameId,
-      language: 'en',
-      operation: 'generation',
+      runId,
       durationMs: expect.any(Number),
       trace,
     })
-    // Le run marque la fiche comme générée : il doit précéder la relecture.
-    const recordOrder =
-      gameAggregationRunRepository.recordSuccess.mock.invocationCallOrder[0]
-    expect(
-      gameRepository.saveGeneratedSheet.mock.invocationCallOrder[0],
-    ).toBeLessThan(recordOrder)
-    expect(recordOrder).toBeLessThan(
-      gameRepository.findSheet.mock.invocationCallOrder[1],
+    // Le verrou est pris après l'appel à l'IA, juste pour l'enregistrement.
+    expect(commandBus.execute.mock.invocationCallOrder[0]).toBeLessThan(
+      gameRepository.lockById.mock.invocationCallOrder[0],
     )
+    expect(gameRepository.lockById.mock.invocationCallOrder[0]).toBeLessThan(
+      gameRepository.saveGeneratedSheet.mock.invocationCallOrder[0],
+    )
+    expect(eventBus.publish).toHaveBeenCalledWith(
+      new GameSheetAggregatedEvent(generationJob),
+    )
+    expect(
+      gameAggregationRunRepository.recordSuccess.mock.invocationCallOrder[0],
+    ).toBeLessThan(eventBus.publish.mock.invocationCallOrder[0])
   })
 
-  it('translates from the generation language when a sheet exists', async () => {
+  it('translates from the source language and closes the run', async () => {
     const translation = { gameId } as GameSheetTranslation
-    gameRepository.findSheet
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce(stored)
-    gameRepository.findSheetStatus.mockResolvedValue({
-      generated: true,
-      supportedLanguages: ['fr', 'de'],
-    })
     commandBus.execute.mockResolvedValue({ result: translation, trace })
 
-    await expect(execute()).resolves.toBe(stored)
+    await execute(translationJob)
 
     expect(commandBus.execute).toHaveBeenCalledWith(
       new TranslateGameSheetCommand({
@@ -147,54 +145,41 @@ describe('AggregateGameSheetHandler', () => {
     expect(gameRepository.saveTranslation).toHaveBeenCalledWith(translation)
     expect(gameRepository.saveGeneratedSheet).not.toHaveBeenCalled()
     expect(gameAggregationRunRepository.recordSuccess).toHaveBeenCalledWith({
-      gameId,
-      language: 'en',
-      operation: 'translation',
-      sourceLanguage: 'fr',
+      runId,
       durationMs: expect.any(Number),
       trace,
     })
   })
 
   it.each([
-    [
-      'generation',
-      { generated: false, supportedLanguages: [] },
-      'claude-opus-5-5',
-      null,
-    ],
-    [
-      'translation',
-      { generated: true, supportedLanguages: ['fr'] },
-      'claude-haiku-5-5',
-      'fr',
-    ],
+    ['generation', generationJob, 'claude-opus-5-5', null],
+    ['translation', translationJob, 'claude-haiku-5-5', 'fr'],
   ])(
-    'wraps a %s failure with its operation and model',
-    async (operation, status, model, sourceLanguage) => {
+    'closes the run in FAILURE and rethrows a %s failure',
+    async (operation, job, model, sourceLanguage) => {
       const cause = new InternalError('Anthropic API call failed', {
         code: ErrorCode.GAME_SHEET_GENERATION_FAILED,
       })
-      gameRepository.findSheet.mockResolvedValue(null)
-      gameRepository.findSheetStatus.mockResolvedValue(status)
       commandBus.execute.mockRejectedValue(cause)
 
-      const error = await execute().catch((e) => e)
+      const error = await execute(job).catch((e) => e)
 
       expect(error).toBeInstanceOf(GameAggregationFailedError)
       expect(error).toMatchObject({ operation, model, sourceLanguage, cause })
-      expect(error.code).toBe(ErrorCode.GAME_SHEET_GENERATION_FAILED)
       expect(error.durationMs).toEqual(expect.any(Number))
+      expect(gameAggregationRunRepository.recordFailure).toHaveBeenCalledWith({
+        runId,
+        error,
+      })
       expect(gameAggregationRunRepository.recordSuccess).not.toHaveBeenCalled()
+      expect(eventBus.publish).toHaveBeenCalledWith(
+        new GameSheetAggregationFailedEvent(job, error),
+      )
+      expect(eventBus.publish).toHaveBeenCalledTimes(1)
     },
   )
 
   it('keeps the AI trace of a failed generation', async () => {
-    gameRepository.findSheet.mockResolvedValue(null)
-    gameRepository.findSheetStatus.mockResolvedValue({
-      generated: false,
-      supportedLanguages: [],
-    })
     commandBus.execute.mockRejectedValue(
       new AiCallFailedError({
         code: ErrorCode.GAME_SHEET_GENERATION_FAILED,
@@ -203,18 +188,34 @@ describe('AggregateGameSheetHandler', () => {
       }),
     )
 
-    const error = await execute().catch((e) => e)
+    const error = await execute(generationJob).catch((e) => e)
 
-    expect(error).toBeInstanceOf(GameAggregationFailedError)
     expect(error.trace).toBe(trace)
   })
 
-  it('does not wrap a missing game', async () => {
-    const notFound = Object.assign(new Error('Game not found'), {
-      code: ErrorCode.GAME_NOT_FOUND,
-    })
-    gameRepository.lockById.mockRejectedValue(notFound)
+  it('closes the run in FAILURE when saving the sheet fails', async () => {
+    commandBus.execute.mockResolvedValue({ result: {}, trace })
+    gameRepository.saveGeneratedSheet.mockRejectedValue(new Error('db down'))
 
-    await expect(execute()).rejects.toBe(notFound)
+    const error = await execute(generationJob).catch((e) => e)
+
+    expect(error).toBeInstanceOf(GameAggregationFailedError)
+    expect(gameAggregationRunRepository.recordFailure).toHaveBeenCalledWith({
+      runId,
+      error,
+    })
+  })
+
+  it('keeps the original error when closing the run fails', async () => {
+    commandBus.execute.mockRejectedValue(new Error('boom'))
+    gameAggregationRunRepository.recordFailure.mockRejectedValue(
+      new Error('db down'),
+    )
+
+    const error = await execute(generationJob).catch((e) => e)
+
+    expect(error).toBeInstanceOf(GameAggregationFailedError)
+    expect(error.message).toContain('boom')
+    expect(mockLoggerService.error).toHaveBeenCalled()
   })
 })

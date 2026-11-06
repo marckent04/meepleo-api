@@ -1,4 +1,4 @@
-import { CommandBus, CommandHandler } from '@nestjs/cqrs'
+import { CommandBus, CommandHandler, EventBus } from '@nestjs/cqrs'
 import { Transactional } from '@nestjs-cls/transactional'
 import type { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma'
 import {
@@ -11,26 +11,35 @@ import {
 } from '@/infrastructure/database/repositories'
 import { LoggerService } from '@/infrastructure/logger/logger.service'
 import { GameAggregationFailedError } from '@/shared/errors'
-import type { GameSheet } from '@/shared/types'
+import type {
+  AiTrace,
+  GameSheet,
+  GameSheetTranslation,
+  Traced,
+} from '@/shared/types'
 import { AppCommandHandler } from '@/utils/cqrs.utils'
 import {
   GenerateGameSheetCommand,
   TranslateGameSheetCommand,
 } from '../../game-sheet/commands'
 import { AggregateGameSheetCommand } from '../commands'
+import {
+  GameSheetAggregatedEvent,
+  GameSheetAggregationFailedEvent,
+} from '../events'
 
-/** Une génération (recherche web) peut durer plusieurs minutes. */
-const AGGREGATION_TIMEOUT_MS = 180_000
-/** Attente maximale d'une connexion pour ouvrir la transaction. */
-const AGGREGATION_MAX_WAIT_MS = 10_000
+type AggregationResult =
+  | { operation: 'generation'; result: GameSheet; trace: AiTrace }
+  | { operation: 'translation'; result: GameSheetTranslation; trace: AiTrace }
 
 @CommandHandler(AggregateGameSheetCommand)
 export class AggregateGameSheetHandler extends AppCommandHandler<
   AggregateGameSheetCommand,
-  GameSheet
+  void
 > {
   constructor(
     private readonly commandBus: CommandBus,
+    private readonly eventBus: EventBus,
     private readonly gameRepository: GameRepository,
     private readonly gameAggregationRunRepository: GameAggregationRunRepository,
     private readonly gameSheetGenerator: GameSheetGenerator,
@@ -42,104 +51,104 @@ export class AggregateGameSheetHandler extends AppCommandHandler<
   }
 
   /**
-   * Le verrou de ligne fait attendre les requêtes concurrentes sur le même
-   * jeu ; après l'attente, elles trouvent la fiche déjà enregistrée.
-   * Le run SUCCESS est écrit dans la même transaction que la fiche : c'est lui
-   * qui la marque comme générée.
+   * Les appels à l'IA se font hors transaction ; seul l'enregistrement de la
+   * fiche et du run SUCCESS est transactionnel. En cas d'échec, le run est
+   * clos en FAILURE puis l'erreur est relancée. L'issue est publiée après le
+   * commit.
    */
-  @Transactional<TransactionalAdapterPrisma>({
-    timeout: AGGREGATION_TIMEOUT_MS,
-    maxWait: AGGREGATION_MAX_WAIT_MS,
-  })
-  async handle({
-    gameId,
-    language,
-  }: AggregateGameSheetCommand): Promise<GameSheet> {
-    await this.gameRepository.lockById(gameId)
-
-    const existing = await this.gameRepository.findSheet(gameId, language)
-    if (existing) return existing
-
-    const status = await this.gameRepository.findSheetStatus(gameId)
-    const sourceLanguage = status.generated
-      ? status.supportedLanguages[0]
-      : undefined
-
-    if (sourceLanguage) {
-      await this.translate(gameId, sourceLanguage, language)
-    } else {
-      await this.generate(gameId, language)
-    }
-
-    const sheet = await this.gameRepository.findSheet(gameId, language)
-    if (!sheet) {
-      throw new Error(`Game sheet ${gameId} not aggregated in ${language}`)
-    }
-    return sheet
-  }
-
-  private async generate(gameId: string, language: string): Promise<void> {
-    const model = this.gameSheetGenerator.model
-    this.logger.info({ gameId, language, model }, 'Generating game sheet')
-    const start = performance.now()
-    try {
-      const { result: sheet, trace } = await this.commandBus.execute(
-        new GenerateGameSheetCommand({ gameId, language }),
-      )
-      await this.gameRepository.saveGeneratedSheet(sheet)
-      await this.gameAggregationRunRepository.recordSuccess({
-        gameId,
-        language,
-        operation: 'generation',
-        durationMs: performance.now() - start,
-        trace,
-      })
-    } catch (cause) {
-      throw new GameAggregationFailedError({
-        operation: 'generation',
-        model,
-        durationMs: performance.now() - start,
-        cause,
-      })
-    }
-  }
-
-  private async translate(
-    gameId: string,
-    sourceLanguage: string,
-    language: string,
-  ): Promise<void> {
-    const model = this.gameSheetTranslator.model
+  async handle(command: AggregateGameSheetCommand): Promise<void> {
+    const { runId, gameId, language, operation, sourceLanguage } = command
+    const job = { runId, gameId, language, operation, sourceLanguage }
+    const model =
+      operation === 'generation'
+        ? this.gameSheetGenerator.model
+        : this.gameSheetTranslator.model
     this.logger.info(
-      { gameId, sourceLanguage, language, model },
-      'Translating game sheet',
+      { gameId, language, operation, sourceLanguage, model, runId },
+      'Aggregating game sheet',
     )
     const start = performance.now()
     try {
-      const { result: translation, trace } = await this.commandBus.execute(
-        new TranslateGameSheetCommand({
-          gameId,
-          sourceLanguage,
-          targetLanguage: language,
-        }),
-      )
-      await this.gameRepository.saveTranslation(translation)
-      await this.gameAggregationRunRepository.recordSuccess({
+      const aggregated = await this.aggregate(command)
+      await this.save(
+        runId,
         gameId,
-        language,
-        operation: 'translation',
-        sourceLanguage,
-        durationMs: performance.now() - start,
-        trace,
-      })
+        aggregated,
+        () => performance.now() - start,
+      )
     } catch (cause) {
-      throw new GameAggregationFailedError({
-        operation: 'translation',
+      const error = new GameAggregationFailedError({
+        operation,
         model,
         sourceLanguage,
         durationMs: performance.now() - start,
         cause,
       })
+      await this.recordFailure(runId, error)
+      this.eventBus.publish(new GameSheetAggregationFailedEvent(job, error))
+      throw error
+    }
+    this.eventBus.publish(new GameSheetAggregatedEvent(job))
+  }
+
+  private async aggregate({
+    gameId,
+    language,
+    operation,
+    sourceLanguage,
+  }: AggregateGameSheetCommand): Promise<AggregationResult> {
+    if (operation === 'generation') {
+      const traced: Traced<GameSheet> = await this.commandBus.execute(
+        new GenerateGameSheetCommand({ gameId, language }),
+      )
+      return { operation, ...traced }
+    }
+    if (!sourceLanguage) {
+      throw new Error('A translation requires a source language')
+    }
+    const traced: Traced<GameSheetTranslation> = await this.commandBus.execute(
+      new TranslateGameSheetCommand({
+        gameId,
+        sourceLanguage,
+        targetLanguage: language,
+      }),
+    )
+    return { operation, ...traced }
+  }
+
+  /** Le run SUCCESS est écrit avec la fiche : c'est lui qui la marque comme agrégée. */
+  @Transactional<TransactionalAdapterPrisma>()
+  private async save(
+    runId: string,
+    gameId: string,
+    aggregated: AggregationResult,
+    elapsedMs: () => number,
+  ): Promise<void> {
+    await this.gameRepository.lockById(gameId)
+    if (aggregated.operation === 'generation') {
+      await this.gameRepository.saveGeneratedSheet(aggregated.result)
+    } else {
+      await this.gameRepository.saveTranslation(aggregated.result)
+    }
+    await this.gameAggregationRunRepository.recordSuccess({
+      runId,
+      durationMs: elapsedMs(),
+      trace: aggregated.trace,
+    })
+  }
+
+  private async recordFailure(
+    runId: string,
+    error: GameAggregationFailedError,
+  ): Promise<void> {
+    try {
+      await this.gameAggregationRunRepository.recordFailure({ runId, error })
+    } catch (recordError) {
+      // Le run restera RUNNING jusqu'au délai d'abandon.
+      this.logger.error(
+        { runId, err: recordError },
+        'Could not record game aggregation failure',
+      )
     }
   }
 }

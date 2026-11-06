@@ -66,6 +66,24 @@ export class GameRepository {
   }
 
   /**
+   * Ids des jeux non supprimés ayant ces identifiants BGG, dans l'ordre de
+   * `bggIds` ; les identifiants inconnus sont ignorés.
+   */
+  async findIdsByBggIds(
+    bggIds: number[],
+  ): Promise<{ bggId: number; id: string }[]> {
+    const records = await this.txHost.tx.game.findMany({
+      where: { bggId: { in: bggIds }, deletedAt: null },
+      select: { id: true, bggId: true },
+    })
+    const idByBggId = new Map(records.map((r) => [r.bggId, r.id]))
+    return bggIds.flatMap((bggId) => {
+      const id = idByBggId.get(bggId)
+      return id ? [{ bggId, id }] : []
+    })
+  }
+
+  /**
    * Fiche du jeu dans `language`, ou `null` si elle n'y est pas encore
    * agrégée (absence attendue : la fiche est produite à la demande).
    * Lève NotFoundError (GAME_NOT_FOUND) si le jeu n'existe pas.

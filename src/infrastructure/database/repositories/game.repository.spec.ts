@@ -19,6 +19,7 @@ describe('GameRepository', () => {
           publisher: null,
           edition: null,
           bggId: 123,
+          ruleBookUrl: 'https://example.com/dnup.pdf',
         }),
       },
     })
@@ -28,7 +29,42 @@ describe('GameRepository', () => {
     expect(tx.game.findFirst).toHaveBeenCalledWith({
       where: { id, deletedAt: null },
     })
-    expect(game).toEqual(new Game(id, 'Dnup', 2021, null, null, 123))
+    expect(game).toEqual(
+      new Game(
+        id,
+        'Dnup',
+        2021,
+        null,
+        null,
+        123,
+        'https://example.com/dnup.pdf',
+      ),
+    )
+  })
+
+  it('finds game ids by BGG id in the requested order, skipping unknown ones', async () => {
+    const other = '0195d1a2-0000-7000-8000-000000000002'
+    const { host, tx } = createTransactionHostMock({
+      game: {
+        findMany: vi.fn().mockResolvedValue([
+          { id, bggId: 123 },
+          { id: other, bggId: 456 },
+        ]),
+      },
+    })
+
+    const games = await new GameRepository(host).findIdsByBggIds([
+      456, 999, 123,
+    ])
+
+    expect(tx.game.findMany).toHaveBeenCalledWith({
+      where: { bggId: { in: [456, 999, 123] }, deletedAt: null },
+      select: { id: true, bggId: true },
+    })
+    expect(games).toEqual([
+      { bggId: 456, id: other },
+      { bggId: 123, id },
+    ])
   })
 
   it('throws GAME_NOT_FOUND when the game does not exist', async () => {

@@ -19,6 +19,7 @@ const game = new Game(
 const config: AnthropicConfig = {
   apiKey: 'test',
   sheetModel: 'claude-haiku-5-5',
+  sheetEffort: 'medium',
   sheetTranslationModel: 'claude-haiku-5-5',
 }
 
@@ -124,6 +125,43 @@ describe('GameSheetGenerator', () => {
       },
     })
     expect(trace.durationMs).toBeGreaterThanOrEqual(0)
+  })
+
+  it('gives the known rulebook URL and the configured effort', async () => {
+    parse.mockResolvedValue(response())
+    const known = new Game(
+      game.id,
+      'Dnup',
+      2021,
+      null,
+      null,
+      123,
+      'https://example.com/dnup.pdf',
+    )
+    const lowEffort = new GameSheetGenerator(
+      client,
+      { ...config, sheetEffort: 'low' },
+      mockLoggerService as unknown as LoggerService,
+    )
+
+    const { trace } = await lowEffort.generate(known, 'fr')
+
+    const request = parse.mock.calls[0][0]
+    expect(request.messages[0].content).toContain(
+      'Known rulebook URL: https://example.com/dnup.pdf',
+    )
+    expect(request.output_config.effort).toBe('low')
+    expect(trace.settings.effort).toBe('low')
+  })
+
+  it('does not mention a rulebook URL when none is known', async () => {
+    parse.mockResolvedValue(response())
+
+    await generator.generate(game, 'fr')
+
+    expect(parse.mock.calls[0][0].messages[0].content).not.toContain(
+      'rulebook URL',
+    )
   })
 
   it('keeps the same prompt version between calls', async () => {

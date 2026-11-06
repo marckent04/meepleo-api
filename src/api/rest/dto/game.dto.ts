@@ -209,3 +209,35 @@ export class GameResponseDto extends createZodDto(GameResponseSchema, {
     }
   }
 }
+
+export const GamePendingResponseSchema = z
+  .object({
+    status: z
+      .literal('pending')
+      .describe('La fiche est en cours de génération ou de traduction'),
+    retryAfterSeconds: z
+      .number()
+      .int()
+      .positive()
+      .describe(
+        'Délai conseillé avant de rappeler la route (aussi dans Retry-After)',
+      )
+      .meta({ example: 5 }),
+  })
+  .describe(
+    "Fiche pas encore disponible dans la langue d'Accept-Language : rappeler la même route",
+  )
+
+export class GamePendingResponseDto extends createZodDto(
+  GamePendingResponseSchema,
+) {
+  static create(retryAfterSeconds: number): GamePendingResponseDto {
+    return { status: 'pending', retryAfterSeconds }
+  }
+}
+
+/** Réponse de GET /games/:id : 200 avec la fiche, ou 202 tant qu'elle est en cours. */
+export const GameLookupResponseSchema = z.union([
+  GameResponseSchema,
+  GamePendingResponseSchema,
+])

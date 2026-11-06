@@ -8,7 +8,11 @@ import {
   GameAggregationFailedError,
   type GameAggregationOperation,
 } from '@/shared/errors'
-import type { AiTrace } from '@/shared/types'
+import type {
+  AiTrace,
+  GameAggregationRunStatus,
+  GameAggregationRunSummary,
+} from '@/shared/types'
 import {
   GameAggregationOperation as GameAggregationOperationRecord,
   GameAggregationStatus,
@@ -17,20 +21,25 @@ import {
 import type { PrismaService } from '../prisma.service'
 import { rethrowPrismaError } from '../prisma-errors'
 
-export type RecordGameAggregationSuccessParams = {
+export type StartGameAggregationParams = {
   gameId: string
   language: string
   operation: GameAggregationOperation
   /** Langue source d'une traduction. */
   sourceLanguage?: string | null
+  /** Modèle d'IA prévu pour l'opération. */
+  model: string
+}
+
+export type RecordGameAggregationSuccessParams = {
+  runId: string
   /** Durée totale de l'opération (appels IA + enregistrement), en ms. */
   durationMs: number
   trace: AiTrace
 }
 
 export type RecordGameAggregationFailureParams = {
-  gameId: string
-  language: string
+  runId: string
   error: unknown
 }
 
@@ -40,6 +49,23 @@ const OPERATION_TO_RECORD: Record<
 > = {
   generation: GameAggregationOperationRecord.GENERATION,
   translation: GameAggregationOperationRecord.TRANSLATION,
+}
+
+const OPERATION_FROM_RECORD: Record<
+  GameAggregationOperationRecord,
+  GameAggregationOperation
+> = {
+  GENERATION: 'generation',
+  TRANSLATION: 'translation',
+}
+
+const STATUS_FROM_RECORD: Record<
+  GameAggregationStatus,
+  GameAggregationRunStatus
+> = {
+  RUNNING: 'running',
+  SUCCESS: 'success',
+  FAILURE: 'failure',
 }
 
 const toJson = (value: unknown): Prisma.InputJsonValue | undefined =>
@@ -68,7 +94,8 @@ function traceToColumns(trace: AiTrace) {
 }
 
 /**
- * Trace de chaque tentative d'agrégation de fiche. Le dernier run SUCCESS de
+ * Trace de chaque tentative d'agrégation de fiche. Un run est créé RUNNING au
+ * lancement, puis passé SUCCESS ou FAILURE. Le dernier run SUCCESS de
  * génération fait foi : c'est lui qui marque la fiche comme générée.
  */
 @Injectable()
@@ -79,23 +106,86 @@ export class GameAggregationRunRepository {
     >,
   ) {}
 
-  /** À appeler dans la transaction qui enregistre la fiche. */
-  async recordSuccess({
+  /** Crée le run RUNNING d'une agrégation qui démarre ; renvoie son id. */
+  async start({
     gameId,
     language,
     operation,
     sourceLanguage = null,
+    model,
+  }: StartGameAggregationParams): Promise<string> {
+    try {
+      const run = await this.txHost.tx.gameAggregationRun.create({
+        data: {
+          gameId,
+          status: GameAggregationStatus.RUNNING,
+          language,
+          operation: OPERATION_TO_RECORD[operation],
+          sourceLanguage,
+          model,
+          durationMs: 0,
+        },
+        select: { id: true },
+      })
+      return run.id
+    } catch (writeError) {
+      rethrowPrismaError(writeError)
+    }
+  }
+
+  /** Run le plus récent du jeu dans `language`, quel que soit son statut. */
+  async findLatest(
+    gameId: string,
+    language: string,
+  ): Promise<GameAggregationRunSummary | null> {
+    const run = await this.txHost.tx.gameAggregationRun.findFirst({
+      where: { gameId, language },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        status: true,
+        operation: true,
+        errorCode: true,
+        createdAt: true,
+      },
+    })
+    if (!run) return null
+    return {
+      id: run.id,
+      status: STATUS_FROM_RECORD[run.status],
+      operation: run.operation ? OPERATION_FROM_RECORD[run.operation] : null,
+      errorCode: run.errorCode,
+      startedAt: run.createdAt,
+    }
+  }
+
+  /** Une génération du jeu, dans n'importe quelle langue, a démarré après `startedAfter` et tourne encore. */
+  async hasRunningGeneration(
+    gameId: string,
+    startedAfter: Date,
+  ): Promise<boolean> {
+    const count = await this.txHost.tx.gameAggregationRun.count({
+      where: {
+        gameId,
+        status: GameAggregationStatus.RUNNING,
+        operation: GameAggregationOperationRecord.GENERATION,
+        createdAt: { gt: startedAfter },
+      },
+    })
+    return count > 0
+  }
+
+  /** Clôt un run en SUCCESS. À appeler dans la transaction qui enregistre la fiche. */
+  async recordSuccess({
+    runId,
     durationMs,
     trace,
   }: RecordGameAggregationSuccessParams): Promise<void> {
     try {
-      await this.txHost.tx.gameAggregationRun.create({
+      await this.txHost.tx.gameAggregationRun.update({
+        where: { id: runId },
         data: {
-          gameId,
           status: GameAggregationStatus.SUCCESS,
-          language,
-          operation: OPERATION_TO_RECORD[operation],
-          sourceLanguage,
           durationMs: Math.round(durationMs),
           ...traceToColumns(trace),
         },
@@ -106,12 +196,11 @@ export class GameAggregationRunRepository {
   }
 
   /**
-   * Trace l'échec d'une agrégation de fiche. L'opération, le modèle, la durée
-   * et la trace de l'IA ne sont connus que pour une GameAggregationFailedError.
+   * Clôt un run en FAILURE. La durée et la trace de l'IA ne sont connues que
+   * pour une GameAggregationFailedError.
    */
   async recordFailure({
-    gameId,
-    language,
+    runId,
     error,
   }: RecordGameAggregationFailureParams): Promise<void> {
     const aggregation =
@@ -123,17 +212,13 @@ export class GameAggregationRunRepository {
         : undefined
 
     try {
-      await this.txHost.tx.gameAggregationRun.create({
+      await this.txHost.tx.gameAggregationRun.update({
+        where: { id: runId },
         data: {
-          gameId,
           status: GameAggregationStatus.FAILURE,
-          language,
-          operation: aggregation
-            ? OPERATION_TO_RECORD[aggregation.operation]
-            : null,
-          sourceLanguage: aggregation?.sourceLanguage ?? null,
-          model: aggregation?.model ?? null,
-          durationMs: Math.round(aggregation?.durationMs ?? 0),
+          ...(aggregation
+            ? { durationMs: Math.round(aggregation.durationMs) }
+            : {}),
           ...(aggregation?.trace ? traceToColumns(aggregation.trace) : {}),
           errorCode:
             error instanceof AppError

@@ -27,6 +27,7 @@
     "db:reset": "prisma migrate reset",
     "db:studio": "prisma studio",
     "db:validate": "prisma validate && prisma format --check",
+    "sheets:pregenerate": "ts-node -r tsconfig-paths/register src/scripts/pregenerate-game-sheets.ts",
     "semantic-release": "semantic-release"
   },
   "dependencies": {

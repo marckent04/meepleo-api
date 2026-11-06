@@ -7,6 +7,8 @@ export class Game {
     readonly publisher: string | null,
     readonly edition: string | null,
     readonly bggId: number | null,
+    /** Règle officielle trouvée lors d'une génération précédente. */
+    readonly ruleBookUrl: string | null = null,
   ) {}
 }
 

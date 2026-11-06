@@ -41,60 +41,111 @@ const traceColumns = {
   rawText: null,
 }
 
+const RUN_ID = '0195d1a2-0000-7000-8000-0000000000aa'
+
 describe('GameAggregationRunRepository', () => {
   function setup() {
     const { host, tx } = createTransactionHostMock({
-      gameAggregationRun: { create: vi.fn() },
+      gameAggregationRun: {
+        create: vi.fn(),
+        update: vi.fn(),
+        findFirst: vi.fn(),
+        count: vi.fn(),
+      },
     })
     return { repository: new GameAggregationRunRepository(host), tx }
   }
 
-  it('records a successful generation with its duration, usage and raw output', async () => {
+  it('starts a RUNNING run and returns its id', async () => {
     const { repository, tx } = setup()
+    tx.gameAggregationRun.create.mockResolvedValue({ id: RUN_ID })
 
-    await repository.recordSuccess({
-      gameId: GAME_ID,
-      language: 'fr',
-      operation: 'generation',
-      durationMs: 4567.8,
-      trace,
-    })
-
-    expect(tx.gameAggregationRun.create).toHaveBeenCalledWith({
-      data: {
-        gameId: GAME_ID,
-        status: 'SUCCESS',
-        language: 'fr',
-        operation: 'GENERATION',
-        sourceLanguage: null,
-        durationMs: 4568,
-        ...traceColumns,
-      },
-    })
-  })
-
-  it('records a successful translation with its source language', async () => {
-    const { repository, tx } = setup()
-
-    await repository.recordSuccess({
+    const id = await repository.start({
       gameId: GAME_ID,
       language: 'en',
       operation: 'translation',
       sourceLanguage: 'fr',
-      durationMs: 10,
-      trace,
+      model: 'claude-haiku-5-5',
     })
 
+    expect(id).toBe(RUN_ID)
     expect(tx.gameAggregationRun.create).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        status: 'SUCCESS',
+      data: {
+        gameId: GAME_ID,
+        status: 'RUNNING',
+        language: 'en',
         operation: 'TRANSLATION',
         sourceLanguage: 'fr',
-      }),
+        model: 'claude-haiku-5-5',
+        durationMs: 0,
+      },
+      select: { id: true },
     })
   })
 
-  it('records a failed AI call with the trace of what was consumed', async () => {
+  it('maps the latest run of a game in a language', async () => {
+    const { repository, tx } = setup()
+    const createdAt = new Date('2026-11-06T10:00:00Z')
+    tx.gameAggregationRun.findFirst.mockResolvedValue({
+      id: RUN_ID,
+      status: 'FAILURE',
+      operation: 'GENERATION',
+      errorCode: ErrorCode.GAME_SHEET_GENERATION_FAILED,
+      createdAt,
+    })
+
+    await expect(repository.findLatest(GAME_ID, 'fr')).resolves.toEqual({
+      id: RUN_ID,
+      status: 'failure',
+      operation: 'generation',
+      errorCode: ErrorCode.GAME_SHEET_GENERATION_FAILED,
+      startedAt: createdAt,
+    })
+    expect(tx.gameAggregationRun.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { gameId: GAME_ID, language: 'fr' },
+        orderBy: { createdAt: 'desc' },
+      }),
+    )
+  })
+
+  it('returns null when the game has no run in the language', async () => {
+    const { repository, tx } = setup()
+    tx.gameAggregationRun.findFirst.mockResolvedValue(null)
+
+    await expect(repository.findLatest(GAME_ID, 'fr')).resolves.toBeNull()
+  })
+
+  it('looks for a recent running generation in any language', async () => {
+    const { repository, tx } = setup()
+    const since = new Date('2026-11-06T10:00:00Z')
+    tx.gameAggregationRun.count.mockResolvedValue(1)
+
+    await expect(repository.hasRunningGeneration(GAME_ID, since)).resolves.toBe(
+      true,
+    )
+    expect(tx.gameAggregationRun.count).toHaveBeenCalledWith({
+      where: {
+        gameId: GAME_ID,
+        status: 'RUNNING',
+        operation: 'GENERATION',
+        createdAt: { gt: since },
+      },
+    })
+  })
+
+  it('closes a run in SUCCESS with its duration, usage and raw output', async () => {
+    const { repository, tx } = setup()
+
+    await repository.recordSuccess({ runId: RUN_ID, durationMs: 4567.8, trace })
+
+    expect(tx.gameAggregationRun.update).toHaveBeenCalledWith({
+      where: { id: RUN_ID },
+      data: { status: 'SUCCESS', durationMs: 4568, ...traceColumns },
+    })
+  })
+
+  it('closes a run in FAILURE with the trace of what was consumed', async () => {
     const { repository, tx } = setup()
     const cause = new InternalError('Anthropic API call failed', {
       code: ErrorCode.GAME_SHEET_TRANSLATION_FAILED,
@@ -102,8 +153,7 @@ describe('GameAggregationRunRepository', () => {
     })
 
     await repository.recordFailure({
-      gameId: GAME_ID,
-      language: 'en',
+      runId: RUN_ID,
       error: new GameAggregationFailedError({
         operation: 'translation',
         model: 'claude-haiku-5-5',
@@ -117,13 +167,10 @@ describe('GameAggregationRunRepository', () => {
       }),
     })
 
-    expect(tx.gameAggregationRun.create).toHaveBeenCalledWith({
+    expect(tx.gameAggregationRun.update).toHaveBeenCalledWith({
+      where: { id: RUN_ID },
       data: {
-        gameId: GAME_ID,
         status: 'FAILURE',
-        language: 'en',
-        operation: 'TRANSLATION',
-        sourceLanguage: 'fr',
         durationMs: 5000,
         ...traceColumns,
         errorCode: ErrorCode.GAME_SHEET_TRANSLATION_FAILED,
@@ -139,12 +186,11 @@ describe('GameAggregationRunRepository', () => {
     })
   })
 
-  it('records an aggregation failure that happened after the AI call without trace', async () => {
+  it('closes a run in FAILURE without trace when the failure came after the AI call', async () => {
     const { repository, tx } = setup()
 
     await repository.recordFailure({
-      gameId: GAME_ID,
-      language: 'fr',
+      runId: RUN_ID,
       error: new GameAggregationFailedError({
         operation: 'generation',
         model: 'claude-haiku-5-5',
@@ -153,38 +199,28 @@ describe('GameAggregationRunRepository', () => {
       }),
     })
 
-    expect(tx.gameAggregationRun.create).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        status: 'FAILURE',
-        operation: 'GENERATION',
-        model: 'claude-haiku-5-5',
-        durationMs: 120,
-        errorCode: ErrorCode.GAME_SHEET_GENERATION_FAILED,
-        errorMessage: 'Unique constraint failed',
-      }),
+    const { data } = tx.gameAggregationRun.update.mock.calls[0][0]
+    expect(data).toMatchObject({
+      status: 'FAILURE',
+      durationMs: 120,
+      errorCode: ErrorCode.GAME_SHEET_GENERATION_FAILED,
+      errorMessage: 'Unique constraint failed',
     })
-    const { data } = tx.gameAggregationRun.create.mock.calls[0][0]
     expect(data).not.toHaveProperty('inputTokens')
   })
 
-  it('records an error raised outside of the AI call without operation nor model', async () => {
+  it('closes a run in FAILURE for an error raised outside of the AI call', async () => {
     const { repository, tx } = setup()
 
     await repository.recordFailure({
-      gameId: GAME_ID,
-      language: 'fr',
+      runId: RUN_ID,
       error: new Error('Transaction already closed'),
     })
 
-    expect(tx.gameAggregationRun.create).toHaveBeenCalledWith({
+    expect(tx.gameAggregationRun.update).toHaveBeenCalledWith({
+      where: { id: RUN_ID },
       data: {
-        gameId: GAME_ID,
         status: 'FAILURE',
-        language: 'fr',
-        operation: null,
-        sourceLanguage: null,
-        model: null,
-        durationMs: 0,
         errorCode: ErrorCode.INTERNAL_SERVER_ERROR,
         errorMessage: 'Transaction already closed',
         errorDetails: undefined,

@@ -12,6 +12,7 @@ export function toGame(record: GameRecord): Game {
     record.publisher,
     record.edition,
     record.bggId,
+    record.ruleBookUrl,
   )
 }
 

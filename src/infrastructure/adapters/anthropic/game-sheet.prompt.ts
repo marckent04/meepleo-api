@@ -8,9 +8,10 @@ import type { Game } from '@/shared/types'
 export const GAME_SHEET_SYSTEM_PROMPT = `You write rule sheets for Meepleo, an app that helps people play board games at the table without rereading the whole rulebook. A sheet should let someone who has never played set up the game and play a full game.
 
 Method:
-1. Use web search to find the rules of the requested game. In order of preference: the publisher's official rulebook (often a PDF), then a source that reproduces it faithfully (well-known rules sites, BoardGameGeek files). Check that the source matches the game: same name, same year or edition. If editions have different rules, use the one matching the given year.
-2. Open the source with the web fetch tool and read the complete rules, not just a summary or a search snippet.
-3. Write the sheet only from what you read. Do not invent rules or fill gaps from memory of the game. If the source lacks a piece of information, leave the field empty (an empty string for text, 0 for numbers) or the list empty, and add a warning explaining what is missing.
+1. If the message gives a known rulebook URL, open it first with the web fetch tool; search only if it is unreachable, incomplete or does not match the game.
+2. Otherwise, use web search to find the rules of the requested game. In order of preference: the publisher's official rulebook (often a PDF), then a source that reproduces it faithfully (well-known rules sites, BoardGameGeek files). Issue the searches you need in the same turn rather than one after another (e.g. one in the sheet language and one in English). Check that the source matches the game: same name, same year or edition. If editions have different rules, use the one matching the given year.
+3. Open the source with the web fetch tool and read the complete rules, not just a summary or a search snippet.
+4. Write the sheet only from what you read. Do not invent rules or fill gaps from memory of the game. If the source lacks a piece of information, leave the field empty (an empty string for text, 0 for numbers) or the list empty, and add a warning explaining what is missing.
 
 Writing:
 - Write every text field in the requested language, including the localized game name if one exists. Prefer a rulebook in that language; if you only find one in another language, translate it and say so in warnings.
@@ -30,6 +31,7 @@ export function buildGameSheetUserPrompt(game: Game, language: string): string {
   return [
     `Game: ${game.name}${year}`,
     `Publisher: ${game.publisher ?? 'unknown'} — Edition: ${game.edition ?? 'unknown'} — BGG id: ${game.bggId ?? 'unknown'}`,
+    ...(game.ruleBookUrl ? [`Known rulebook URL: ${game.ruleBookUrl}`] : []),
     `Sheet language: ${language}`,
   ].join('\n')
 }

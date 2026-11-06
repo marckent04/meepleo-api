@@ -12,6 +12,7 @@ const gameId = '0195d1a2-0000-7000-8000-000000000001'
 const config: AnthropicConfig = {
   apiKey: 'test',
   sheetModel: 'claude-opus-5-5',
+  sheetEffort: 'medium',
   sheetTranslationModel: 'claude-haiku-5-5',
 }
 

@@ -63,6 +63,7 @@ enum GameAggregationOperation {
 enum GameAggregationStatus {
   SUCCESS
   FAILURE
+  RUNNING // en cours, en tâche de fond ; abandonné s'il dépasse le délai maximal
 
   @@map("game_aggregation_status")
 }
@@ -152,8 +153,9 @@ model GameRule {
   @@map("game_rules")
 }
 
-/// Tentative d'agrégation de fiche (génération ou traduction), réussie ou non :
+/// Tentative d'agrégation de fiche (génération ou traduction), en cours, réussie ou non :
 /// durée, modèle, consommation et sortie brute de l'IA, conservées pour analyse.
+/// Créée RUNNING au lancement (createdAt = début), puis passée SUCCESS ou FAILURE.
 model GameAggregationRun {
   id                       String                    @id @default(uuid(7)) @db.Uuid
   gameId                   String                    @map("game_id") @db.Uuid
@@ -167,7 +169,7 @@ model GameAggregationRun {
   sourceLanguage           String?                   @map("source_language")
   /// Modèle d'IA (ex. "claude-haiku-5-5"), null sans appel à l'IA
   model                    String?
-  /// Durée totale de l'opération (appels IA + enregistrement), en ms
+  /// Durée totale de l'opération (appels IA + enregistrement), en ms ; 0 tant que RUNNING
   durationMs               Int                       @map("duration_ms")
   /// Durée cumulée des appels à l'IA, en ms
   aiDurationMs             Int?                      @map("ai_duration_ms")

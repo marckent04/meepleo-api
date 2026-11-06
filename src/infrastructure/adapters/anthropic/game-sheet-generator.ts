@@ -24,7 +24,6 @@ import {
 /** Relances maximales quand la boucle d'outils serveur s'interrompt (`pause_turn`). */
 const MAX_CONTINUATIONS = 5
 const MAX_TOKENS = 16_000
-const EFFORT = 'medium'
 
 /**
  * Variantes de base : les variantes `_20260209` (filtrage dynamique) ne
@@ -43,11 +42,6 @@ const WEB_TOOLS: Anthropic.ToolUnion[] = [
 
 const OUTPUT_FORMAT = zodOutputFormat(GameSheetOutputSchema)
 const PROMPT_VERSION = promptVersion(GAME_SHEET_SYSTEM_PROMPT, OUTPUT_FORMAT)
-const SETTINGS = toAiCallSettings({
-  effort: EFFORT,
-  maxTokens: MAX_TOKENS,
-  tools: WEB_TOOLS,
-})
 
 /** Génère une fiche de règles : recherche d'une règle sur le web, puis extraction typée. */
 @Injectable()
@@ -71,7 +65,15 @@ export class GameSheetGenerator {
    * brute…) en cas d'échec, y compris après des appels réussis.
    */
   async generate(game: Game, language: string): Promise<Traced<GameSheet>> {
-    const recorder = new AiTraceRecorder(this.model, PROMPT_VERSION, SETTINGS)
+    const recorder = new AiTraceRecorder(
+      this.model,
+      PROMPT_VERSION,
+      toAiCallSettings({
+        effort: this.config.sheetEffort,
+        maxTokens: MAX_TOKENS,
+        tools: WEB_TOOLS,
+      }),
+    )
     try {
       const result = await this.run(game, language, recorder)
       const trace = recorder.trace()
@@ -140,7 +142,10 @@ export class GameSheetGenerator {
         system: GAME_SHEET_SYSTEM_PROMPT,
         messages,
         tools: WEB_TOOLS,
-        output_config: { effort: EFFORT, format: OUTPUT_FORMAT },
+        output_config: {
+          effort: this.config.sheetEffort,
+          format: OUTPUT_FORMAT,
+        },
       })
     } catch (error) {
       if (error instanceof Anthropic.APIError) {
