@@ -30,6 +30,13 @@ export class UserFavoriteRepository {
     await this.txHost.tx.userFavorite.deleteMany({ where: { userId, gameId } })
   }
 
+  /** Number of (non-deleted) favorite games. */
+  count(userId: string): Promise<number> {
+    return this.txHost.tx.userFavorite.count({
+      where: { userId, game: { deletedAt: null } },
+    })
+  }
+
   /** Favorite games, most recently added first; name in `language` when known. */
   async listByUser(userId: string, language: string): Promise<FavoriteEntry[]> {
     const rows = await this.txHost.tx.userFavorite.findMany({

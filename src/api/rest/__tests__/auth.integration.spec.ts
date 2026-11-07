@@ -227,7 +227,12 @@ describe('/v1/auth (integration)', () => {
     })
 
     it('returns the user for a valid access token', async () => {
-      queryExecute.mockResolvedValue(user)
+      queryExecute.mockResolvedValue({
+        ...user,
+        catalogCount: 3,
+        wishlistCount: 2,
+        favoritesCount: 1,
+      })
       const { token } = await app.get(TokenService).signAccessToken(user.id)
 
       const response = await app.inject({
@@ -237,7 +242,12 @@ describe('/v1/auth (integration)', () => {
       })
 
       expect(response.statusCode).toBe(200)
-      expect(response.json().username).toBe('ada')
+      expect(response.json()).toMatchObject({
+        username: 'ada',
+        catalogCount: 3,
+        wishlistCount: 2,
+        favoritesCount: 1,
+      })
     })
 
     it('does not accept a refresh token as an access token', async () => {

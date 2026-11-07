@@ -8,7 +8,7 @@ import {
   USERNAME_MIN_LENGTH,
   USERNAME_PATTERN,
 } from '@/domain/auth/auth.constants'
-import type { AuthTokens, User } from '@/shared/types'
+import type { AuthTokens, CurrentUser, User } from '@/shared/types'
 
 export const RegisterBodySchema = z.object({
   email: z
@@ -108,6 +108,38 @@ export class UserResponseDto extends createZodDto(UserResponseSchema, {
       email: user.email,
       username: user.username,
       createdAt: user.createdAt.toISOString(),
+    }
+  }
+}
+
+export const CurrentUserResponseSchema = UserResponseSchema.extend({
+  catalogCount: z
+    .number()
+    .int()
+    .nonnegative()
+    .describe('Nombre de jeux dans le catalogue (bibliothèque)'),
+  wishlistCount: z
+    .number()
+    .int()
+    .nonnegative()
+    .describe('Nombre de jeux dans la liste de souhaits'),
+  favoritesCount: z
+    .number()
+    .int()
+    .nonnegative()
+    .describe('Nombre de jeux favoris'),
+}).describe("Compte de l'utilisateur connecté")
+
+export class CurrentUserResponseDto extends createZodDto(
+  CurrentUserResponseSchema,
+  { codec: true },
+) {
+  static fromDomain(user: CurrentUser): CurrentUserResponseDto {
+    return {
+      ...UserResponseDto.fromDomain(user),
+      catalogCount: user.catalogCount,
+      wishlistCount: user.wishlistCount,
+      favoritesCount: user.favoritesCount,
     }
   }
 }

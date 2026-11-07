@@ -20,6 +20,7 @@ import { SUPPORTED_LOCALES } from '@/shared/i18n/locale'
 import { CurrentUserId, Public } from '../../common/decorators'
 import {
   AuthTokensResponseDto,
+  CurrentUserResponseDto,
   LoginBodyDto,
   RefreshTokenBodyDto,
   RegisterBodyDto,
@@ -106,12 +107,12 @@ export class AuthController {
   @Get('me')
   @ApiBearerAuth()
   @ApiOperation({ summary: "Compte de l'utilisateur connecté" })
-  @ZodResponse({ status: 200, type: UserResponseDto })
+  @ZodResponse({ status: 200, type: CurrentUserResponseDto })
   @ApiErrorResponses(401, 500)
-  async me(@CurrentUserId() userId: string): Promise<UserResponseDto> {
+  async me(@CurrentUserId() userId: string): Promise<CurrentUserResponseDto> {
     const user = await this.queryBus.execute(
       new GetCurrentUserQuery({ userId }),
     )
-    return UserResponseDto.fromDomain(user)
+    return CurrentUserResponseDto.fromDomain(user)
   }
 }

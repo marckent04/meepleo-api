@@ -51,6 +51,13 @@ export class UserGameRepository {
     })
   }
 
+  /** Nombre de jeux (non supprimés) d'une liste. */
+  count(userId: string, status: UserGameStatus): Promise<number> {
+    return this.txHost.tx.userGame.count({
+      where: { userId, status: toDbStatus(status), game: { deletedAt: null } },
+    })
+  }
+
   /** Jeux d'une liste, derniers ajoutés d'abord ; nom dans `language` s'il est connu. */
   async listByUser(
     userId: string,

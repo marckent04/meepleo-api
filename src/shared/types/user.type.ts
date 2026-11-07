@@ -6,6 +6,13 @@ export type User = {
   createdAt: Date
 }
 
+/** Compte de l'utilisateur connecté, avec le nombre de jeux de chacune de ses listes. */
+export type CurrentUser = User & {
+  catalogCount: number
+  wishlistCount: number
+  favoritesCount: number
+}
+
 /** Utilisateur et empreinte argon2 de son mot de passe (login uniquement). */
 export type UserCredentials = User & { passwordHash: string }
 
