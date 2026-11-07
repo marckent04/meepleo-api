@@ -19,6 +19,6 @@ export class ListCatalogHandler extends AppQueryHandler<
   }
 
   handle({ userId, language }: ListCatalogQuery): Promise<CatalogEntry[]> {
-    return this.userGameRepository.listByUser(userId, language)
+    return this.userGameRepository.listByUser(userId, language, 'owned')
   }
 }

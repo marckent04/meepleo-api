@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { TransactionHost } from '@nestjs-cls/transactional'
 import type { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma'
-import type { CatalogEntry, GameCategory } from '@/shared/types'
+import { ConflictError } from '@/shared/errors'
+import type { CatalogEntry, GameCategory, UserGameStatus } from '@/shared/types'
 import type { PrismaService } from '../prisma.service'
 import { rethrowPrismaError } from '../prisma-errors'
 
@@ -13,27 +14,51 @@ export class UserGameRepository {
     >,
   ) {}
 
-  /** Idempotent : un jeu déjà dans le catalogue est ignoré. */
-  async add(userId: string, gameId: string): Promise<void> {
+  /**
+   * Idempotent. Un jeu n'a qu'un statut par utilisateur :
+   * - `owned` : ajoute le jeu, ou le fait passer de la liste de souhaits à la bibliothèque ;
+   * - `wishlist` : ajoute le jeu, mais lève un conflit (409) s'il est déjà possédé.
+   */
+  async add(
+    userId: string,
+    gameId: string,
+    status: UserGameStatus,
+  ): Promise<void> {
     try {
-      await this.txHost.tx.userGame.createMany({
-        data: [{ userId, gameId }],
-        skipDuplicates: true,
+      const row = await this.txHost.tx.userGame.upsert({
+        where: { userId_gameId: { userId, gameId } },
+        create: { userId, gameId, status: toDbStatus(status) },
+        update: status === 'owned' ? { status: 'OWNED' } : {},
+        select: { status: true },
       })
+      if (status === 'wishlist' && row.status === 'OWNED') {
+        throw new ConflictError('Game is already in the library')
+      }
     } catch (error) {
+      if (error instanceof ConflictError) throw error
       rethrowPrismaError(error)
     }
   }
 
-  /** Idempotent : un jeu absent du catalogue est ignoré. */
-  async remove(userId: string, gameId: string): Promise<void> {
-    await this.txHost.tx.userGame.deleteMany({ where: { userId, gameId } })
+  /** Idempotent : un jeu absent de cette liste est ignoré (l'autre liste n'est jamais touchée). */
+  async remove(
+    userId: string,
+    gameId: string,
+    status: UserGameStatus,
+  ): Promise<void> {
+    await this.txHost.tx.userGame.deleteMany({
+      where: { userId, gameId, status: toDbStatus(status) },
+    })
   }
 
-  /** Jeux du catalogue, derniers ajoutés d'abord ; nom dans `language` s'il est connu. */
-  async listByUser(userId: string, language: string): Promise<CatalogEntry[]> {
+  /** Jeux d'une liste, derniers ajoutés d'abord ; nom dans `language` s'il est connu. */
+  async listByUser(
+    userId: string,
+    language: string,
+    status: UserGameStatus,
+  ): Promise<CatalogEntry[]> {
     const rows = await this.txHost.tx.userGame.findMany({
-      where: { userId, game: { deletedAt: null } },
+      where: { userId, status: toDbStatus(status), game: { deletedAt: null } },
       orderBy: { createdAt: 'desc' },
       select: {
         createdAt: true,
@@ -64,4 +89,8 @@ export class UserGameRepository {
       }
     })
   }
+}
+
+function toDbStatus(status: UserGameStatus): 'OWNED' | 'WISHLIST' {
+  return status === 'owned' ? 'OWNED' : 'WISHLIST'
 }

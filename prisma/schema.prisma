@@ -247,17 +247,26 @@ model RefreshToken {
   @@map("refresh_tokens")
 }
 
-/// Jeu ajouté au catalogue personnel d'un utilisateur
+/// Statut d'un jeu pour un utilisateur : dans sa bibliothèque ou dans sa liste de souhaits
+enum UserGameStatus {
+  OWNED // possédé (bibliothèque)
+  WISHLIST // souhaité, non possédé
+
+  @@map("user_game_status")
+}
+
+/// Jeu lié à un utilisateur : bibliothèque ou liste de souhaits (jamais les deux)
 model UserGame {
-  id        String   @id @default(uuid(7)) @db.Uuid
-  userId    String   @map("user_id") @db.Uuid
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  gameId    String   @map("game_id") @db.Uuid
-  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  id        String         @id @default(uuid(7)) @db.Uuid
+  userId    String         @map("user_id") @db.Uuid
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameId    String         @map("game_id") @db.Uuid
+  game      Game           @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  status    UserGameStatus @default(OWNED)
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
 
   @@unique([userId, gameId])
-  @@index([userId])
+  @@index([userId, status])
   @@map("user_games")
 }
 

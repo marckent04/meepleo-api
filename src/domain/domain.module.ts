@@ -7,6 +7,7 @@ import * as gameHandlers from './game/handlers'
 import * as gameSagas from './game/sagas'
 import * as gameSheetHandlers from './game-sheet/handlers'
 import * as healthHandlers from './health/handlers'
+import * as wishlistHandlers from './wishlist/handlers'
 
 /**
  * Ajouter un handler = l'exporter depuis le barrel `handlers` de sa feature ;
@@ -19,6 +20,7 @@ import * as healthHandlers from './health/handlers'
     ...Object.values(authHandlers),
     ...Object.values(catalogHandlers),
     ...Object.values(favoritesHandlers),
+    ...Object.values(wishlistHandlers),
     ...Object.values(gameSheetHandlers),
     ...Object.values(gameHandlers),
     ...Object.values(gameSagas),

@@ -24,6 +24,6 @@ export class AddGameToCatalogHandler extends AppCommandHandler<
   async handle({ userId, gameId }: AddGameToCatalogCommand): Promise<void> {
     // Lève GAME_NOT_FOUND (404) si le jeu n'existe pas ou est supprimé.
     await this.gameRepository.findById(gameId)
-    await this.userGameRepository.add(userId, gameId)
+    await this.userGameRepository.add(userId, gameId, 'owned')
   }
 }

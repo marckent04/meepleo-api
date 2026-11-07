@@ -18,6 +18,6 @@ export class RemoveGameFromCatalogHandler extends AppCommandHandler<
   }
 
   handle({ userId, gameId }: RemoveGameFromCatalogCommand): Promise<void> {
-    return this.userGameRepository.remove(userId, gameId)
+    return this.userGameRepository.remove(userId, gameId, 'owned')
   }
 }

@@ -54,7 +54,7 @@ describe('catalog handlers', () => {
 
     await add.execute(new AddGameToCatalogCommand({ userId, gameId }))
 
-    expect(userGameRepository.add).toHaveBeenCalledWith(userId, gameId)
+    expect(userGameRepository.add).toHaveBeenCalledWith(userId, gameId, 'owned')
   })
 
   it('does not add an unknown game', async () => {
@@ -78,7 +78,11 @@ describe('catalog handlers', () => {
   it('removes a game from the catalog', async () => {
     await remove.execute(new RemoveGameFromCatalogCommand({ userId, gameId }))
 
-    expect(userGameRepository.remove).toHaveBeenCalledWith(userId, gameId)
+    expect(userGameRepository.remove).toHaveBeenCalledWith(
+      userId,
+      gameId,
+      'owned',
+    )
   })
 
   it('lists the catalog in the requested language', async () => {
@@ -90,6 +94,10 @@ describe('catalog handlers', () => {
     )
 
     expect(result).toBe(entries)
-    expect(userGameRepository.listByUser).toHaveBeenCalledWith(userId, 'fr')
+    expect(userGameRepository.listByUser).toHaveBeenCalledWith(
+      userId,
+      'fr',
+      'owned',
+    )
   })
 })
