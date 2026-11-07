@@ -42,7 +42,7 @@ export class PrismaService
     this.logger.setContext(PrismaService.name)
   }
 
-  async onModuleInit(): Promise<void> {
+  onModuleInit(): void {
     if (this.logSlowQueries) {
       // Les paramètres ne sont jamais loggés : ils peuvent contenir des secrets.
       this.$on('query', (event) => {
@@ -54,7 +54,8 @@ export class PrismaService
         }
       })
     }
-    await this.$connect()
+    // Pas de $connect() bloquant : le pool pg ouvre la connexion à la première
+    // requête, ce qui évite un aller-retour DB pendant le cold start Cloud Run.
   }
 
   async onModuleDestroy(): Promise<void> {

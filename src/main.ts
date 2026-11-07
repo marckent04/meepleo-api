@@ -6,7 +6,6 @@ import {
 } from '@nestjs/platform-fastify'
 import { useContainer } from 'class-validator'
 import { Logger as PinoNestLogger } from 'nestjs-pino'
-import { setupSwagger } from './api/rest/swagger'
 import { AppModule } from './app.module'
 import { APP_CONFIG, type AppConfig } from './shared/config'
 
@@ -30,6 +29,8 @@ async function bootstrap(): Promise<void> {
 
   const appConfig = app.get<AppConfig>(APP_CONFIG.KEY)
   if (appConfig.nodeEnv !== 'production') {
+    // Import dynamique : la génération de la doc n'est jamais chargée en production.
+    const { setupSwagger } = await import('./api/rest/swagger')
     setupSwagger(app, appConfig.version)
   }
 

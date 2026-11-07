@@ -14,7 +14,6 @@ RUN yarn build
 # ---- migrate : job one-shot lancé avant chaque déploiement ----
 FROM builder AS migrate
 # Doit être fourni à l'exécution : une valeur vide fait échouer la validation Zod.
-ENV DATABASE_URL=
 CMD ["sh", "-c", "yarn db:deploy && yarn db:seed"]
 
 # ---- prod-deps : dépendances de production uniquement ----
@@ -31,6 +30,10 @@ ENV NODE_ENV=production
 COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY package.json ./
-EXPOSE 3000
+# Cache de compilation V8 pré-chauffé au build avec le binaire node du runtime
+# (même version garantie) : moins de parsing/compilation au cold start.
+ENV NODE_COMPILE_CACHE=/app/.cache/node
+RUN ["/nodejs/bin/node", "-e", "require('./dist/app.module')"]
+EXPOSE 8080
 USER nonroot
 CMD ["dist/main.js"]
