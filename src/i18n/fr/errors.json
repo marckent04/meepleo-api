@@ -15,6 +15,7 @@
   "LANGUAGE_REQUIRED": "L'en-tête Accept-Language est obligatoire.",
   "UNSUPPORTED_LANGUAGE": "Cette langue n'est pas prise en charge. Langues disponibles : {supported}.",
   "EMAIL_ALREADY_USED": "Un compte existe déjà avec cet email.",
+  "DISPOSABLE_EMAIL_NOT_ALLOWED": "Les adresses email jetables ne sont pas acceptées.",
   "USERNAME_ALREADY_USED": "Ce nom d'utilisateur est déjà pris.",
   "INVALID_CREDENTIALS": "Nom d'utilisateur ou mot de passe incorrect.",
   "INVALID_REFRESH_TOKEN": "Votre session a expiré. Reconnectez-vous."

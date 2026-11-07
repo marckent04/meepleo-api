@@ -1,8 +1,11 @@
 import { CommandHandler } from '@nestjs/cqrs'
-import { PasswordHasher } from '@/infrastructure/adapters/auth'
+import {
+  DisposableEmailChecker,
+  PasswordHasher,
+} from '@/infrastructure/adapters/auth'
 import { UserRepository } from '@/infrastructure/database/repositories'
 import { LoggerService } from '@/infrastructure/logger/logger.service'
-import { ConflictError, ErrorCode } from '@/shared/errors'
+import { BusinessRuleError, ConflictError, ErrorCode } from '@/shared/errors'
 import type { User } from '@/shared/types'
 import { AppCommandHandler } from '@/utils/cqrs.utils'
 import { RegisterUserCommand } from '../commands'
@@ -15,6 +18,7 @@ export class RegisterUserHandler extends AppCommandHandler<
   constructor(
     private readonly userRepository: UserRepository,
     private readonly passwordHasher: PasswordHasher,
+    private readonly disposableEmailChecker: DisposableEmailChecker,
     logger: LoggerService,
   ) {
     super(logger, 'user', RegisterUserCommand.name)
@@ -26,6 +30,12 @@ export class RegisterUserHandler extends AppCommandHandler<
     username,
     password,
   }: RegisterUserCommand): Promise<User> {
+    if (this.disposableEmailChecker.isDisposable(email)) {
+      throw new BusinessRuleError(
+        ErrorCode.DISPOSABLE_EMAIL_NOT_ALLOWED,
+        'Disposable email not allowed',
+      )
+    }
     if (await this.userRepository.existsByEmail(email)) {
       throw new ConflictError('Email already used', {
         code: ErrorCode.EMAIL_ALREADY_USED,

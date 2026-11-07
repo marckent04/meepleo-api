@@ -7,7 +7,7 @@ import {
   GameSheetGenerator,
   GameSheetTranslator,
 } from './anthropic'
-import { PasswordHasher, TokenService } from './auth'
+import { DisposableEmailChecker, PasswordHasher, TokenService } from './auth'
 
 /**
  * Intégrations externes hors base de données (API tierces, SDK…). Chaque
@@ -25,12 +25,14 @@ import { PasswordHasher, TokenService } from './auth'
     anthropicClientProvider,
     GameSheetGenerator,
     GameSheetTranslator,
+    DisposableEmailChecker,
     PasswordHasher,
     TokenService,
   ],
   exports: [
     GameSheetGenerator,
     GameSheetTranslator,
+    DisposableEmailChecker,
     PasswordHasher,
     TokenService,
   ],

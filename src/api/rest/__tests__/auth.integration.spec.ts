@@ -17,7 +17,12 @@ import {
 import { TokenService } from '@/infrastructure/adapters/auth'
 import { PrismaService } from '@/infrastructure/database/prisma.service'
 import { LoggerService } from '@/infrastructure/logger/logger.service'
-import { ConflictError, ErrorCode, UnauthenticatedError } from '@/shared/errors'
+import {
+  BusinessRuleError,
+  ConflictError,
+  ErrorCode,
+  UnauthenticatedError,
+} from '@/shared/errors'
 
 const headers = { 'accept-language': 'fr' }
 const user = {
@@ -128,6 +133,25 @@ describe('/v1/auth (integration)', () => {
 
       expect(response.statusCode).toBe(409)
       expect(response.json().code).toBe(ErrorCode.EMAIL_ALREADY_USED)
+    })
+
+    it('returns 422 DISPOSABLE_EMAIL_NOT_ALLOWED', async () => {
+      commandExecute.mockRejectedValue(
+        new BusinessRuleError(
+          ErrorCode.DISPOSABLE_EMAIL_NOT_ALLOWED,
+          'Disposable email not allowed',
+        ),
+      )
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/v1/auth/register',
+        headers,
+        payload,
+      })
+
+      expect(response.statusCode).toBe(422)
+      expect(response.json().code).toBe(ErrorCode.DISPOSABLE_EMAIL_NOT_ALLOWED)
     })
   })
 

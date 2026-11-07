@@ -2774,6 +2774,11 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
+disposable-email-domains@^1.0.62:
+  version "1.0.62"
+  resolved "https://registry.yarnpkg.com/disposable-email-domains/-/disposable-email-domains-1.0.62.tgz#bb66d3c387397dd8938aaf63a90505984f729265"
+  integrity sha512-LBQvhRw7mznQTPoyZbsmYeNOZt1pN5aCsx4BAU/3siVFuiM9f2oyKzUaB8v1jbxFjE3aYqYiMo63kAL4pHgfWQ==
+
 dot-prop@^5.1.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/dot-prop/-/dot-prop-5.3.0.tgz#90ccce708cd9cd82cc4dc8c3ddd9abdd55b20e88"

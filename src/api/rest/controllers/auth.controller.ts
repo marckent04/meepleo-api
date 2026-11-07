@@ -53,7 +53,7 @@ export class AuthController {
       "Email, nom d'utilisateur et mot de passe. Le mot de passe est haché avec argon2id. Connectez-vous ensuite via `/auth/login`.",
   })
   @ZodResponse({ status: 201, type: UserResponseDto })
-  @ApiErrorResponses(400, 409, 429, 500)
+  @ApiErrorResponses(400, 409, 422, 429, 500)
   async register(@Body() body: RegisterBodyDto): Promise<UserResponseDto> {
     const user = await this.commandBus.execute(new RegisterUserCommand(body))
     return UserResponseDto.fromDomain(user)

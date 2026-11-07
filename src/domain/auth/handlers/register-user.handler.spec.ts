@@ -1,9 +1,13 @@
 import { Test } from '@nestjs/testing'
 import { mockLoggerService } from '@/__tests__/utils/logger-service.mock'
-import { PasswordHasher } from '@/infrastructure/adapters/auth'
+import {
+  DisposableEmailChecker,
+  PasswordHasher,
+} from '@/infrastructure/adapters/auth'
 import { UserRepository } from '@/infrastructure/database/repositories'
 import { LoggerService } from '@/infrastructure/logger/logger.service'
 import {
+  BusinessRuleError,
   ConflictError,
   CQRSValidationException,
   ErrorCode,
@@ -26,6 +30,7 @@ describe('RegisterUserHandler', () => {
     create: vi.fn(),
   }
   const passwordHasher = { hash: vi.fn() }
+  const disposableEmailChecker = { isDisposable: vi.fn() }
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -33,6 +38,7 @@ describe('RegisterUserHandler', () => {
         RegisterUserHandler,
         { provide: UserRepository, useValue: userRepository },
         { provide: PasswordHasher, useValue: passwordHasher },
+        { provide: DisposableEmailChecker, useValue: disposableEmailChecker },
         { provide: LoggerService, useValue: mockLoggerService },
       ],
     }).compile()
@@ -41,6 +47,7 @@ describe('RegisterUserHandler', () => {
     userRepository.existsByUsername.mockResolvedValue(false)
     userRepository.create.mockResolvedValue(user)
     passwordHasher.hash.mockResolvedValue('hashed')
+    disposableEmailChecker.isDisposable.mockReturnValue(false)
   })
 
   afterEach(() => {
@@ -64,6 +71,21 @@ describe('RegisterUserHandler', () => {
       username: 'ada',
       passwordHash: 'hashed',
     })
+  })
+
+  it('rejects a disposable email before any lookup', async () => {
+    disposableEmailChecker.isDisposable.mockReturnValue(true)
+
+    const result = handler.execute(command())
+    await expect(result).rejects.toBeInstanceOf(BusinessRuleError)
+    await expect(result).rejects.toMatchObject({
+      code: ErrorCode.DISPOSABLE_EMAIL_NOT_ALLOWED,
+    })
+    expect(disposableEmailChecker.isDisposable).toHaveBeenCalledWith(
+      'ada@example.com',
+    )
+    expect(userRepository.existsByEmail).not.toHaveBeenCalled()
+    expect(userRepository.create).not.toHaveBeenCalled()
   })
 
   it('rejects an email already used', async () => {

@@ -21,6 +21,7 @@ export enum ErrorCode {
   UNSUPPORTED_LANGUAGE = 'UNSUPPORTED_LANGUAGE',
   EMAIL_ALREADY_USED = 'EMAIL_ALREADY_USED',
   USERNAME_ALREADY_USED = 'USERNAME_ALREADY_USED',
+  DISPOSABLE_EMAIL_NOT_ALLOWED = 'DISPOSABLE_EMAIL_NOT_ALLOWED',
   INVALID_CREDENTIALS = 'INVALID_CREDENTIALS',
   INVALID_REFRESH_TOKEN = 'INVALID_REFRESH_TOKEN',
 }
@@ -92,6 +93,10 @@ export const ERROR_CODES: Record<
   [ErrorCode.EMAIL_ALREADY_USED]: {
     expected: true,
     description: 'Un compte existe déjà avec cet email',
+  },
+  [ErrorCode.DISPOSABLE_EMAIL_NOT_ALLOWED]: {
+    expected: true,
+    description: "Les adresses email jetables sont refusées à l'inscription",
   },
   [ErrorCode.USERNAME_ALREADY_USED]: {
     expected: true,
