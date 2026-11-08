@@ -36,6 +36,11 @@ export class TranslateGameSheetHandler extends AppCommandHandler<
         },
       })
     }
-    return this.gameSheetTranslator.translate(sheet, command.targetLanguage)
+    const game = await this.gameRepository.findById(command.gameId)
+    return this.gameSheetTranslator.translate(
+      game,
+      sheet,
+      command.targetLanguage,
+    )
   }
 }

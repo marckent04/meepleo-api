@@ -3,7 +3,7 @@ import { mockLoggerService } from '@/__tests__/utils/logger-service.mock'
 import type { LoggerService } from '@/infrastructure/logger/logger.service'
 import type { AnthropicConfig } from '@/shared/config'
 import { AiCallFailedError, ErrorCode, InternalError } from '@/shared/errors'
-import { GameSheet, GameSheetTranslation } from '@/shared/types'
+import { Game, GameSheet, GameSheetTranslation } from '@/shared/types'
 import { GAME_SHEET_TRANSLATION_SYSTEM_PROMPT } from './game-sheet-translation.prompt'
 import type { GameSheetTranslationOutput } from './game-sheet-translation.schema'
 import { GameSheetTranslator } from './game-sheet-translator'
@@ -15,6 +15,8 @@ const config: AnthropicConfig = {
   sheetEffort: 'medium',
   sheetTranslationModel: 'claude-haiku-5-5',
 }
+
+const game = new Game(gameId, 'Dnup', 2021, 'Gigamic', null, 123)
 
 const sheet = new GameSheet(
   gameId,
@@ -103,10 +105,11 @@ describe('GameSheetTranslator', () => {
     expect(translator.model).toBe('claude-haiku-5-5')
   })
 
-  it('translates the sheet in a single call without web tools', async () => {
+  it('translates the sheet with capped web tools for the game name', async () => {
     parse.mockResolvedValue(response())
 
     const { result: translation, trace } = await translator.translate(
+      game,
       sheet,
       'en',
     )
@@ -117,8 +120,13 @@ describe('GameSheetTranslator', () => {
       model: 'claude-haiku-5-5',
       system: GAME_SHEET_TRANSLATION_SYSTEM_PROMPT,
     })
-    expect(request.tools).toBeUndefined()
+    expect(request.tools.map((t: { type: string }) => t.type)).toEqual([
+      'web_search_20250305',
+      'web_fetch_20250910',
+    ])
     const prompt = request.messages[0].content
+    expect(prompt).toContain('Catalog game: Dnup (2021)')
+    expect(prompt).toContain('Publisher: Gigamic — BGG id: 123')
     expect(prompt).toContain('Source language: fr')
     expect(prompt).toContain('Target language: en')
     expect(prompt).toContain('"id": "turn"')
@@ -141,7 +149,14 @@ describe('GameSheetTranslator', () => {
       requestCount: 1,
       stopReason: 'end_turn',
       output,
-      settings: { effort: 'low', maxTokens: 16_000, tools: [] },
+      settings: {
+        effort: 'low',
+        maxTokens: 16_000,
+        tools: [
+          { name: 'web_search', maxUses: 2 },
+          { name: 'web_fetch', maxUses: 1 },
+        ],
+      },
       usage: { inputTokens: 10, outputTokens: 20 },
     })
   })
@@ -159,7 +174,7 @@ describe('GameSheetTranslator', () => {
       response({ parsed_output: { ...output, ...changes } }),
     )
 
-    const error = await translator.translate(sheet, 'en').catch((e) => e)
+    const error = await translator.translate(game, sheet, 'en').catch((e) => e)
 
     expect(error).toBeInstanceOf(AiCallFailedError)
     expect(error.cause).toBeInstanceOf(InternalError)
@@ -174,9 +189,40 @@ describe('GameSheetTranslator', () => {
   ])('fails on %s', async (_, overrides) => {
     parse.mockResolvedValue(response(overrides))
 
-    await expect(translator.translate(sheet, 'en')).rejects.toMatchObject({
-      code: ErrorCode.GAME_SHEET_TRANSLATION_FAILED,
+    await expect(translator.translate(game, sheet, 'en')).rejects.toMatchObject(
+      {
+        code: ErrorCode.GAME_SHEET_TRANSLATION_FAILED,
+      },
+    )
+  })
+
+  it('resumes a paused server tool loop', async () => {
+    const paused = response({
+      stop_reason: 'pause_turn',
+      content: [{ type: 'server_tool_use', id: 'srv_1', name: 'web_search' }],
+      parsed_output: null,
     })
+    parse.mockResolvedValueOnce(paused).mockResolvedValueOnce(response())
+
+    const { trace } = await translator.translate(game, sheet, 'en')
+
+    expect(parse).toHaveBeenCalledTimes(2)
+    expect(parse.mock.calls[1][0].messages[1]).toEqual({
+      role: 'assistant',
+      content: paused.content,
+    })
+    expect(trace).toMatchObject({ requestCount: 2, stopReason: 'end_turn' })
+  })
+
+  it('gives up after too many pause_turn continuations', async () => {
+    parse.mockResolvedValue(
+      response({ stop_reason: 'pause_turn', parsed_output: null }),
+    )
+
+    const error = await translator.translate(game, sheet, 'en').catch((e) => e)
+
+    expect(error.code).toBe(ErrorCode.GAME_SHEET_TRANSLATION_FAILED)
+    expect(parse).toHaveBeenCalledTimes(4)
   })
 
   it('wraps Anthropic API errors', async () => {
@@ -184,7 +230,7 @@ describe('GameSheetTranslator', () => {
       new Anthropic.APIError(529, undefined, 'Overloaded', new Headers()),
     )
 
-    const error = await translator.translate(sheet, 'en').catch((e) => e)
+    const error = await translator.translate(game, sheet, 'en').catch((e) => e)
 
     expect(error).toBeInstanceOf(AiCallFailedError)
     expect(error.code).toBe(ErrorCode.GAME_SHEET_TRANSLATION_FAILED)

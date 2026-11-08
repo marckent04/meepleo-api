@@ -4,7 +4,7 @@ import { GameSheetTranslator } from '@/infrastructure/adapters/anthropic'
 import { GameRepository } from '@/infrastructure/database/repositories'
 import { LoggerService } from '@/infrastructure/logger/logger.service'
 import { CQRSValidationException, NotFoundError } from '@/shared/errors'
-import type { GameSheet, GameSheetTranslation } from '@/shared/types'
+import type { Game, GameSheet, GameSheetTranslation } from '@/shared/types'
 import { TranslateGameSheetCommand } from '../commands'
 import { TranslateGameSheetHandler } from './translate-game-sheet.handler'
 
@@ -17,7 +17,7 @@ const command = new TranslateGameSheetCommand({
 
 describe('TranslateGameSheetHandler', () => {
   let handler: TranslateGameSheetHandler
-  const gameRepository = { findSheet: vi.fn() }
+  const gameRepository = { findSheet: vi.fn(), findById: vi.fn() }
   const gameSheetTranslator = { translate: vi.fn() }
 
   beforeEach(async () => {
@@ -38,14 +38,21 @@ describe('TranslateGameSheetHandler', () => {
 
   it('translates the stored sheet of the source language', async () => {
     const sheet = { gameId, language: 'fr' } as GameSheet
+    const game = { id: gameId, name: 'Bellevue' } as Game
     const translation = { gameId } as GameSheetTranslation
     gameRepository.findSheet.mockResolvedValue(sheet)
+    gameRepository.findById.mockResolvedValue(game)
     gameSheetTranslator.translate.mockResolvedValue(translation)
 
     const result = await handler.execute(command)
 
     expect(gameRepository.findSheet).toHaveBeenCalledWith(gameId, 'fr')
-    expect(gameSheetTranslator.translate).toHaveBeenCalledWith(sheet, 'en')
+    expect(gameRepository.findById).toHaveBeenCalledWith(gameId)
+    expect(gameSheetTranslator.translate).toHaveBeenCalledWith(
+      game,
+      sheet,
+      'en',
+    )
     expect(result).toBe(translation)
   })
 

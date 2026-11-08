@@ -22,7 +22,11 @@ const OrderedEntrySchema = EntrySchema.extend({ order: z.number().int() })
 
 export const GameSheetOutputSchema = z.object({
   game: z.object({
-    localized_name: z.string(),
+    localized_name: z
+      .string()
+      .describe(
+        'Title the game is published under in the sheet language, which may differ from the catalog name',
+      ),
     edition: UnknownText,
     publisher: UnknownText,
     rule_book_url: UnknownText,
