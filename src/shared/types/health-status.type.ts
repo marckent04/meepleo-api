@@ -1,4 +1,4 @@
-/** Résultat d'un contrôle de santé de l'API. */
+/** Result of an API health check. */
 export class HealthStatus {
   constructor(
     readonly databaseLatencyMs: number,

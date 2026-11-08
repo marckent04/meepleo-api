@@ -4,14 +4,14 @@ import type { GameSheetTranslation, Traced } from '@/shared/types'
 
 export type TranslateGameSheetCommandParams = {
   gameId: string
-  /** Langue (ISO 639-1) d'une fiche déjà agrégée. */
+  /** Source language (ISO 639-1) of an already aggregated sheet. */
   sourceLanguage: string
-  /** Langue (ISO 639-1) de la traduction. */
+  /** Language (ISO 639-1) of the translation. */
   targetLanguage: string
 }
 
-/** Traduit par IA une fiche existante dans une autre langue, sans la persister.
- * Renvoie aussi la trace de l'appel à l'IA (durée, tokens, sortie brute). */
+/** Translates an existing sheet into another language with AI, without persisting it.
+ * Also returns the AI call trace (duration, tokens, raw output). */
 export class TranslateGameSheetCommand extends Command<
   Traced<GameSheetTranslation>
 > {

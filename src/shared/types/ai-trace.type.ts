@@ -1,4 +1,4 @@
-/** Consommation d'un ou plusieurs appels à l'IA, cumulée. */
+/** Usage of one or more AI calls, accumulated. */
 export type AiUsage = {
   inputTokens: number
   outputTokens: number
@@ -8,7 +8,7 @@ export type AiUsage = {
   webFetchRequests: number
 }
 
-/** Paramètres d'appel au modèle, conservés pour comparer les essais. */
+/** Model call parameters, kept to compare attempts. */
 export type AiCallSettings = {
   effort: string
   maxTokens: number
@@ -16,27 +16,27 @@ export type AiCallSettings = {
 }
 
 /**
- * Trace d'une opération d'IA (éventuellement plusieurs appels API) :
- * conservée avec chaque agrégation pour améliorer prompts et modèles.
+ * Trace of an AI operation (possibly several API calls):
+ * kept with each aggregation to improve prompts and models.
  */
 export type AiTrace = {
-  /** Modèle effectivement utilisé (`response.model`), sinon celui demandé. */
+  /** Model actually used (`response.model`), otherwise the requested one. */
   model: string
-  /** Empreinte du prompt système et du schéma de sortie. */
+  /** Fingerprint of the system prompt and the output schema. */
   promptVersion: string
   settings: AiCallSettings
   /** Nombre d'appels API (relances `pause_turn` comprises). */
   requestCount: number
-  /** Durée cumulée des appels API, en ms. */
+  /** Accumulated duration of the API calls, in ms. */
   durationMs: number
   usage: AiUsage
-  /** `stop_reason` de la dernière réponse. */
+  /** `stop_reason` of the last response. */
   stopReason: string | null
-  /** Sortie structurée brute du modèle. */
+  /** Raw structured output of the model. */
   output: unknown
-  /** Texte de la réponse quand la sortie structurée n'a pas pu être lue. */
+  /** Response text when the structured output could not be read. */
   rawText: string | null
 }
 
-/** Résultat d'une opération d'IA accompagné de sa trace. */
+/** Result of an AI operation along with its trace. */
 export type Traced<T> = { result: T; trace: AiTrace }

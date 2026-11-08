@@ -1,13 +1,13 @@
-# Build / dépendances
+# Build / dependencies
 /dist
 /node_modules
 /coverage
 *.tsbuildinfo
 
-# Client Prisma généré (prisma generate)
+# Generated Prisma client (prisma generate)
 /src/infrastructure/database/generated/
 
-# Données Postgres locales (compose.dev.yml)
+# Local Postgres data (compose.dev.yml)
 /db-data/
 
 # Environnement

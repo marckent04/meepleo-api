@@ -14,9 +14,7 @@ export const RegisterBodySchema = z.object({
   email: z
     .email()
     .max(EMAIL_MAX_LENGTH)
-    .describe(
-      'Email du compte (sert plus tard à la récupération du mot de passe)',
-    )
+    .describe('Account email (used later for password recovery)')
     .meta({ example: 'ada@example.com' }),
   username: z
     .string()
@@ -24,13 +22,13 @@ export const RegisterBodySchema = z.object({
     .min(USERNAME_MIN_LENGTH)
     .max(USERNAME_MAX_LENGTH)
     .regex(USERNAME_PATTERN)
-    .describe("Nom d'utilisateur : lettres, chiffres et `_`, casse ignorée")
+    .describe('Username: letters, digits and `_`, case-insensitive')
     .meta({ example: 'ada_lovelace' }),
   password: z
     .string()
     .min(PASSWORD_MIN_LENGTH)
     .max(PASSWORD_MAX_LENGTH)
-    .describe('Mot de passe')
+    .describe('Password')
     .meta({ example: 'correct horse battery staple' }),
 })
 
@@ -42,20 +40,20 @@ export const LoginBodySchema = z.object({
     .trim()
     .min(1)
     .max(USERNAME_MAX_LENGTH)
-    .describe("Nom d'utilisateur (casse ignorée)")
+    .describe('Username (case-insensitive)')
     .meta({ example: 'ada_lovelace' }),
   password: z
     .string()
     .min(1)
     .max(PASSWORD_MAX_LENGTH)
-    .describe('Mot de passe')
+    .describe('Password')
     .meta({ example: 'correct horse battery staple' }),
 })
 
 export class LoginBodyDto extends createZodDto(LoginBodySchema) {}
 
 export const RefreshTokenBodySchema = z.object({
-  refreshToken: z.string().min(1).describe('Refresh token reçu au login'),
+  refreshToken: z.string().min(1).describe('Refresh token received at login'),
 })
 
 export class RefreshTokenBodyDto extends createZodDto(RefreshTokenBodySchema) {}
@@ -64,18 +62,18 @@ export const AuthTokensResponseSchema = z
   .object({
     accessToken: z
       .string()
-      .describe('JWT court à envoyer en `Authorization: Bearer`'),
+      .describe('Short-lived JWT to send as `Authorization: Bearer`'),
     refreshToken: z
       .string()
-      .describe('JWT long, à échanger sur `/auth/refresh` (usage unique)'),
+      .describe('Long-lived JWT, to exchange on `/auth/refresh` (single use)'),
     expiresIn: z
       .number()
       .int()
       .positive()
-      .describe("Durée de vie de l'access token, en secondes")
+      .describe('Access token lifetime, in seconds')
       .meta({ example: 900 }),
   })
-  .describe("Paire de tokens d'authentification")
+  .describe('Authentication token pair')
 
 export class AuthTokensResponseDto extends createZodDto(
   AuthTokensResponseSchema,
@@ -92,12 +90,12 @@ export class AuthTokensResponseDto extends createZodDto(
 
 export const UserResponseSchema = z
   .object({
-    id: z.uuid().describe("Identifiant de l'utilisateur"),
-    email: z.string().describe('Email (en minuscules)'),
-    username: z.string().describe("Nom d'utilisateur (en minuscules)"),
-    createdAt: z.iso.datetime().describe('Date de création (ISO 8601, UTC)'),
+    id: z.uuid().describe('User identifier'),
+    email: z.string().describe('Email (lowercase)'),
+    username: z.string().describe('Username (lowercase)'),
+    createdAt: z.iso.datetime().describe('Creation date (ISO 8601, UTC)'),
   })
-  .describe('Compte utilisateur')
+  .describe('User account')
 
 export class UserResponseDto extends createZodDto(UserResponseSchema, {
   codec: true,
@@ -117,18 +115,18 @@ export const CurrentUserResponseSchema = UserResponseSchema.extend({
     .number()
     .int()
     .nonnegative()
-    .describe('Nombre de jeux dans le catalogue (bibliothèque)'),
+    .describe('Number of games in the catalog (library)'),
   wishlistCount: z
     .number()
     .int()
     .nonnegative()
-    .describe('Nombre de jeux dans la liste de souhaits'),
+    .describe('Number of games in the wishlist'),
   favoritesCount: z
     .number()
     .int()
     .nonnegative()
-    .describe('Nombre de jeux favoris'),
-}).describe("Compte de l'utilisateur connecté")
+    .describe('Number of favorite games'),
+}).describe("Current user's account")
 
 export class CurrentUserResponseDto extends createZodDto(
   CurrentUserResponseSchema,

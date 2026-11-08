@@ -8,15 +8,15 @@ export const SEARCH_GAMES_MAX_LIMIT = 20
 
 export type SearchGamesQueryParams = {
   search: string
-  /** Code ISO 639-1 de la langue des noms (ex. `fr`). */
+  /** ISO 639-1 code of the names language (e.g. `fr`). */
   language: string
   limit: number
 }
 
 /**
- * Jeux dont le nom (canonique ou dans `language`) contient `search`,
- * sans tenir compte de la casse ni des accents. Les noms commençant par
- * `search` d'abord.
+ * Games whose name (canonical or in `language`) contains `search`,
+ * ignoring case and accents. Names starting with
+ * `search` first.
  */
 export class SearchGamesQuery extends Query<GameSearchResult[]> {
   @IsString()

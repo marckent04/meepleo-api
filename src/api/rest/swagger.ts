@@ -2,7 +2,7 @@ import type { NestFastifyApplication } from '@nestjs/platform-fastify'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { cleanupOpenApiDoc } from 'nestjs-zod'
 
-/** UI sur /docs, JSON sur /docs-json. Servi uniquement hors production. */
+/** UI at /docs, JSON at /docs-json. Served outside production only. */
 export function setupSwagger(
   app: NestFastifyApplication,
   version: string,

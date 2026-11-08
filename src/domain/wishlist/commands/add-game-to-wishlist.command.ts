@@ -1,7 +1,7 @@
 import { Command } from '@nestjs/cqrs'
 import { IsUUID } from 'class-validator'
 
-/** Ajoute un jeu à la liste de souhaits de l'utilisateur. Idempotent. */
+/** Adds a game to the user's wishlist. Idempotent. */
 export class AddGameToWishlistCommand extends Command<void> {
   @IsUUID()
   readonly userId: string

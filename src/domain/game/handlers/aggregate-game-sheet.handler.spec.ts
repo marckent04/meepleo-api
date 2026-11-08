@@ -33,7 +33,7 @@ import {
 } from '../events'
 import { AggregateGameSheetHandler } from './aggregate-game-sheet.handler'
 
-// La transaction est testée de bout en bout ; ici, on teste l'enchaînement.
+// The transaction is tested end to end; here we test the sequence.
 vi.mock('@nestjs-cls/transactional', async (importOriginal) => ({
   ...(await importOriginal<object>()),
   Transactional: () => () => undefined,
@@ -114,7 +114,7 @@ describe('AggregateGameSheetHandler', () => {
       durationMs: expect.any(Number),
       trace,
     })
-    // Le verrou est pris après l'appel à l'IA, juste pour l'enregistrement.
+    // The lock is taken after the AI call, only for saving.
     expect(commandBus.execute.mock.invocationCallOrder[0]).toBeLessThan(
       gameRepository.lockById.mock.invocationCallOrder[0],
     )

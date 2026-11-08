@@ -4,7 +4,7 @@ import { ERROR_CODES } from '@/shared/errors'
 import { SUPPORTED_LOCALES } from '@/shared/i18n/locale'
 import { I18N_PATH } from './i18n.module'
 
-/** Codes d'issue Zod 4 : chacun doit être traduit dans validation.zod. */
+/** Zod 4 issue codes: each must be translated in validation.zod. */
 const ZOD_ISSUE_CODES = [
   'invalid_type',
   'too_small',

@@ -2,7 +2,7 @@ import type { ValidationError } from 'class-validator'
 import type { ErrorField } from './app-error'
 
 /**
- * Aplatit les ValidationError class-validator (imbriquées) en
+ * Flattens class-validator (nested) ValidationErrors into
  * `{ field: 'a.0.b', constraint: 'isEmail' }[]`.
  */
 export function toErrorFields(

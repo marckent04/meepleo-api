@@ -22,7 +22,7 @@ export class LogoutHandler extends AppCommandHandler<LogoutCommand, void> {
       const { id } = await this.tokenService.verifyRefreshToken(refreshToken)
       await this.refreshTokenRepository.revoke(id)
     } catch (error) {
-      // Idempotent : se déconnecter avec un token déjà invalide est un succès.
+      // Idempotent: signing out with an already invalid token is a success.
       if (!(error instanceof UnauthenticatedError)) throw error
     }
   }

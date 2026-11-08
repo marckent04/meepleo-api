@@ -63,7 +63,7 @@ describe('GET /v1/games/:id (integration)', () => {
     app.enableVersioning({ type: VersioningType.URI })
     await app.init()
     await app.getHttpAdapter().getInstance().ready()
-    // Le contrôleur est testé seul : le domaine a ses propres tests.
+    // The controller is tested alone: the domain has its own tests.
     execute = vi.spyOn(app.get(CommandBus), 'execute')
   })
 

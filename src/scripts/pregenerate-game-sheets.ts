@@ -1,13 +1,13 @@
 /**
- * Pré-génère les fiches de jeux choisis, hors requête HTTP : l'utilisateur
- * les trouve ensuite immédiatement (200) au lieu d'attendre la génération.
+ * Pre-generates the sheets of chosen games, outside any HTTP request: users
+ * then find them immediately (200) instead of waiting for the generation.
  *
  *   yarn sheets:pregenerate --language fr 13 822 30549
  *   yarn sheets:pregenerate --language fr --file bgg-ids.txt --concurrency 3
  *
- * Les identifiants sont des ids BGG (un par ligne dans --file). Coûteux :
- * chaque fiche absente déclenche une génération par IA (~1 min). Rejouable :
- * les fiches déjà prêtes ou en cours sont ignorées.
+ * Identifiers are BGG ids (one per line in --file). Costly:
+ * each missing sheet triggers an AI generation (~1 min). Replayable:
+ * sheets that are already ready or in progress are skipped.
  */
 import { readFileSync } from 'node:fs'
 import { parseArgs } from 'node:util'
@@ -36,7 +36,7 @@ function parseBggIds(values: string[], file: string | undefined): number[] {
       raw.map((value) => {
         const id = Number(value)
         if (!Number.isInteger(id) || id <= 0) {
-          throw new Error(`Id BGG invalide : "${value}"`)
+          throw new Error(`Invalid BGG id: "${value}"`)
         }
         return id
       }),
@@ -57,7 +57,7 @@ async function main(): Promise<void> {
   const concurrency = Math.max(1, Number(values.concurrency) || 1)
   const bggIds = parseBggIds(positionals, values.file)
   if (bggIds.length === 0) {
-    throw new Error('Aucun id BGG : passez-les en arguments ou via --file')
+    throw new Error('No BGG id: pass them as arguments or via --file')
   }
 
   const app = await NestFactory.createApplicationContext(AppModule, {
@@ -78,7 +78,7 @@ async function main(): Promise<void> {
       'Pre-generating game sheets',
     )
 
-    /** Issue de l'agrégation lancée par la saga pour ce jeu. */
+    /** Outcome of the aggregation started by the saga for this game. */
     const finished = (gameId: string) =>
       firstValueFrom(
         merge(
@@ -94,7 +94,7 @@ async function main(): Promise<void> {
 
     const pregenerate = (gameId: string): Promise<Outcome> =>
       cls.run(async () => {
-        // Abonné avant la demande : l'événement de fin ne peut pas être manqué.
+        // Subscribed before the request: the completion event cannot be missed.
         const outcome = finished(gameId)
         const availability = await commandBus.execute(
           new RequestGameSheetCommand({ gameId, language }),

@@ -1,6 +1,6 @@
 import type { AiTrace } from '@/shared/types'
 
-/** Trace d'IA plausible ; surcharger les champs utiles au test. */
+/** Plausible AI trace; override the fields useful to the test. */
 export function buildAiTrace(overrides: Partial<AiTrace> = {}): AiTrace {
   return {
     model: 'claude-haiku-5-5',

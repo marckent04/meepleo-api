@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 /**
- * Sortie structurée de la traduction d'une fiche. Envoyée comme JSON Schema
+ * Structured output of a sheet translation. Sent as JSON Schema
  * via `output_config.format`.
  */
 export const GameSheetTranslationOutputSchema = z.object({

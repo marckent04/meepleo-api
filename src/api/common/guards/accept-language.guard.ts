@@ -10,8 +10,8 @@ import type { LocalizedRequest } from '../decorators/language.decorator'
 import { SKIP_ACCEPT_LANGUAGE } from '../decorators/skip-accept-language.decorator'
 
 /**
- * Exige un en-tête Accept-Language contenant une langue supportée, sauf sur
- * les routes marquées `@SkipAcceptLanguage()`. La langue résolue est exposée
+ * Requires an Accept-Language header containing a supported language, except on
+ * routes marked `@SkipAcceptLanguage()`. The resolved language is exposed
  * via `@Language()`.
  */
 @Injectable()

@@ -2,7 +2,7 @@ import { TokenService } from '@/infrastructure/adapters/auth'
 import type { RefreshTokenRepository } from '@/infrastructure/database/repositories'
 import type { AuthTokens } from '@/shared/types'
 
-/** Émet une paire de tokens et enregistre l'empreinte du refresh token. */
+/** Issues a token pair and stores the refresh token fingerprint. */
 export async function issueTokens(
   tokenService: TokenService,
   refreshTokenRepository: RefreshTokenRepository,

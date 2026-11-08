@@ -1,27 +1,27 @@
 import { ErrorCode } from './error-codes'
 
-/** Champ invalide, indépendant de la bibliothèque qui a validé. */
+/** Invalid field, independent of the library that validated it. */
 export type ErrorField = {
   field: string
-  /** Clé de traduction dans validation.json (ex. `isEmail`, `zod.too_small`). */
+  /** Translation key in validation.json (e.g. `isEmail`, `zod.too_small`). */
   constraint: string
 }
 
 export type AppErrorOptions = {
   code?: ErrorCode
-  /** Contexte technique : loggé (après redaction), jamais renvoyé au client. */
+  /** Technical context: logged (after redaction), never returned to the client. */
   details?: Record<string, unknown>
-  /** Paramètres d'interpolation du message traduit. */
+  /** Interpolation parameters of the translated message. */
   params?: Record<string, unknown>
   fields?: ErrorField[]
-  /** Extensions publiques renvoyées au client. */
+  /** Public extensions returned to the client. */
   extensions?: Record<string, unknown>
   cause?: unknown
 }
 
 /**
- * Erreur applicative. Le message (premier argument) n'est que loggé : le
- * client reçoit le message traduit associé à `code`.
+ * Application error. The message (first argument) is only logged: the
+ * client receives the translated message associated with `code`.
  */
 export abstract class AppError extends Error {
   abstract readonly statusCode: number
@@ -52,7 +52,7 @@ export abstract class AppError extends Error {
     return { ...this.publicExtensions, code: this.code }
   }
 
-  /** Erreur client attendue (4xx) : loggée en warn, sans stack. */
+  /** Expected client error (4xx): logged as warn, without a stack. */
   get expected(): boolean {
     return this.statusCode < 500
   }

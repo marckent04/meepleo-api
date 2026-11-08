@@ -21,14 +21,14 @@ import {
   GameSheetOutputSchema,
 } from './game-sheet.schema'
 
-/** Relances maximales quand la boucle d'outils serveur s'interrompt (`pause_turn`). */
+/** Maximum retries when the server tool loop is interrupted (`pause_turn`). */
 const MAX_CONTINUATIONS = 5
 const MAX_TOKENS = 16_000
 
 /**
- * Variantes de base : les variantes `_20260209` (filtrage dynamique) ne
- * prennent pas en charge Claude Haiku 5.5. Pas de `citations` : incompatibles
- * avec les sorties structurées.
+ * Base variants: the `_20260209` variants (dynamic filtering) do not
+ * support Claude Haiku 5.5. No `citations`: incompatible
+ * with structured outputs.
  */
 const WEB_TOOLS: Anthropic.ToolUnion[] = [
   { type: 'web_search_20250305', name: 'web_search', max_uses: 5 },
@@ -43,7 +43,7 @@ const WEB_TOOLS: Anthropic.ToolUnion[] = [
 const OUTPUT_FORMAT = zodOutputFormat(GameSheetOutputSchema)
 const PROMPT_VERSION = promptVersion(GAME_SHEET_SYSTEM_PROMPT, OUTPUT_FORMAT)
 
-/** Génère une fiche de règles : recherche d'une règle sur le web, puis extraction typée. */
+/** Generates a rule sheet: web search for a rulebook, then typed extraction. */
 @Injectable()
 export class GameSheetGenerator {
   constructor(
@@ -55,14 +55,14 @@ export class GameSheetGenerator {
     this.logger.setContext(GameSheetGenerator.name)
   }
 
-  /** Modèle d'IA utilisé pour générer les fiches. */
+  /** AI model used to generate the sheets. */
   get model(): string {
     return this.config.sheetModel
   }
 
   /**
-   * Lève une AiCallFailedError portant la trace (tokens consommés, sortie
-   * brute…) en cas d'échec, y compris après des appels réussis.
+   * Throws an AiCallFailedError carrying the trace (tokens consumed, raw
+   * output…) on failure, including after successful calls.
    */
   async generate(game: Game, language: string): Promise<Traced<GameSheet>> {
     const recorder = new AiTraceRecorder(
@@ -105,7 +105,7 @@ export class GameSheetGenerator {
       if (i >= MAX_CONTINUATIONS) {
         throw this.failure('Too many pause_turn continuations', game, response)
       }
-      // La reprise se fait sur le bloc server_tool_use final, sans nouveau message utilisateur.
+      // Resuming happens on the final server_tool_use block, without a new user message.
       messages.push({ role: 'assistant', content: response.content })
       response = await recorder.call(() => this.request(model, messages))
     }
@@ -128,7 +128,7 @@ export class GameSheetGenerator {
     )
   }
 
-  /** La sortie brute, volumineuse, n'est conservée qu'en base. */
+  /** The bulky raw output is only kept in the database. */
   private logTrace(game: Game, language: string, trace: AiTrace): void {
     const { output: _output, rawText: _rawText, ...summary } = trace
     this.logger.info({ gameId: game.id, language, ...summary })
@@ -175,7 +175,7 @@ export class GameSheetGenerator {
   }
 }
 
-/** Le schéma n'a pas de champ nullable : `''` et `0` signifient « inconnu ». */
+/** The schema has no nullable field: `''` and `0` mean "unknown". */
 const textOrNull = (value: string): string | null => value.trim() || null
 const intOrNull = (value: number): number | null => (value > 0 ? value : null)
 
@@ -185,8 +185,8 @@ export function toGameSheet(
   model: string,
   output: GameSheetOutput,
 ): GameSheet {
-  // Identifiants positionnels (`setup-1`, `turn-2`…) : stables et uniques
-  // par section, sans les demander au modèle.
+  // Positional identifiers (`setup-1`, `turn-2`…): stable and unique
+  // per section, without asking the model for them.
   const entry =
     (prefix: string) =>
     (e: { player_counts: number[]; text: string }, index: number) => ({

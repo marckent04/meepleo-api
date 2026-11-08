@@ -4,7 +4,7 @@ import { AcceptLanguageResolver, I18nModule } from 'nestjs-i18n'
 import { APP_CONFIG, type AppConfig } from '@/shared/config'
 import { DEFAULT_LOCALE } from '@/shared/i18n/locale'
 
-/** Dossier des traductions : src/i18n (copié dans dist/i18n au build). */
+/** Translations folder: src/i18n (copied to dist/i18n at build time). */
 export const I18N_PATH = path.join(__dirname, '../../i18n')
 
 @Module({

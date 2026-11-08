@@ -1,7 +1,7 @@
 /**
- * Inventaire contractuel des codes d'erreur exposés aux clients.
- * On ajoute un code ; on n'en renomme ni n'en supprime jamais.
- * Chaque code doit être traduit dans src/i18n/<lang>/errors.json.
+ * Contractual inventory of the error codes exposed to clients.
+ * Codes are only ever added; never renamed or removed.
+ * Each code must be translated in src/i18n/<lang>/errors.json.
  */
 export enum ErrorCode {
   BAD_REQUEST = 'BAD_REQUEST',
@@ -32,83 +32,83 @@ export const ERROR_CODES: Record<
 > = {
   [ErrorCode.BAD_REQUEST]: {
     expected: true,
-    description: 'Requête invalide',
+    description: 'Invalid request',
   },
   [ErrorCode.UNAUTHENTICATED]: {
     expected: true,
-    description: 'Authentification requise ou invalide',
+    description: 'Authentication required or invalid',
   },
   [ErrorCode.FORBIDDEN]: {
     expected: true,
-    description: 'Action non autorisée',
+    description: 'Action not allowed',
   },
   [ErrorCode.NOT_FOUND]: {
     expected: true,
-    description: 'Ressource introuvable',
+    description: 'Resource not found',
   },
   [ErrorCode.CONFLICT]: {
     expected: true,
-    description: 'Conflit avec une ressource existante',
+    description: 'Conflict with an existing resource',
   },
   [ErrorCode.UNPROCESSABLE_ENTITY]: {
     expected: true,
-    description: 'Règle métier non respectée',
+    description: 'Business rule violated',
   },
   [ErrorCode.TOO_MANY_REQUESTS]: {
     expected: true,
-    description: 'Trop de requêtes',
+    description: 'Too many requests',
   },
   [ErrorCode.VALIDATION_FAILED]: {
     expected: true,
-    description: 'Données envoyées invalides (voir fields)',
+    description: 'Invalid data sent (see fields)',
   },
   [ErrorCode.INTERNAL_SERVER_ERROR]: {
     expected: false,
-    description: 'Erreur interne inattendue',
+    description: 'Unexpected internal error',
   },
   [ErrorCode.HEALTH_CHECK_FAILED]: {
     expected: false,
-    description: "Le contrôle de santé de l'API a échoué",
+    description: 'The API health check failed',
   },
   [ErrorCode.GAME_NOT_FOUND]: {
     expected: true,
-    description: 'Jeu introuvable',
+    description: 'Game not found',
   },
   [ErrorCode.GAME_SHEET_GENERATION_FAILED]: {
     expected: false,
-    description: "La génération de la fiche de règles par l'IA a échoué",
+    description: 'AI generation of the rule sheet failed',
   },
   [ErrorCode.GAME_SHEET_TRANSLATION_FAILED]: {
     expected: false,
-    description: "La traduction de la fiche de règles par l'IA a échoué",
+    description: 'AI translation of the rule sheet failed',
   },
   [ErrorCode.LANGUAGE_REQUIRED]: {
     expected: true,
-    description: "L'en-tête Accept-Language est obligatoire",
+    description: 'The Accept-Language header is required',
   },
   [ErrorCode.UNSUPPORTED_LANGUAGE]: {
     expected: true,
-    description: "Aucune langue d'Accept-Language n'est supportée",
+    description: 'None of the Accept-Language languages is supported',
   },
   [ErrorCode.EMAIL_ALREADY_USED]: {
     expected: true,
-    description: 'Un compte existe déjà avec cet email',
+    description: 'An account already exists with this email',
   },
   [ErrorCode.DISPOSABLE_EMAIL_NOT_ALLOWED]: {
     expected: true,
-    description: "Les adresses email jetables sont refusées à l'inscription",
+    description: 'Disposable email addresses are rejected at sign-up',
   },
   [ErrorCode.USERNAME_ALREADY_USED]: {
     expected: true,
-    description: "Ce nom d'utilisateur est déjà pris",
+    description: 'This username is already taken',
   },
   [ErrorCode.INVALID_CREDENTIALS]: {
     expected: true,
-    description: "Nom d'utilisateur ou mot de passe incorrect",
+    description: 'Incorrect username or password',
   },
   [ErrorCode.INVALID_REFRESH_TOKEN]: {
     expected: true,
-    description: 'Refresh token invalide, expiré ou révoqué',
+    description: 'Invalid, expired or revoked refresh token',
   },
 }
 
@@ -116,7 +116,7 @@ export function isErrorCode(code: unknown): code is ErrorCode {
   return typeof code === 'string' && Object.hasOwn(ERROR_CODES, code)
 }
 
-/** Code générique utilisé quand une erreur n'a pas de code spécifique. */
+/** Generic code used when an error has no specific code. */
 export function genericErrorCodeForStatus(statusCode: number): ErrorCode {
   switch (statusCode) {
     case 400:

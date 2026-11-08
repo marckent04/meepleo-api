@@ -27,7 +27,7 @@ export class GetCurrentUserHandler extends AppQueryHandler<
 
   async handle({ userId }: GetCurrentUserQuery): Promise<CurrentUser> {
     const user = await this.userRepository.findById(userId)
-    // Compte supprimé alors que l'access token est encore valide.
+    // Account deleted while the access token is still valid.
     if (!user) throw new UnauthenticatedError('User no longer exists')
     const [catalogCount, wishlistCount, favoritesCount] = await Promise.all([
       this.userGameRepository.count(userId, 'owned'),

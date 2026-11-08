@@ -2,10 +2,10 @@ import { createParamDecorator, type ExecutionContext } from '@nestjs/common'
 import type { FastifyRequest } from 'fastify'
 import { DEFAULT_LOCALE, type Locale, parseLocale } from '@/shared/i18n/locale'
 
-/** Requête dont la langue a été résolue par AcceptLanguageGuard. */
+/** Request whose language was resolved by AcceptLanguageGuard. */
 export type LocalizedRequest = FastifyRequest & { locale?: Locale }
 
-/** Langue de la requête, résolue et validée par AcceptLanguageGuard. */
+/** Request language, resolved and validated by AcceptLanguageGuard. */
 export const Language = createParamDecorator(
   (_data: unknown, context: ExecutionContext): Locale => {
     const request = context.switchToHttp().getRequest<LocalizedRequest>()

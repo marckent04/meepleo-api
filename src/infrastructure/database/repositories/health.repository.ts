@@ -11,7 +11,7 @@ export class HealthRepository {
     >,
   ) {}
 
-  /** Vérifie que la base répond ; lève l'erreur du driver sinon. */
+  /** Checks that the database responds; throws the driver error otherwise. */
   async ping(): Promise<void> {
     await this.txHost.tx.$queryRaw`SELECT 1`
   }

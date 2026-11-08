@@ -48,8 +48,8 @@ export class RegisterUserHandler extends AppCommandHandler<
     }
 
     const passwordHash = await this.passwordHasher.hash(password)
-    // Une inscription concurrente passe la vérification ci-dessus : la
-    // contrainte d'unicité reste le dernier rempart (409 CONFLICT générique).
+    // A concurrent sign-up passes the check above: the uniqueness
+    // constraint remains the last safeguard (generic 409 CONFLICT).
     return this.userRepository.create({ email, username, passwordHash })
   }
 }

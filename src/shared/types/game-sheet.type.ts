@@ -1,4 +1,4 @@
-/** `null` = l'entrée s'applique à toutes les configurations de joueurs. */
+/** `null` = the entry applies to all player configurations. */
 export type PlayerCounts = number[] | null
 
 export type SheetConfidence = 'low' | 'medium' | 'high'
@@ -22,7 +22,7 @@ export type GameSheetScoringEntry = GameSheetOrderedEntry & { title: string }
 
 export type GameSheetSource = { title: string; url: string }
 
-/** Fiche de règles générée pour un jeu, dans une langue. */
+/** Rule sheet generated for a game, in a language. */
 export class GameSheet {
   constructor(
     readonly gameId: string,
@@ -54,16 +54,16 @@ export class GameSheet {
     readonly confidence: SheetConfidence,
     readonly sources: GameSheetSource[],
     readonly warnings: string[],
-    /** Modèle d'IA ayant produit la fiche. */
+    /** AI model that produced the sheet. */
     readonly generatedBy: string,
     readonly generatedAt: Date,
   ) {}
 }
 
-/** État d'agrégation de la fiche d'un jeu, toutes langues confondues. */
+/** Aggregation state of a game's sheet, all languages combined. */
 export type GameSheetStatus = {
-  /** Une génération réussie a été enregistrée (`game_aggregation_runs`). */
+  /** A successful generation was recorded (`game_aggregation_runs`). */
   generated: boolean
-  /** Langues dans lesquelles la fiche est disponible, la langue de génération en premier. */
+  /** Languages the sheet is available in, the generation language first. */
   supportedLanguages: string[]
 }

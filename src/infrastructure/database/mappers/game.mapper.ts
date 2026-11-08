@@ -16,7 +16,7 @@ export function toGame(record: GameRecord): Game {
   )
 }
 
-/** Ligne brute de `GameRepository.search`. */
+/** Raw row of `GameRepository.search`. */
 export type GameSearchRow = {
   id: string
   name: string

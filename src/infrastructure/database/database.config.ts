@@ -19,7 +19,7 @@ export type DatabaseConfig = {
   poolMax: number
 }
 
-/** Partagé avec prisma.config.ts : une seule validation pour l'app et la CLI. */
+/** Shared with prisma.config.ts: a single validation for the app and the CLI. */
 export function loadDatabaseEnv(
   env: NodeJS.ProcessEnv = process.env,
 ): DatabaseEnv {

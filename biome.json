@@ -56,13 +56,13 @@
           "level": "error",
           "options": {
             "paths": {
-              "joi": "Joi n'est pas utilisé : Zod est la seule bibliothèque de schémas.",
-              "typeorm": "TypeORM n'est pas utilisé : la persistance passe par Prisma."
+              "joi": "Joi is not used: Zod is the only schema library.",
+              "typeorm": "TypeORM is not used: persistence goes through Prisma."
             },
             "patterns": [
               {
                 "group": ["**/generated/prisma", "**/generated/prisma/**"],
-                "message": "Le client Prisma généré ne s'importe que dans src/infrastructure/database/."
+                "message": "The generated Prisma client may only be imported in src/infrastructure/database/."
               }
             ]
           }
@@ -89,8 +89,8 @@
               "level": "error",
               "options": {
                 "paths": {
-                  "joi": "Joi n'est pas utilisé : Zod est la seule bibliothèque de schémas.",
-                  "typeorm": "TypeORM n'est pas utilisé : la persistance passe par Prisma."
+                  "joi": "Joi is not used: Zod is the only schema library.",
+                  "typeorm": "TypeORM is not used: persistence goes through Prisma."
                 }
               }
             }
@@ -107,15 +107,15 @@
               "level": "error",
               "options": {
                 "paths": {
-                  "joi": "Joi n'est pas utilisé : Zod est la seule bibliothèque de schémas.",
-                  "typeorm": "TypeORM n'est pas utilisé : la persistance passe par Prisma.",
+                  "joi": "Joi is not used: Zod is the only schema library.",
+                  "typeorm": "TypeORM is not used: persistence goes through Prisma.",
                   "class-validator": "La couche REST et la config valident avec Zod uniquement.",
                   "class-transformer": "La couche REST et la config valident avec Zod uniquement."
                 },
                 "patterns": [
                   {
                     "group": ["**/generated/prisma", "**/generated/prisma/**"],
-                    "message": "Le client Prisma généré ne s'importe que dans src/infrastructure/database/."
+                    "message": "The generated Prisma client may only be imported in src/infrastructure/database/."
                   }
                 ]
               }

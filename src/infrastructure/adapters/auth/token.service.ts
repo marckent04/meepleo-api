@@ -9,20 +9,20 @@ type Expiry = JwtSignOptions['expiresIn']
 
 export type IssuedAccessToken = {
   token: string
-  /** Durée de vie, en secondes. */
+  /** Lifetime, in seconds. */
   expiresIn: number
 }
 
 export type IssuedRefreshToken = {
   token: string
-  /** Claim `jti`, identifiant du token en base. */
+  /** `jti` claim, identifier of the token in the database. */
   id: string
   expiresAt: Date
 }
 
 type TokenPayload = { sub: string; jti?: string; iat: number; exp: number }
 
-/** Émission et vérification des JWT (access et refresh, secrets distincts). */
+/** Issuing and verifying JWTs (access and refresh, distinct secrets). */
 @Injectable()
 export class TokenService {
   constructor(
@@ -57,7 +57,7 @@ export class TokenService {
     return { token, id, expiresAt: new Date(exp * 1000) }
   }
 
-  /** Renvoie l'id de l'utilisateur ; lève UnauthenticatedError sinon. */
+  /** Returns the user id; throws UnauthenticatedError otherwise. */
   async verifyAccessToken(token: string): Promise<string> {
     try {
       const { sub } = await this.jwt.verifyAsync<TokenPayload>(token, {
@@ -69,7 +69,7 @@ export class TokenService {
     }
   }
 
-  /** Lève UnauthenticatedError (INVALID_REFRESH_TOKEN) si le JWT est invalide. */
+  /** Throws UnauthenticatedError (INVALID_REFRESH_TOKEN) if the JWT is invalid. */
   async verifyRefreshToken(
     token: string,
   ): Promise<{ userId: string; id: string }> {
@@ -87,7 +87,7 @@ export class TokenService {
     }
   }
 
-  /** Empreinte stockée en base à la place du refresh token. */
+  /** Fingerprint stored in the database in place of the refresh token. */
   hash(token: string): string {
     return createHash('sha256').update(token).digest('hex')
   }

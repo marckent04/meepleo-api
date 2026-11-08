@@ -10,8 +10,8 @@ import type { AuthenticatedRequest } from '../decorators/current-user.decorator'
 import { IS_PUBLIC } from '../decorators/public.decorator'
 
 /**
- * Exige un access token `Authorization: Bearer <jwt>` valide, sauf sur les
- * routes marquées `@Public()`. L'utilisateur est exposé via `@CurrentUserId()`.
+ * Requires a valid `Authorization: Bearer <jwt>` access token, except on
+ * routes marked `@Public()`. The user is exposed via `@CurrentUserId()`.
  */
 @Injectable()
 export class JwtAuthGuard implements CanActivate {

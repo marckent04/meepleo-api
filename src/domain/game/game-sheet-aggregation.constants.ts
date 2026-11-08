@@ -1,15 +1,15 @@
 /**
- * Au-delà, un run RUNNING est considéré comme abandonné (instance arrêtée
- * pendant l'agrégation) et une nouvelle agrégation peut démarrer. Une
- * génération dure environ une minute.
+ * Beyond this, a RUNNING run is considered abandoned (instance stopped
+ * during the aggregation) and a new aggregation can start. A
+ * generation takes about a minute.
  */
 export const AGGREGATION_STALE_AFTER_MS = 10 * 60_000
 
 /**
- * Après un échec, les demandes renvoient cet échec pendant ce délai au lieu
- * de relancer l'IA : borne le coût quand le client interroge en boucle.
+ * After a failure, requests return that failure for this delay instead
+ * of restarting the AI: bounds the cost when the client polls in a loop.
  */
 export const AGGREGATION_FAILURE_COOLDOWN_MS = 5 * 60_000
 
-/** Délai conseillé au client entre deux interrogations d'une fiche en cours. */
+/** Recommended delay for the client between two polls of a sheet in progress. */
 export const AGGREGATION_POLL_INTERVAL_SECONDS = 5

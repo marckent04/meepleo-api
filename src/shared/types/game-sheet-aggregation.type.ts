@@ -3,30 +3,30 @@ import type { GameSheet } from './game-sheet.type'
 
 export type GameAggregationRunStatus = 'running' | 'success' | 'failure'
 
-/** Dernier état connu d'une agrégation de fiche (`game_aggregation_runs`). */
+/** Last known state of a sheet aggregation (`game_aggregation_runs`). */
 export type GameAggregationRunSummary = {
   id: string
   status: GameAggregationRunStatus
-  /** null pour un échec antérieur à l'appel à l'IA. */
+  /** null for a failure before the AI call. */
   operation: GameAggregationOperation | null
-  /** ErrorCode d'un échec, null sinon. */
+  /** ErrorCode of a failure, null otherwise. */
   errorCode: string | null
   startedAt: Date
 }
 
-/** Agrégation lancée en tâche de fond, à exécuter puis clore (run RUNNING). */
+/** Aggregation started in the background, to execute then close (RUNNING run). */
 export type GameSheetAggregationJob = {
   runId: string
   gameId: string
   language: string
   operation: GameAggregationOperation
-  /** Langue source d'une traduction, null pour une génération. */
+  /** Source language of a translation, null for a generation. */
   sourceLanguage: string | null
 }
 
 /**
- * Fiche d'un jeu dans une langue : prête, ou en cours d'agrégation.
- * `job` n'est renseigné que si la demande vient de lancer l'agrégation.
+ * Sheet of a game in a language: ready, or being aggregated.
+ * `job` is only set if the request has just started the aggregation.
  */
 export type GameSheetAvailability =
   | { status: 'ready'; sheet: GameSheet }

@@ -1,4 +1,4 @@
-# Exemple de déploiement : migrations (one-shot) puis API.
+# Deployment example: migrations (one-shot) then API.
 # DATABASE_URL et les autres variables viennent de .env (cf. .env.example).
 name: meepleo-api-prod
 

@@ -3,7 +3,7 @@ const SENSITIVE_KEY =
 
 export const REDACTED = '[REDACTED]'
 
-/** Masque récursivement les valeurs des clés sensibles avant de les logger. */
+/** Recursively masks the values of sensitive keys before logging them. */
 export function redactSecrets<T>(value: T): T {
   return redact(value, new WeakSet()) as T
 }

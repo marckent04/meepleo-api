@@ -23,7 +23,7 @@ import { ApiErrorResponses } from '../errors'
 @ApiHeader({
   name: 'accept-language',
   required: true,
-  description: `Langue des contenus (${SUPPORTED_LOCALES.join(', ')}). Absente : 400 LANGUAGE_REQUIRED ; aucune langue supportée : 400 UNSUPPORTED_LANGUAGE.`,
+  description: `Content language (${SUPPORTED_LOCALES.join(', ')}). Missing: 400 LANGUAGE_REQUIRED; no supported language: 400 UNSUPPORTED_LANGUAGE.`,
 })
 @Controller({ path: 'wishlist', version: '1' })
 export class WishlistController {
@@ -34,7 +34,7 @@ export class WishlistController {
 
   @Get()
   @ApiOperation({
-    summary: "Lister la liste de souhaits de l'utilisateur connecté",
+    summary: "List the current user's wishlist",
   })
   @ZodResponse({ status: 200, type: WishlistResponseDto })
   @ApiErrorResponses(400, 401, 500)
@@ -51,13 +51,13 @@ export class WishlistController {
   @Put('games/:gameId')
   @HttpCode(204)
   @ApiOperation({
-    summary: 'Ajouter un jeu à la liste de souhaits',
+    summary: 'Add a game to the wishlist',
     description:
-      "Idempotent. Un jeu ne peut pas être à la fois dans la bibliothèque et dans la liste de souhaits : 409 CONFLICT s'il est déjà possédé.",
+      'Idempotent. A game cannot be both in the library and in the wishlist: 409 CONFLICT if it is already owned.',
   })
   @ApiResponse({
     status: 204,
-    description: 'Jeu présent dans la liste de souhaits',
+    description: 'Game is in the wishlist',
   })
   @ApiErrorResponses(400, 401, 404, 409, 500)
   async add(
@@ -72,13 +72,12 @@ export class WishlistController {
   @Delete('games/:gameId')
   @HttpCode(204)
   @ApiOperation({
-    summary: 'Retirer un jeu de la liste de souhaits',
-    description:
-      'Idempotent : un jeu absent de la liste de souhaits est ignoré.',
+    summary: 'Remove a game from the wishlist',
+    description: 'Idempotent: a game not in the wishlist is ignored.',
   })
   @ApiResponse({
     status: 204,
-    description: 'Jeu absent de la liste de souhaits',
+    description: 'Game is not in the wishlist',
   })
   @ApiErrorResponses(400, 401, 500)
   async remove(

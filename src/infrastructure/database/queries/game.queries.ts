@@ -1,18 +1,18 @@
 import { Prisma } from '../generated/prisma/client'
 
 /**
- * Requêtes SQL brutes sur `games`, hors de portée du client Prisma.
- * `Prisma.sql` lie chaque `${…}` en paramètre : aucune interpolation de texte.
- * Les paramètres arrivent sans type (`unknown`) : on les caste explicitement,
- * sinon `jsonb ->> $1` est ambigu (clé texte ou index entier).
+ * Raw SQL queries on `games`, out of the Prisma client's reach.
+ * `Prisma.sql` binds each `${…}` as a parameter: no text interpolation.
+ * Parameters arrive untyped (`unknown`): we cast them explicitly,
+ * otherwise `jsonb ->> $1` is ambiguous (text key or integer index).
  */
 
-/** Échappe les jokers de LIKE (`\\`, `%`, `_`). */
+/** Escapes LIKE wildcards (`\\`, `%`, `_`). */
 export function escapeLike(value: string): string {
   return value.replace(/[\\%_]/g, String.raw`\$&`)
 }
 
-/** Verrouille la ligne d'un jeu non supprimé (`SELECT … FOR UPDATE`). */
+/** Locks the row of a non-deleted game (`SELECT … FOR UPDATE`). */
 export function lockGameSql(id: string): Prisma.Sql {
   return Prisma.sql`
     SELECT id FROM games WHERE id = ${id}::uuid AND deleted_at IS NULL FOR UPDATE`
@@ -25,11 +25,11 @@ export type SearchGamesSqlParams = {
 }
 
 /**
- * Jeux non supprimés dont le nom canonique ou le nom dans `language`
- * contient `text` (casse et accents ignorés). Tri : noms commençant par
- * `text`, puis similarité trigramme, puis ordre alphabétique.
- * S'appuie sur `f_unaccent` et les index trigrammes de la migration
- * `add_game_name_search`. Lignes : `GameSearchRow`.
+ * Non-deleted games whose canonical name or name in `language`
+ * contains `text` (case and accents ignored). Order: names starting with
+ * `text`, then trigram similarity, then alphabetical order.
+ * Relies on `f_unaccent` and the trigram indexes of the migration
+ * `add_game_name_search`. Rows: `GameSearchRow`.
  */
 export function searchGamesSql({
   text,

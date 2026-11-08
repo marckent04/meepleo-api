@@ -1,7 +1,7 @@
 import { Command } from '@nestjs/cqrs'
 import { IsUUID } from 'class-validator'
 
-/** Retire un jeu du catalogue de l'utilisateur. Idempotent. */
+/** Removes a game from the user's catalog. Idempotent. */
 export class RemoveGameFromCatalogCommand extends Command<void> {
   @IsUUID()
   readonly userId: string

@@ -196,7 +196,7 @@ describe('GameSheetGenerator', () => {
     const { trace } = await generator.generate(game, 'fr')
 
     expect(parse).toHaveBeenCalledTimes(2)
-    // Consommation cumulée sur les deux appels, modèle de la dernière réponse.
+    // Usage accumulated over both calls, model of the last response.
     expect(trace).toMatchObject({
       model: 'claude-haiku-5-5-20261001',
       requestCount: 2,

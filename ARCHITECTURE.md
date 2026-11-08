@@ -1,150 +1,147 @@
 # Architecture
 
-## Principe directeur
+## Guiding principle
 
-Les adaptateurs de transport (contrôleurs REST) ne contiennent **jamais** de logique métier.
-Ils traduisent une requête en Command/Query, la dispatchent sur le bus CQRS, puis traduisent
-le résultat en DTO de réponse. Tout ce qui décide *ce qui se passe* vit dans `domain/`.
+Transport adapters (REST controllers) **never** contain business logic.
+They translate a request into a Command/Query, dispatch it on the CQRS bus, then translate
+the result into a response DTO. Everything that decides *what happens* lives in `domain/`.
 
-## Couches
+## Layers
 
 ```
 src/
-├── api/              transport HTTP
-│   ├── common/       transverse : throttling, filtre d'exception, intercepteurs, erreurs
-│   └── rest/         contrôleurs, DTO Zod, validation, Swagger
-├── domain/           Commands, Queries, handlers (un dossier par feature)
-├── infrastructure/   base de données (Prisma), logger, i18n, adapters externes
-├── shared/           config Zod, erreurs, locales, modèles de domaine (aucune dépendance)
+├── api/              HTTP transport
+│   ├── common/       cross-cutting: throttling, exception filter, interceptors, errors
+│   └── rest/         controllers, Zod DTOs, validation, Swagger
+├── domain/           Commands, Queries, handlers (one folder per feature)
+├── infrastructure/   database (Prisma), logger, i18n, external adapters
+├── shared/           Zod config, errors, locales, domain models (no dependency)
 ├── utils/            AppCommandHandler / AppQueryHandler
-└── i18n/{fr,en}/     traductions (errors.json, validation.json)
+└── i18n/{fr,en}/     translations (errors.json, validation.json)
 ```
 
-Les dépendances vont dans un seul sens : `api` → `domain` → `infrastructure`. `shared` ne
-dépend de rien et peut être importé partout.
+Dependencies go in a single direction: `api` → `domain` → `infrastructure`. `shared` depends on
+nothing and can be imported anywhere.
 
-- Seul `infrastructure/database/` connaît Prisma. Aucun type généré
-  (`infrastructure/database/generated/`) n'est importé ailleurs : Biome le refuse
+- Only `infrastructure/database/` knows Prisma. No generated type
+  (`infrastructure/database/generated/`) is imported elsewhere: Biome rejects it
   (`noRestrictedImports`).
-- `api/` n'importe jamais `infrastructure/database`.
-- Les handlers retournent des **modèles de domaine** (`shared/types`), jamais un record Prisma
-  ni un DTO.
-- Les modules de transport n'importent pas `DomainModule` : le bus est global
-  (`CqrsModule.forRoot()` dans `InfrastructureModule`).
+- `api/` never imports `infrastructure/database`.
+- Handlers return **domain models** (`shared/types`), never a Prisma record nor a DTO.
+- Transport modules do not import `DomainModule`: the bus is global
+  (`CqrsModule.forRoot()` in `InfrastructureModule`).
 
-## Règle de validation
+## Validation rule
 
-| Zone | Outil |
+| Zone | Tool |
 |---|---|
-| Configuration (`shared/config/*`, `database.config.ts`, `prisma.config.ts`) | Zod uniquement, via `parseEnv` |
-| REST (`api/rest/**`) : body, params, query string, réponses, erreurs | Zod uniquement (`nestjs-zod`) ; la doc Swagger vient des schémas (`.describe()`, `.meta()`) |
-| Domaine (Commands / Queries) | class-validator : filet de sécurité indépendant du transport |
+| Configuration (`shared/config/*`, `database.config.ts`, `prisma.config.ts`) | Zod only, via `parseEnv` |
+| REST (`api/rest/**`): body, params, query string, responses, errors | Zod only (`nestjs-zod`); the Swagger doc comes from the schemas (`.describe()`, `.meta()`) |
+| Domain (Commands / Queries) | class-validator: a transport-independent safety net |
 
-Joi et TypeORM ne sont pas installés. `process.env` n'est lu que dans les fichiers de config
-Zod.
+Joi and TypeORM are not installed. `process.env` is only read in the Zod config files.
 
-Une erreur de validation produit toujours la même réponse, quelle que soit la bibliothèque qui
-l'a détectée : `400 VALIDATION_FAILED` avec des `fields` traduits. Zod donne des contraintes
-`zod.<issue code>`, class-validator des contraintes `isEmail`, `min`, etc. Toutes sont
-traduites dans `validation.json`.
+A validation error always produces the same response, whichever library detected it:
+`400 VALIDATION_FAILED` with translated `fields`. Zod yields `zod.<issue code>` constraints,
+class-validator yields `isEmail`, `min`, etc. constraints. All are translated in
+`validation.json`.
 
-## Erreurs
+## Errors
 
-- `shared/errors/error-codes.ts` est l'inventaire contractuel des codes : on en ajoute, on n'en
-  renomme ni n'en supprime jamais.
-- On lève une `AppError` (`NotFoundError`, `ConflictError`, `BusinessRuleError`…). Son message
-  n'est que loggé : le client reçoit le message traduit associé au code.
-- `AppExceptionFilter` est le seul endroit qui logue une erreur de requête. Il répond avec le
-  vrai statut HTTP et le corps `ErrorResponseDto` `{ code, message, fields?, correlationId }`,
-  traduit selon `Accept-Language` (`fr` par défaut, `en`).
-- `@ErrorCodeOnFailure(code)` remplace le `INTERNAL_SERVER_ERROR` générique d'une route par un
-  code métier, et laisse intactes les erreurs client.
-- `@ApiErrorResponses(400, 404, …)` documente les erreurs d'une route dans Swagger.
+- `shared/errors/error-codes.ts` is the contractual inventory of codes: codes are added, never
+  renamed or removed.
+- Throw an `AppError` (`NotFoundError`, `ConflictError`, `BusinessRuleError`…). Its message is
+  only logged: the client receives the translated message associated with the code.
+- `AppExceptionFilter` is the only place that logs a request error. It responds with the
+  real HTTP status and the `ErrorResponseDto` body `{ code, message, fields?, correlationId }`,
+  translated according to `Accept-Language` (`fr` by default, `en`).
+- `@ErrorCodeOnFailure(code)` replaces a route's generic `INTERNAL_SERVER_ERROR` with a
+  business code, and leaves client errors untouched.
+- `@ApiErrorResponses(400, 404, …)` documents a route's errors in Swagger.
 
-Pour ajouter une erreur : ajoute le code dans `ERROR_CODES`, puis son message dans
-`fr/errors.json` et `en/errors.json`, puis lève `throw new NotFoundError('…', { code: ErrorCode.X })`.
-`translations.spec.ts` échoue si une traduction manque.
+To add an error: add the code to `ERROR_CODES`, then its message in
+`fr/errors.json` and `en/errors.json`, then throw `new NotFoundError('…', { code: ErrorCode.X })`.
+`translations.spec.ts` fails if a translation is missing.
 
-## Persistance Prisma
+## Prisma persistence
 
-- Le schéma est dans `prisma/schema.prisma`. L'URL vient de `prisma.config.ts`, qui réutilise
-  la validation Zod de l'application (`loadDatabaseEnv`) et charge `.env` s'il existe.
-- Le client est généré dans `src/infrastructure/database/generated/` (gitignoré) et
-  `PrismaService` l'instancie avec le driver adapter `@prisma/adapter-pg`.
-- Conventions : modèles en `PascalCase` singulier, `@@map("snake_case_pluriel")`, colonnes en
-  `@map("snake_case")`, ids `String @id @db.Uuid`, dates `DateTime @db.Timestamptz(6)`, soft
-  delete par `deletedAt DateTime?`.
-- Les mappers (`database/mappers/<model>.mapper.ts`) sont le **seul** endroit qui convertit un
-  record Prisma en modèle de domaine. Les types générés y sont aliasés `XxxRecord`.
-- Les repositories passent **toujours** par `this.txHost.tx.<model>` (`TransactionHost` de
-  `@nestjs-cls/transactional`). Hors transaction, c'est le client normal ; dans un handler
-  `@Transactional()`, c'est le client de la transaction. Aucun paramètre `tx` ne circule.
-- Les méthodes de repository ont un nom explicite et une signature étroite. Elles n'acceptent
-  jamais un `where` Prisma venu de l'appelant. Chaque lecture filtre `deletedAt: null`.
-- `rethrowPrismaError` traduit les erreurs connues (`P2002` → `ConflictError`, `P2025` →
+- The schema is in `prisma/schema.prisma`. The URL comes from `prisma.config.ts`, which reuses
+  the application's Zod validation (`loadDatabaseEnv`) and loads `.env` if it exists.
+- The client is generated in `src/infrastructure/database/generated/` (gitignored) and
+  `PrismaService` instantiates it with the `@prisma/adapter-pg` driver adapter.
+- Conventions: singular `PascalCase` models, `@@map("plural_snake_case")`, `@map("snake_case")`
+  columns, `String @id @db.Uuid` ids, `DateTime @db.Timestamptz(6)` dates, soft
+  delete via `deletedAt DateTime?`.
+- Mappers (`database/mappers/<model>.mapper.ts`) are the **only** place that converts a Prisma
+  record into a domain model. Generated types are aliased there as `XxxRecord`.
+- Repositories **always** go through `this.txHost.tx.<model>` (`TransactionHost` from
+  `@nestjs-cls/transactional`). Outside a transaction it is the regular client; inside a
+  `@Transactional()` handler it is the transaction client. No `tx` parameter is passed around.
+- Repository methods have an explicit name and a narrow signature. They never accept a Prisma
+  `where` coming from the caller. Every read filters `deletedAt: null`.
+- `rethrowPrismaError` translates known errors (`P2002` → `ConflictError`, `P2025` →
   `NotFoundError`, `P2003` → `BadRequestError`).
-- Migrations : `yarn db:migrate --name <change>` en développement (relis le SQL et versionne-le),
-  `yarn db:deploy` en CI et en production. L'application ne migre jamais au démarrage.
-- `prisma/seed.ts` ne fait que des `upsert` : on peut le rejouer à volonté.
+- Migrations: `yarn db:migrate --name <change>` in development (review the SQL and commit it),
+  `yarn db:deploy` in CI and production. The application never migrates at startup.
+- `prisma/seed.ts` only does `upsert`s: it can be replayed at will.
 
 ## Logs
 
-- `LoggerService` (transient) : `setContext(name)`, `trace` … `fatal`, `assign(fields)` pour
-  ajouter des champs à tous les logs de la requête. Chaque log porte le `correlationId`, repris
-  de `x-correlation-id` / `x-request-id` ou généré.
-- `LOG_LEVELS` fixe l'ensemble exact des niveaux émis. Les niveaux sont mappés en `severity`
-  Cloud Logging. La sortie est `pino-pretty` en développement, JSON ailleurs.
-- `redactSecrets` masque les clés sensibles avant de logger des `details`.
-- `console.log` est interdit (Biome `noConsole`).
+- `LoggerService` (transient): `setContext(name)`, `trace` … `fatal`, `assign(fields)` to
+  add fields to all the request's logs. Every log carries the `correlationId`, taken
+  from `x-correlation-id` / `x-request-id` or generated.
+- `LOG_LEVELS` sets the exact set of emitted levels. Levels are mapped to the Cloud Logging
+  `severity`. Output is `pino-pretty` in development, JSON elsewhere.
+- `redactSecrets` masks sensitive keys before logging `details`.
+- `console.log` is forbidden (Biome `noConsole`).
 
-## Recette : ajouter une feature REST
+## Recipe: add a REST feature
 
-Exemple avec un agrégat `Tag` :
+Example with a `Tag` aggregate:
 
-1. Ajoute le modèle `Tag` dans `prisma/schema.prisma` (`@@map`, `@map`, index), puis lance
-   `yarn db:migrate --name add-tag` et relis le SQL généré.
-2. Crée le modèle de domaine `shared/types/tag.type.ts` (classe pure) et exporte-le dans
+1. Add the `Tag` model to `prisma/schema.prisma` (`@@map`, `@map`, indexes), then run
+   `yarn db:migrate --name add-tag` and review the generated SQL.
+2. Create the domain model `shared/types/tag.type.ts` (pure class) and export it from
    `shared/types/index.ts`.
-3. Crée le mapper `infrastructure/database/mappers/tag.mapper.ts`
-   (`toTag(record: TagRecord)`) avec son barrel `mappers/index.ts`.
-4. Crée le repository `infrastructure/database/repositories/tag.repository.ts`
-   (`txHost.tx.tag`, `rethrowPrismaError` sur les écritures) et exporte-le dans le barrel :
-   il est enregistré automatiquement par `Object.values(repositories)`.
-5. Crée les Commands / Queries `domain/tag/{commands,queries}/*.ts` (décorateurs
-   class-validator, constructeur à objet de paramètres) avec leurs barrels.
-6. Crée les handlers `domain/tag/handlers/*.handler.ts` (`AppCommandHandler` /
-   `AppQueryHandler`, `@Transactional()` s'il y a plusieurs écritures), un `*.handler.spec.ts`
-   par handler, et le barrel.
-7. Crée `domain/tag/index.ts`, ajoute `export * from './tag'` dans `domain/index.ts` et
-   `...Object.values(tagHandlers)` dans `DomainModule`.
-8. Ajoute les codes d'erreur dans `ERROR_CODES` et leurs traductions `fr` / `en`.
-9. REST : crée `api/rest/dto/tag.dto.ts` (schémas Zod décrits, `createZodDto`, `fromDomain`)
-   et `api/rest/controllers/tag.controller.ts` (`@ApiTags`, `@ZodResponse`,
-   `@ApiErrorResponses`, `version: '1'`), puis exporte-les dans leurs barrels.
-10. Si la feature a besoin de variables d'environnement, crée `shared/config/tag.config.ts`
-    (schéma Zod + `parseEnv` + `registerAs`) et complète `.env.example`.
+3. Create the mapper `infrastructure/database/mappers/tag.mapper.ts`
+   (`toTag(record: TagRecord)`) with its barrel `mappers/index.ts`.
+4. Create the repository `infrastructure/database/repositories/tag.repository.ts`
+   (`txHost.tx.tag`, `rethrowPrismaError` on writes) and export it from the barrel:
+   it is registered automatically by `Object.values(repositories)`.
+5. Create the Commands / Queries `domain/tag/{commands,queries}/*.ts` (class-validator
+   decorators, parameter-object constructor) with their barrels.
+6. Create the handlers `domain/tag/handlers/*.handler.ts` (`AppCommandHandler` /
+   `AppQueryHandler`, `@Transactional()` if there are several writes), one `*.handler.spec.ts`
+   per handler, and the barrel.
+7. Create `domain/tag/index.ts`, add `export * from './tag'` to `domain/index.ts` and
+   `...Object.values(tagHandlers)` to `DomainModule`.
+8. Add the error codes to `ERROR_CODES` and their `fr` / `en` translations.
+9. REST: create `api/rest/dto/tag.dto.ts` (described Zod schemas, `createZodDto`, `fromDomain`)
+   and `api/rest/controllers/tag.controller.ts` (`@ApiTags`, `@ZodResponse`,
+   `@ApiErrorResponses`, `version: '1'`), then export them from their barrels.
+10. If the feature needs environment variables, create `shared/config/tag.config.ts`
+    (Zod schema + `parseEnv` + `registerAs`) and complete `.env.example`.
 
-Dans un DTO de réponse, ne mets pas de `.meta({ id })` sur le schéma racine : avec
-`@nestjs/swagger` 12, `cleanupOpenApiDoc` le dupliquerait. Le composant OpenAPI prend le nom
-de la classe DTO. `.meta({ example })` sur les champs ne pose pas de problème.
+In a response DTO, do not put `.meta({ id })` on the root schema: with `@nestjs/swagger` 12,
+`cleanupOpenApiDoc` would duplicate it. The OpenAPI component takes the name of the DTO class.
+`.meta({ example })` on fields is fine.
 
-## Anti-patterns interdits
+## Forbidden anti-patterns
 
-- Un contrôleur qui appelle un repository ou `PrismaService`, ou qui contient de la logique
-  métier.
-- Un handler qui injecte `PrismaService` ou manipule un client de transaction.
-- Un handler qui retourne un record Prisma ou un DTO.
-- Un type Prisma généré importé hors de `infrastructure/database/`.
-- `this.prisma.<model>` au lieu de `this.txHost.tx.<model>` dans un repository.
-- Une lecture qui oublie `deletedAt: null`, ou une méthode de repository qui accepte un `where`
-  Prisma.
-- Une erreur Prisma attendue (`P2002`, `P2025`) qui remonte sans être traduite.
-- `prisma db push` ou `migrate dev` hors développement, ou une migration déjà appliquée qui est
-  modifiée.
-- Un contrôleur qui renvoie un modèle de domaine sans `XxxResponseDto.fromDomain`.
-- class-validator dans `api/rest/` ou dans la config, un `@ApiProperty` manuel sur un DTO Zod,
-  ou un champ de DTO sans `.describe()`.
-- Lire `process.env` hors d'un fichier de config Zod.
-- Une Command/Query sans décorateurs class-validator.
-- Retourner `null` pour une ressource censée exister au lieu de lever `NotFoundError`.
-- Un code d'erreur absent de `ERROR_CODES` ou sans traduction.
+- A controller that calls a repository or `PrismaService`, or that contains business
+  logic.
+- A handler that injects `PrismaService` or manipulates a transaction client.
+- A handler that returns a Prisma record or a DTO.
+- A generated Prisma type imported outside `infrastructure/database/`.
+- `this.prisma.<model>` instead of `this.txHost.tx.<model>` in a repository.
+- A read that forgets `deletedAt: null`, or a repository method that accepts a Prisma `where`.
+- An expected Prisma error (`P2002`, `P2025`) that bubbles up untranslated.
+- `prisma db push` or `migrate dev` outside development, or an already applied migration that
+  is modified.
+- A controller that returns a domain model without `XxxResponseDto.fromDomain`.
+- class-validator in `api/rest/` or in the config, a manual `@ApiProperty` on a Zod DTO, or a
+  DTO field without `.describe()`.
+- Reading `process.env` outside a Zod config file.
+- A Command/Query without class-validator decorators.
+- Returning `null` for a resource that is supposed to exist instead of throwing `NotFoundError`.
+- An error code missing from `ERROR_CODES` or without a translation.

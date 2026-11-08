@@ -7,20 +7,20 @@ export type GameAggregationOperation = 'generation' | 'translation'
 
 export type GameAggregationFailedErrorParams = {
   operation: GameAggregationOperation
-  /** Modèle d'IA utilisé pour la tentative. */
+  /** AI model used for the attempt. */
   model: string
-  /** Langue source d'une traduction. */
+  /** Source language of a translation. */
   sourceLanguage?: string | null
-  /** Durée de la tentative jusqu'à l'échec, en ms. */
+  /** Duration of the attempt until the failure, in ms. */
   durationMs: number
   cause: unknown
 }
 
 /**
- * Échec d'une agrégation de fiche (génération ou traduction). Reprend le code,
- * le statut et les détails de la cause quand c'est une AppError : la réponse
- * client est inchangée, mais l'opération, le modèle, la durée et la trace de
- * l'IA (si l'échec est survenu pendant l'appel) restent traçables.
+ * Failure of a sheet aggregation (generation or translation). Takes over the code,
+ * status and details of the cause when it is an AppError: the client
+ * response is unchanged, but the operation, model, duration and AI trace
+ * (if the failure occurred during the call) remain traceable.
  */
 export class GameAggregationFailedError extends AppError {
   readonly statusCode: number

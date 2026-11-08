@@ -48,13 +48,13 @@ export class RequestGameSheetHandler extends AppCommandHandler<
     gameId,
     language,
   }: RequestGameSheetCommand): Promise<GameSheetAvailability> {
-    // Cas courant, sans verrou : la fiche existe déjà.
+    // Common case, no lock: the sheet already exists.
     const sheet = await this.gameRepository.findSheet(gameId, language)
     if (sheet) return { status: 'ready', sheet }
 
     const availability = await this.reserve(gameId, language)
-    // Après le commit : la saga lance aussitôt l'agrégation, qui doit voir le
-    // run RUNNING et ne pas hériter du client de la transaction (fermée).
+    // After the commit: the saga immediately starts the aggregation, which must see the
+    // RUNNING run and must not inherit the (closed) transaction client.
     if (availability.status === 'pending' && availability.job) {
       this.eventBus.publish(
         new GameSheetAggregationStartedEvent(availability.job),
@@ -64,8 +64,8 @@ export class RequestGameSheetHandler extends AppCommandHandler<
   }
 
   /**
-   * Transaction courte (aucun appel à l'IA) : le verrou de ligne sérialise
-   * les demandes concurrentes sur le même jeu, une seule crée le run.
+   * Short transaction (no AI call): the row lock serializes
+   * concurrent requests on the same game, only one creates the run.
    */
   @Transactional<TransactionalAdapterPrisma>()
   private async reserve(
@@ -98,8 +98,8 @@ export class RequestGameSheetHandler extends AppCommandHandler<
     const sourceLanguage = status.generated
       ? status.supportedLanguages[0]
       : null
-    // Une génération dans une autre langue est en cours : la traduction
-    // démarrera à une prochaine demande, une fois la fiche générée.
+    // A generation in another language is in progress: the translation
+    // will start on a later request, once the sheet is generated.
     if (
       !sourceLanguage &&
       (await this.gameAggregationRunRepository.hasRunningGeneration(
@@ -154,7 +154,7 @@ function failureCode(operation: GameAggregationOperation | null): ErrorCode {
     : ErrorCode.GAME_SHEET_GENERATION_FAILED
 }
 
-/** Échec récent renvoyé au client sans relancer l'IA ; le détail est dans le run. */
+/** Recent failure returned to the client without restarting the AI; details are in the run. */
 function recentFailure(run: GameAggregationRunSummary): InternalError {
   return new InternalError('Game sheet aggregation failed recently', {
     code: failureCode(run.operation),

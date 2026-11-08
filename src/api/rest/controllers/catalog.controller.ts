@@ -23,7 +23,7 @@ import { ApiErrorResponses } from '../errors'
 @ApiHeader({
   name: 'accept-language',
   required: true,
-  description: `Langue des contenus (${SUPPORTED_LOCALES.join(', ')}). Absente : 400 LANGUAGE_REQUIRED ; aucune langue supportée : 400 UNSUPPORTED_LANGUAGE.`,
+  description: `Content language (${SUPPORTED_LOCALES.join(', ')}). Missing: 400 LANGUAGE_REQUIRED; no supported language: 400 UNSUPPORTED_LANGUAGE.`,
 })
 @Controller({ path: 'catalog', version: '1' })
 export class CatalogController {
@@ -34,7 +34,7 @@ export class CatalogController {
 
   @Get()
   @ApiOperation({
-    summary: "Lister le catalogue de l'utilisateur connecté",
+    summary: "List the current user's catalog",
   })
   @ZodResponse({ status: 200, type: CatalogResponseDto })
   @ApiErrorResponses(400, 401, 500)
@@ -51,10 +51,10 @@ export class CatalogController {
   @Put('games/:gameId')
   @HttpCode(204)
   @ApiOperation({
-    summary: 'Ajouter un jeu au catalogue',
-    description: 'Idempotent : un jeu déjà présent reste dans le catalogue.',
+    summary: 'Add a game to the catalog',
+    description: 'Idempotent: a game already in the catalog stays there.',
   })
-  @ApiResponse({ status: 204, description: 'Jeu présent dans le catalogue' })
+  @ApiResponse({ status: 204, description: 'Game is in the catalog' })
   @ApiErrorResponses(400, 401, 404, 500)
   async add(
     @CurrentUserId() userId: string,
@@ -68,10 +68,10 @@ export class CatalogController {
   @Delete('games/:gameId')
   @HttpCode(204)
   @ApiOperation({
-    summary: 'Retirer un jeu du catalogue',
-    description: 'Idempotent : un jeu absent du catalogue est ignoré.',
+    summary: 'Remove a game from the catalog',
+    description: 'Idempotent: a game not in the catalog is ignored.',
   })
-  @ApiResponse({ status: 204, description: 'Jeu absent du catalogue' })
+  @ApiResponse({ status: 204, description: 'Game is not in the catalog' })
   @ApiErrorResponses(400, 401, 500)
   async remove(
     @CurrentUserId() userId: string,

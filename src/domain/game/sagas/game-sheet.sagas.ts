@@ -7,9 +7,9 @@ import { GameSheetAggregationStartedEvent } from '../events'
 @Injectable()
 export class GameSheetSagas {
   /**
-   * Exécute en tâche de fond l'agrégation réservée par RequestGameSheetCommand.
-   * Un échec de la commande est déjà tracé dans le run ; le bus le publie
-   * ensuite sur l'UnhandledExceptionBus et le logue.
+   * Runs in the background the aggregation reserved by RequestGameSheetCommand.
+   * A command failure is already traced in the run; the bus then publishes
+   * it on the UnhandledExceptionBus and logs it.
    */
   @Saga()
   aggregationStarted = (events$: Observable<IEvent>): Observable<ICommand> =>

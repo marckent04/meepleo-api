@@ -12,8 +12,8 @@ import { errorTranslator } from '../errors/error-translator'
 import { toAppError } from '../errors/to-app-error'
 
 /**
- * Seul endroit qui logue une erreur levée pendant une requête, puis répond
- * avec le vrai statut HTTP et un corps ErrorResponse traduit.
+ * Only place that logs an error thrown during a request, then responds
+ * with the real HTTP status and a translated ErrorResponse body.
  */
 @Catch()
 export class AppExceptionFilter implements ExceptionFilter {

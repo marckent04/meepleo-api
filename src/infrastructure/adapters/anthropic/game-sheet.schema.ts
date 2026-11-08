@@ -1,10 +1,10 @@
 import { z } from 'zod'
 
 /**
- * Sortie structurée demandée au modèle (snake_case, forme de src/dnup.json).
- * Envoyée comme JSON Schema via `output_config.format` : pas de schéma
- * récursif, et les contraintes numériques ne sont vérifiées que côté client.
- * Pas de champ nullable : `''` et `0` signifient « inconnu ».
+ * Structured output requested from the model (snake_case, shape of src/dnup.json).
+ * Sent as JSON Schema via `output_config.format`: no recursive schema,
+ * and numeric constraints are only checked client-side.
+ * No nullable field: `''` and `0` mean "unknown".
  */
 const UnknownText = z.string().describe('Empty string when unknown')
 const UnknownInt = z.number().int().describe('0 when unknown')
@@ -45,8 +45,8 @@ export const GameSheetOutputSchema = z.object({
       OrderedEntrySchema.extend({ optional: z.boolean(), title: z.string() }),
     ),
   }),
-  // Une seule liste pour les deux : un second tableau d'objets ferait dépasser
-  // la taille maximale de grammaire acceptée par l'API.
+  // A single list for both: a second array of objects would exceed
+  // the maximum grammar size accepted by the API.
   special_rules: z.array(
     EntrySchema.extend({
       kind: z.enum(['special', 'variant']),

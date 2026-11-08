@@ -21,7 +21,7 @@ const EchoSchema = z.strictObject({
 })
 class EchoDto extends createZodDto(EchoSchema) {}
 
-/** Route de test : vérifie la validation Zod de bout en bout. */
+/** Test route: checks the Zod validation end to end. */
 @Public()
 @Controller({ path: 'echo', version: '1' })
 class EchoController {

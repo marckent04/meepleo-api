@@ -19,8 +19,8 @@ import {
 } from '../generated/prisma/client'
 
 /**
- * Relation `aggregationRuns` réduite à la dernière génération réussie : sa
- * présence marque la fiche comme générée, et en donne la date et le modèle.
+ * `aggregationRuns` relation reduced to the latest successful generation: its
+ * presence marks the sheet as generated, and gives its date and model.
  */
 export const LATEST_GENERATION_RUN = {
   where: {
@@ -34,7 +34,7 @@ export const LATEST_GENERATION_RUN = {
 
 export type GenerationRunRecord = { model: string | null; createdAt: Date }
 
-/** `aggregationRuns` : chargé avec `LATEST_GENERATION_RUN`. */
+/** `aggregationRuns`: loaded with `LATEST_GENERATION_RUN`. */
 export type GameSheetStatusRecord = Pick<GameRecord, 'supportedLanguages'> & {
   aggregationRuns: GenerationRunRecord[]
 }
@@ -101,7 +101,7 @@ const CONFIDENCE_FROM_RECORD: Record<SheetConfidenceRecord, SheetConfidence> = {
   HIGH: 'high',
 }
 
-/** Ordre d'affichage : `position` (rang produit par l'IA), puis id. */
+/** Display order: `position` (rank produced by the AI), then id. */
 function compareRules(a: GameRuleRecord, b: GameRuleRecord): number {
   return a.position - b.position || a.id.localeCompare(b.id)
 }
@@ -115,7 +115,7 @@ export function toGameSheetStatus(
   }
 }
 
-/** La fiche est agrégée dans `language` : générée, et disponible dans cette langue. */
+/** The sheet is aggregated in `language`: generated, and available in that language. */
 export function isGameSheetAggregated(
   record: GameSheetStatusRecord,
   language: string,
@@ -124,7 +124,7 @@ export function isGameSheetAggregated(
   return status.generated && status.supportedLanguages.includes(language)
 }
 
-/** Fiche stockée, dans `language`. Les ids des entrées sont ceux des `GameRule`. */
+/** Stored sheet, in `language`. Entry ids are those of the `GameRule`s. */
 export function toStoredGameSheet(
   record: GameWithRulesRecord,
   language: string,
@@ -200,9 +200,9 @@ export type GeneratedGameSheetData = {
 }
 
 /**
- * Données d'écriture d'une fiche générée. Les colonnes non traduites
- * (éditeur, joueurs, âge, durée…) ne sont remplies que si elles sont vides :
- * les données BGG restent la référence.
+ * Write data of a generated sheet. Untranslated columns
+ * (publisher, players, age, duration…) are only filled if they are empty:
+ * BGG data remains the reference.
  */
 export function toGeneratedGameSheetData(
   sheet: GameSheet,
@@ -298,8 +298,8 @@ export type GameSheetTranslationData = {
 }
 
 /**
- * Données d'écriture d'une traduction : la langue est ajoutée aux textes
- * existants, sans créer ni supprimer de règle.
+ * Write data of a translation: the language is added to the existing
+ * texts, without creating or deleting any rule.
  */
 export function toGameSheetTranslationData(
   translation: GameSheetTranslation,

@@ -5,7 +5,7 @@ import { defineConfig } from 'vitest/config'
 const src = path.resolve(import.meta.dirname, 'src')
 
 export default defineConfig({
-  // SWC émet les métadonnées de décorateurs nécessaires à l'injection Nest.
+  // SWC emits the decorator metadata required by Nest injection.
   plugins: [swc.vite({ module: { type: 'es6' } })],
   oxc: false,
   resolve: {

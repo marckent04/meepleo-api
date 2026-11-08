@@ -30,7 +30,7 @@ export class LoginHandler extends AppCommandHandler<LoginCommand, AuthTokens> {
       ? await this.passwordHasher.verify(user.passwordHash, password)
       : await this.passwordHasher.verifyDummy(password).then(() => false)
     if (!user || !valid) {
-      // Même erreur que le compte existe ou non : pas d'énumération.
+      // Same error whether the account exists or not: no enumeration.
       throw new UnauthenticatedError('Invalid credentials', {
         code: ErrorCode.INVALID_CREDENTIALS,
       })

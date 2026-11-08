@@ -14,7 +14,7 @@ import {
 export const GameIdParamSchema = z.object({
   id: z
     .uuid()
-    .describe('Identifiant du jeu')
+    .describe('Game identifier')
     .meta({ example: '0195d1a2-0000-7000-8000-000000000001' }),
 })
 
@@ -26,7 +26,7 @@ export const SearchGamesQuerySchema = z.object({
     .trim()
     .min(SEARCH_GAMES_MIN_LENGTH)
     .max(SEARCH_GAMES_MAX_LENGTH)
-    .describe('Texte contenu dans le nom du jeu (casse et accents ignorés)')
+    .describe('Text contained in the game name (case and accents ignored)')
     .meta({ example: 'catan' }),
   limit: z.coerce
     .number()
@@ -34,26 +34,26 @@ export const SearchGamesQuerySchema = z.object({
     .min(1)
     .max(SEARCH_GAMES_MAX_LIMIT)
     .default(10)
-    .describe('Nombre maximal de résultats'),
+    .describe('Maximum number of results'),
 })
 
 export class SearchGamesQueryDto extends createZodDto(SearchGamesQuerySchema) {}
 
 export const GameSearchResultSchema = z.object({
-  id: z.uuid().describe('Identifiant du jeu'),
+  id: z.uuid().describe('Game identifier'),
   name: z
     .string()
     .describe(
-      "Nom dans la langue d'Accept-Language si la fiche y a été générée, sinon nom canonique",
+      'Name in the Accept-Language language if the sheet was generated in it, otherwise canonical name',
     )
     .meta({ example: 'Catan' }),
-  year: z.number().int().nullable().describe('Année de publication'),
-  categories: z.array(z.enum(GAME_CATEGORIES)).describe('Catégories du jeu'),
+  year: z.number().int().nullable().describe('Publication year'),
+  categories: z.array(z.enum(GAME_CATEGORIES)).describe('Game categories'),
 })
 
 export const GameSearchResponseSchema = z
   .array(GameSearchResultSchema)
-  .describe('Jeux correspondant à la recherche, les plus pertinents en premier')
+  .describe('Games matching the search, most relevant first')
 
 export class GameSearchResponseDto extends createZodDto(
   GameSearchResponseSchema,
@@ -70,123 +70,127 @@ const PlayerCountsSchema = z
   .array(z.number().int().positive())
   .nullable()
   .describe(
-    "Nombres de joueurs concernés ; null si l'entrée s'applique à toutes les configurations",
+    'Player counts concerned; null if the entry applies to all configurations',
   )
   .meta({ example: [2, 3] })
 
 const EntrySchema = z.object({
-  id: z.uuid().describe("Identifiant de l'entrée"),
+  id: z.uuid().describe('Entry identifier'),
   playerCounts: PlayerCountsSchema,
-  text: z.string().describe("Texte de l'entrée"),
+  text: z.string().describe('Entry text'),
 })
 
 const OrderedEntrySchema = EntrySchema.extend({
   order: z
     .number()
     .int()
-    .describe(
-      'Ordre ; des alternatives selon le nombre de joueurs peuvent le partager',
-    ),
+    .describe('Order; alternatives depending on the player count may share it'),
 })
 
-const TitleSchema = z.string().describe("Titre de l'entrée")
+const TitleSchema = z.string().describe('Entry title')
 
 export const GameResponseSchema = z
   .object({
-    gameId: z.uuid().describe('Identifiant du jeu'),
+    gameId: z.uuid().describe('Game identifier'),
     language: z
       .string()
-      .describe('Langue de la fiche (ISO 639-1)')
+      .describe('Sheet language (ISO 639-1)')
       .meta({ example: 'fr' }),
     game: z
       .object({
         localizedName: z
           .string()
-          .describe('Nom du jeu dans la langue de la fiche')
+          .describe('Game name in the sheet language')
           .meta({ example: 'Dnup' }),
-        edition: z.string().nullable().describe('Édition'),
-        publisher: z.string().nullable().describe('Éditeur'),
+        edition: z.string().nullable().describe('Edition'),
+        publisher: z.string().nullable().describe('Publisher'),
         ruleBookUrl: z
           .string()
           .nullable()
-          .describe('URL de la règle officielle utilisée'),
+          .describe('URL of the official rulebook used'),
       })
-      .describe('Identification du jeu'),
+      .describe('Game identification'),
     players: z
       .object({
-        min: z.number().int().nullable().describe('Nombre minimal de joueurs'),
-        max: z.number().int().nullable().describe('Nombre maximal de joueurs'),
+        min: z.number().int().nullable().describe('Minimum number of players'),
+        max: z.number().int().nullable().describe('Maximum number of players'),
         recommended: z
           .array(z.number().int())
-          .describe('Nombres de joueurs recommandés'),
+          .describe('Recommended player counts'),
       })
-      .describe('Nombre de joueurs'),
-    minAge: z.number().int().nullable().describe('Âge minimal'),
+      .describe('Number of players'),
+    minAge: z.number().int().nullable().describe('Minimum age'),
     durationMinutes: z
       .object({
-        min: z.number().int().nullable().describe('Durée minimale, en minutes'),
-        max: z.number().int().nullable().describe('Durée maximale, en minutes'),
+        min: z
+          .number()
+          .int()
+          .nullable()
+          .describe('Minimum duration, in minutes'),
+        max: z
+          .number()
+          .int()
+          .nullable()
+          .describe('Maximum duration, in minutes'),
       })
-      .describe("Durée d'une partie"),
-    description: z.string().describe('Présentation du jeu'),
-    setup: z.array(OrderedEntrySchema).describe('Étapes de mise en place'),
+      .describe('Duration of a game'),
+    description: z.string().describe('Game presentation'),
+    setup: z.array(OrderedEntrySchema).describe('Setup steps'),
     turn: z
       .object({
-        summary: z.string().describe("Résumé d'un tour"),
+        summary: z.string().describe('Turn summary'),
         steps: z
           .array(
             OrderedEntrySchema.extend({
               optional: z
                 .boolean()
-                .describe('Action au choix du joueur plutôt que systématique'),
+                .describe('Action chosen by the player rather than systematic'),
               title: TitleSchema,
             }),
           )
-          .describe("Étapes d'un tour"),
+          .describe('Turn steps'),
       })
-      .describe("Déroulement d'un tour"),
+      .describe('Turn flow'),
     specialRules: z
       .array(EntrySchema.extend({ title: TitleSchema }))
-      .describe('Règles spéciales et exceptions'),
+      .describe('Special rules and exceptions'),
     variants: z
       .array(EntrySchema.extend({ title: TitleSchema }))
-      .describe('Variantes et règles optionnelles'),
+      .describe('Variants and optional rules'),
     endOfGame: z
       .object({
-        triggers: z
-          .array(EntrySchema)
-          .describe('Déclencheurs de fin de partie'),
-        timing: z.string().describe("Moment exact où la partie s'arrête"),
+        triggers: z.array(EntrySchema).describe('End-of-game triggers'),
+        timing: z.string().describe('Exact moment when the game stops'),
         scoring: z
           .array(OrderedEntrySchema.extend({ title: TitleSchema }))
-          .describe('Décompte des points'),
-        winner: z.array(EntrySchema).describe('Conditions de victoire'),
+          .describe('Score counting'),
+        winner: z.array(EntrySchema).describe('Victory conditions'),
       })
-      .describe('Fin de partie'),
+      .describe('End of game'),
     confidence: z
       .enum(['low', 'medium', 'high'])
-      .describe('Fiabilité des sources utilisées'),
+      .describe('Reliability of the sources used'),
     sources: z
       .array(
         z.object({
-          title: z.string().describe('Titre de la source'),
-          url: z.string().describe('URL de la source'),
+          title: z.string().describe('Source title'),
+          url: z.string().describe('Source URL'),
         }),
       )
-      .describe('Sources lues pour rédiger la fiche'),
+      .describe('Sources read to write the sheet'),
     warnings: z
       .array(z.string())
-      .describe('Avertissements (informations manquantes, traduction…)'),
+      .describe('Warnings (missing information, translation…)'),
     generatedBy: z
       .string()
-      .describe("Modèle d'IA ayant généré la fiche")
+      .describe('AI model that generated the sheet')
       .meta({ example: 'claude-haiku-5-5' }),
     generatedAt: z.iso
       .datetime()
-      .describe('Date de génération de la fiche (ISO 8601, UTC)')
+      .describe('Sheet generation date (ISO 8601, UTC)')
       .meta({ example: '2026-01-01T12:00:00.000Z' }),
   })
-  .describe('Jeu et sa fiche de règles dans une langue')
+  .describe('Game and its rule sheet in a language')
 
 export class GameResponseDto extends createZodDto(GameResponseSchema, {
   codec: true,
@@ -218,18 +222,18 @@ export const GamePendingResponseSchema = z
   .object({
     status: z
       .literal('pending')
-      .describe('La fiche est en cours de génération ou de traduction'),
+      .describe('The sheet is being generated or translated'),
     retryAfterSeconds: z
       .number()
       .int()
       .positive()
       .describe(
-        'Délai conseillé avant de rappeler la route (aussi dans Retry-After)',
+        'Recommended delay before calling the route again (also in Retry-After)',
       )
       .meta({ example: 5 }),
   })
   .describe(
-    "Fiche pas encore disponible dans la langue d'Accept-Language : rappeler la même route",
+    'Sheet not yet available in the Accept-Language language: call the same route again',
   )
 
 export class GamePendingResponseDto extends createZodDto(
@@ -240,7 +244,7 @@ export class GamePendingResponseDto extends createZodDto(
   }
 }
 
-/** Réponse de GET /games/:id : 200 avec la fiche, ou 202 tant qu'elle est en cours. */
+/** Response of GET /games/:id: 200 with the sheet, or 202 while it is in progress. */
 export const GameLookupResponseSchema = z.union([
   GameResponseSchema,
   GamePendingResponseSchema,

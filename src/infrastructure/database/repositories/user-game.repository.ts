@@ -15,9 +15,9 @@ export class UserGameRepository {
   ) {}
 
   /**
-   * Idempotent. Un jeu n'a qu'un statut par utilisateur :
-   * - `owned` : ajoute le jeu, ou le fait passer de la liste de souhaits à la bibliothèque ;
-   * - `wishlist` : ajoute le jeu, mais lève un conflit (409) s'il est déjà possédé.
+   * Idempotent. A game has only one status per user:
+   * - `owned`: adds the game, or moves it from the wishlist to the library;
+   * - `wishlist`: adds the game, but throws a conflict (409) if it is already owned.
    */
   async add(
     userId: string,
@@ -40,7 +40,7 @@ export class UserGameRepository {
     }
   }
 
-  /** Idempotent : un jeu absent de cette liste est ignoré (l'autre liste n'est jamais touchée). */
+  /** Idempotent: a game absent from this list is ignored (the other list is never touched). */
   async remove(
     userId: string,
     gameId: string,
@@ -51,14 +51,14 @@ export class UserGameRepository {
     })
   }
 
-  /** Nombre de jeux (non supprimés) d'une liste. */
+  /** Number of (non-deleted) games in a list. */
   count(userId: string, status: UserGameStatus): Promise<number> {
     return this.txHost.tx.userGame.count({
       where: { userId, status: toDbStatus(status), game: { deletedAt: null } },
     })
   }
 
-  /** Jeux d'une liste, derniers ajoutés d'abord ; nom dans `language` s'il est connu. */
+  /** Games of a list, most recently added first; name in `language` if known. */
   async listByUser(
     userId: string,
     language: string,

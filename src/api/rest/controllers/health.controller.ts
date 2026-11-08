@@ -23,7 +23,7 @@ export class HealthController {
   @Get()
   @SkipThrottle()
   @ApiOperation({
-    summary: "Vérifier l'état de l'API et de la base de données",
+    summary: 'Check the health of the API and the database',
   })
   @ZodResponse({ status: 200, type: HealthResponseDto })
   @ApiErrorResponses(500)

@@ -4,15 +4,15 @@ import type { GameSheetAvailability } from '@/shared/types'
 
 export type RequestGameSheetCommandParams = {
   gameId: string
-  /** Code ISO 639-1 de la langue de la fiche (ex. `fr`). */
+  /** ISO 639-1 code of the sheet language (e.g. `fr`). */
   language: string
 }
 
 /**
- * Demande la fiche d'un jeu dans une langue : la renvoie si elle existe,
- * sinon réserve son agrégation (run RUNNING, génération si le jeu n'a aucune
- * fiche, traduction sinon) et publie GameSheetAggregationStartedEvent, sauf si
- * une agrégation est déjà en cours. Rapide : aucun appel à l'IA.
+ * Requests a game's sheet in a language: returns it if it exists,
+ * otherwise reserves its aggregation (RUNNING run, generation if the game has no
+ * sheet, translation otherwise) and publishes GameSheetAggregationStartedEvent, unless
+ * an aggregation is already in progress. Fast: no AI call.
  */
 export class RequestGameSheetCommand extends Command<GameSheetAvailability> {
   @IsUUID()

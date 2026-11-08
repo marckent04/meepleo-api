@@ -3,17 +3,17 @@ import { AppError } from './app-error'
 import { ErrorCode } from './error-codes'
 
 export type AiCallFailedErrorParams = {
-  /** Code par défaut quand la cause n'est pas une AppError. */
+  /** Default code when the cause is not an AppError. */
   code: ErrorCode
-  /** Trace partielle : appels effectués et tokens consommés avant l'échec. */
+  /** Partial trace: calls made and tokens consumed before the failure. */
   trace: AiTrace
   cause: unknown
 }
 
 /**
- * Échec d'une opération d'IA, avec la trace de ce qui a été consommé. Reprend
- * le message, le code, le statut et les détails de la cause quand c'est une
- * AppError : la réponse client est inchangée.
+ * Failure of an AI operation, with the trace of what was consumed. Takes over
+ * the message, code, status and details of the cause when it is an
+ * AppError: the client response is unchanged.
  */
 export class AiCallFailedError extends AppError {
   readonly statusCode: number

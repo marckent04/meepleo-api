@@ -29,7 +29,7 @@ const SEVERITY: Record<LogLevel, string> = {
       inject: [APP_CONFIG.KEY, LOGGER_CONFIG.KEY],
       useFactory: (app: AppConfig, loggerConfig: LoggerConfig) => ({
         pinoHttp: {
-          // Tous les niveaux atteignent le hook, qui ne garde que LOG_LEVELS.
+          // All levels reach the hook, which only keeps LOG_LEVELS.
           level: 'trace',
           autoLogging: false,
           messageKey: 'message',
@@ -51,7 +51,7 @@ const SEVERITY: Record<LogLevel, string> = {
               }
             },
           },
-          // Lisible en local ; JSON brut ailleurs (production, tests, CI).
+          // Readable locally; raw JSON elsewhere (production, tests, CI).
           transport:
             app.nodeEnv === 'development'
               ? {

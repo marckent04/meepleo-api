@@ -1,10 +1,10 @@
 import { createParamDecorator, type ExecutionContext } from '@nestjs/common'
 import type { FastifyRequest } from 'fastify'
 
-/** Requête dont l'utilisateur a été résolu par JwtAuthGuard. */
+/** Request whose user was resolved by JwtAuthGuard. */
 export type AuthenticatedRequest = FastifyRequest & { userId?: string }
 
-/** Identifiant de l'utilisateur authentifié (claim `sub` de l'access token). */
+/** Authenticated user id (`sub` claim of the access token). */
 export const CurrentUserId = createParamDecorator(
   (_data: unknown, context: ExecutionContext): string => {
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>()

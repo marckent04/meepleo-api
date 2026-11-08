@@ -15,13 +15,13 @@ async function bootstrap(): Promise<void> {
     new FastifyAdapter({ trustProxy: true }),
     {
       bufferLogs: true,
-      // L'erreur remonte au catch ci-dessous au lieu d'un process.exit immédiat.
+      // The error bubbles up to the catch below instead of an immediate process.exit.
       abortOnError: false,
       logger: new ConsoleLogger({ json: true, colors: false }),
     },
   )
   app.useLogger(app.get(PinoNestLogger))
-  // Permet d'injecter des services dans les contraintes class-validator custom.
+  // Allows injecting services into custom class-validator constraints.
   useContainer(app.select(AppModule), { fallbackOnErrors: true })
   app.enableVersioning({ type: VersioningType.URI })
   app.enableCors()
@@ -29,7 +29,7 @@ async function bootstrap(): Promise<void> {
 
   const appConfig = app.get<AppConfig>(APP_CONFIG.KEY)
   if (appConfig.nodeEnv !== 'production') {
-    // Import dynamique : la génération de la doc n'est jamais chargée en production.
+    // Dynamic import: the doc generation is never loaded in production.
     const { setupSwagger } = await import('./api/rest/swagger')
     setupSwagger(app, appConfig.version)
   }
@@ -37,7 +37,7 @@ async function bootstrap(): Promise<void> {
   await app.listen(appConfig.port, '0.0.0.0')
 }
 
-// Logger texte (non JSON) : une erreur de config Zod reste lisible.
+// Text logger (not JSON): a Zod config error stays readable.
 const bootstrapLogger = new ConsoleLogger('Bootstrap')
 
 bootstrap().catch((error: unknown) => {

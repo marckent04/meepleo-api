@@ -10,15 +10,15 @@ import {
 import { DisposableEmailChecker, PasswordHasher, TokenService } from './auth'
 
 /**
- * Intégrations externes hors base de données (API tierces, SDK…). Chaque
- * adapter a son sous-dossier, ses schémas Zod et sa config enregistrée ici via
+ * External integrations outside the database (third-party APIs, SDKs…). Each
+ * adapter has its own subfolder, its Zod schemas and its config registered here via
  * ConfigModule.forFeature(...).
  */
 @Module({
   imports: [
     ConfigModule.forFeature(ANTHROPIC_CONFIG),
     ConfigModule.forFeature(JWT_CONFIG),
-    // Secrets et durées passés à chaque appel par TokenService.
+    // Secrets and durations passed on each call by TokenService.
     JwtModule.register({}),
   ],
   providers: [

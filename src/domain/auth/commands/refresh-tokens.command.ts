@@ -3,9 +3,9 @@ import { IsString, MinLength } from 'class-validator'
 import type { AuthTokens } from '@/shared/types'
 
 /**
- * Échange un refresh token contre une nouvelle paire de tokens (rotation :
- * l'ancien refresh token est révoqué). Présenter un token déjà révoqué révoque
- * toutes les sessions de l'utilisateur.
+ * Exchanges a refresh token for a new token pair (rotation: the previous
+ * refresh token is revoked). Presenting an already revoked token revokes all
+ * the user's sessions.
  */
 export class RefreshTokensCommand extends Command<AuthTokens> {
   @IsString()

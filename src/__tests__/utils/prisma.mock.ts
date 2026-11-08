@@ -7,9 +7,9 @@ export type PrismaTransactionHost = TransactionHost<
 >
 
 /**
- * Faux TransactionHost dont `tx` expose uniquement les délégués fournis
- * (ex. `{ project: { findFirst: vi.fn() } }`), pour tester un repository
- * sans base de données.
+ * Fake TransactionHost whose `tx` only exposes the provided delegates
+ * (e.g. `{ project: { findFirst: vi.fn() } }`), to test a repository
+ * without a database.
  */
 export function createTransactionHostMock<TTx extends object>(
   tx: TTx,

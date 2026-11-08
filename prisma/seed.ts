@@ -1,7 +1,7 @@
 /**
- * Seed idempotent, rejouable à volonté : uniquement des `upsert`.
- * Lancé par `yarn db:seed`, et après `prisma migrate deploy` dans l'étape
- * `migrate` de l'image Docker.
+ * Idempotent seed, safe to replay: `upsert` only.
+ * Run by `yarn db:seed`, and after `prisma migrate deploy` in the
+ * `migrate` step of the Docker image.
  */
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -15,7 +15,7 @@ import {
 const BGG_GAMES_CSV = join(__dirname, 'data', 'bgg_games.csv')
 const BATCH_SIZE = 500
 
-/** Catégories BGG du CSV → enum `GameCategory`. */
+/** BGG categories from the CSV → `GameCategory` enum. */
 const BGG_CATEGORIES: Record<string, GameCategory> = {
   abstracts: GameCategory.ABSTRACT,
   children: GameCategory.CHILDREN,
@@ -33,7 +33,7 @@ interface BggGame {
   categories: GameCategory[]
 }
 
-/** Lit un champ à partir de `start` ; renvoie sa valeur et l'index du séparateur qui le suit. */
+/** Reads a field starting at `start`; returns its value and the index of the separator that follows. */
 function readCsvField(
   content: string,
   start: number,
@@ -56,10 +56,10 @@ function readCsvField(
       return { value, end: i + 1 }
     }
   }
-  throw new Error('CSV invalide : guillemet non fermé')
+  throw new Error('Invalid CSV: unclosed quote')
 }
 
-/** Parse un CSV RFC 4180 (champs entre guillemets, `""` échappé, virgules et retours à la ligne dans les champs). */
+/** Parses an RFC 4180 CSV (quoted fields, escaped `""`, commas and line breaks inside fields). */
 function parseCsv(content: string): string[][] {
   const rows: string[][] = []
   let row: string[] = []
@@ -82,10 +82,10 @@ function parseCsv(content: string): string[][] {
 function toBggGame(record: Record<string, string>, line: number): BggGame {
   const bggId = Number(record.id)
   if (!Number.isInteger(bggId) || bggId <= 0) {
-    throw new Error(`bgg_games.csv:${line} : id invalide "${record.id}"`)
+    throw new Error(`bgg_games.csv:${line}: invalid id "${record.id}"`)
   }
 
-  // BGG met 0 quand l'année est inconnue ; une année négative est av. J.-C.
+  // BGG uses 0 when the year is unknown; a negative year is BC.
   const year = Number(record.yearpublished)
   const categories = record.category
     .split(',')
@@ -94,7 +94,7 @@ function toBggGame(record: Record<string, string>, line: number): BggGame {
     .map((value) => {
       const category = BGG_CATEGORIES[value]
       if (!category) {
-        throw new Error(`bgg_games.csv:${line} : catégorie inconnue "${value}"`)
+        throw new Error(`bgg_games.csv:${line}: unknown category "${value}"`)
       }
       return category
     })
@@ -120,8 +120,8 @@ function loadBggGames(): BggGame[] {
 }
 
 /**
- * Jeux de base issus de BGG. Seules les colonnes venant du CSV (nom, année, catégories) sont mises à
- * jour : les données de fiche remplies par l'IA ne sont jamais écrasées.
+ * Base games from BGG. Only the columns coming from the CSV (name, year, categories) are
+ * updated: sheet data filled in by the AI is never overwritten.
  */
 async function seedBggGames(prisma: PrismaClient): Promise<number> {
   const games = loadBggGames()
@@ -142,7 +142,7 @@ async function seedBggGames(prisma: PrismaClient): Promise<number> {
 
 async function seed(prisma: PrismaClient): Promise<void> {
   const count = await seedBggGames(prisma)
-  process.stdout.write(`Seed : ${count} jeux BGG synchronisés\n`)
+  process.stdout.write(`Seed: ${count} BGG games synced\n`)
 }
 
 async function main(): Promise<void> {

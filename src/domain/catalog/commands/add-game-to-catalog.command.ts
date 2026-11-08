@@ -1,7 +1,7 @@
 import { Command } from '@nestjs/cqrs'
 import { IsUUID } from 'class-validator'
 
-/** Ajoute un jeu au catalogue de l'utilisateur. Idempotent. */
+/** Adds a game to the user's catalog. Idempotent. */
 export class AddGameToCatalogCommand extends Command<void> {
   @IsUUID()
   readonly userId: string

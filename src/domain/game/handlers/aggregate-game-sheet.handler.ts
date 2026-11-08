@@ -51,9 +51,9 @@ export class AggregateGameSheetHandler extends AppCommandHandler<
   }
 
   /**
-   * Les appels à l'IA se font hors transaction ; seul l'enregistrement de la
-   * fiche et du run SUCCESS est transactionnel. En cas d'échec, le run est
-   * clos en FAILURE puis l'erreur est relancée. L'issue est publiée après le
+   * AI calls happen outside a transaction; only saving the sheet and the
+   * SUCCESS run is transactional. On failure, the run is closed as FAILURE
+   * then the error is rethrown. The outcome is published after the
    * commit.
    */
   async handle(command: AggregateGameSheetCommand): Promise<void> {
@@ -116,7 +116,7 @@ export class AggregateGameSheetHandler extends AppCommandHandler<
     return { operation, ...traced }
   }
 
-  /** Le run SUCCESS est écrit avec la fiche : c'est lui qui la marque comme agrégée. */
+  /** The SUCCESS run is written with the sheet: it is what marks it as aggregated. */
   @Transactional<TransactionalAdapterPrisma>()
   private async save(
     runId: string,
@@ -144,7 +144,7 @@ export class AggregateGameSheetHandler extends AppCommandHandler<
     try {
       await this.gameAggregationRunRepository.recordFailure({ runId, error })
     } catch (recordError) {
-      // Le run restera RUNNING jusqu'au délai d'abandon.
+      // The run stays RUNNING until the abandonment delay.
       this.logger.error(
         { runId, err: recordError },
         'Could not record game aggregation failure',

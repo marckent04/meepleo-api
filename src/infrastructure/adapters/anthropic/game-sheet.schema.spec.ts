@@ -34,9 +34,9 @@ describe('GameSheetOutputSchema', () => {
   })
 
   it('fits the structured-output complexity budget', () => {
-    // La grammaire compilée par l'API est plafonnée (schéma + outils web) :
-    // la version avec champs nullables et `id` sur les entrées était refusée
-    // en 400 « compiled grammar is too large ». Voir game-sheet.schema.ts.
+    // The grammar compiled by the API is capped (schema + web tools):
+    // the version with nullable fields and an `id` on entries was rejected
+    // with a 400 "compiled grammar is too large". See game-sheet.schema.ts.
     const { schema } = zodOutputFormat(GameSheetOutputSchema)
     let unions = 0
     let ids = 0

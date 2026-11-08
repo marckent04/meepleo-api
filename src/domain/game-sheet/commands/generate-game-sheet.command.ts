@@ -4,12 +4,12 @@ import type { GameSheet, Traced } from '@/shared/types'
 
 export type GenerateGameSheetCommandParams = {
   gameId: string
-  /** Code ISO 639-1 de la langue de la fiche (ex. `fr`). */
+  /** ISO 639-1 code of the sheet language (e.g. `fr`). */
   language: string
 }
 
-/** Génère par IA la fiche de règles d'un jeu dans une langue, sans la persister.
- * Renvoie aussi la trace de l'appel à l'IA (durée, tokens, sortie brute). */
+/** Generates with AI a game's rule sheet in a language, without persisting it.
+ * Also returns the AI call trace (duration, tokens, raw output). */
 export class GenerateGameSheetCommand extends Command<Traced<GameSheet>> {
   @IsUUID()
   readonly gameId: string

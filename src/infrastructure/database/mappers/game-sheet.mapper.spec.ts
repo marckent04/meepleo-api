@@ -19,7 +19,7 @@ const generated = toGameSheet(
   dnupOutput as GameSheetOutput,
 )
 
-/** Simule l'écriture en base d'une fiche générée. */
+/** Simulates writing a generated sheet to the database. */
 function storeGenerated(): GameWithRulesRecord {
   const current = gameRecord()
   const data = toGeneratedGameSheetData(generated, current)
@@ -38,12 +38,12 @@ function storeGenerated(): GameWithRulesRecord {
       updatedAt: current.updatedAt,
     }),
   )
-  // Ordre d'insertion inversé : la lecture doit retrier.
+  // Reversed insertion order: reading must sort again.
   return {
     ...current,
     ...data.game,
     rules: rules.reverse(),
-    // Run de génération enregistré dans la même transaction.
+    // Generation run recorded in the same transaction.
     aggregationRuns: [
       { model: generated.generatedBy, createdAt: generated.generatedAt },
     ],
@@ -157,7 +157,7 @@ describe('game sheet mapper', () => {
     expect(en.setup[0].text).toBe(`EN text ${en.setup[0].id}`)
     expect(en.turn.steps[0].title).toBe(`EN title ${en.turn.steps[0].id}`)
     expect(en.warnings).toEqual(source.warnings.map((w) => `EN ${w}`))
-    // La langue source est conservée.
+    // The source language is kept.
     expect(toStoredGameSheet(updated, 'fr')).toEqual(source)
   })
 

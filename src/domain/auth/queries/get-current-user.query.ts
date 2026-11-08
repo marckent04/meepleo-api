@@ -2,7 +2,7 @@ import { Query } from '@nestjs/cqrs'
 import { IsUUID } from 'class-validator'
 import type { CurrentUser } from '@/shared/types'
 
-/** Compte de l'utilisateur authentifié. */
+/** Account of the authenticated user. */
 export class GetCurrentUserQuery extends Query<CurrentUser> {
   @IsUUID()
   readonly userId: string

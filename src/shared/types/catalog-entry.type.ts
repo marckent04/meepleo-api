@@ -1,7 +1,7 @@
 import type { GameSearchResult } from './game.type'
 
-/** Jeu du catalogue personnel d'un utilisateur. */
+/** Game in a user's personal catalog. */
 export type CatalogEntry = GameSearchResult & {
-  /** Date d'ajout au catalogue. */
+  /** Date added to the catalog. */
   addedAt: Date
 }

@@ -2,8 +2,8 @@ import { existsSync } from 'node:fs'
 import { defineConfig } from 'prisma/config'
 import { loadDatabaseEnv } from './src/infrastructure/database/database.config'
 
-// La CLI Prisma ne charge pas .env : on le charge ici (Node >= 21) s'il existe.
-// En CI/Docker, les variables viennent de l'environnement.
+// The Prisma CLI does not load .env: we load it here (Node >= 21) if it exists.
+// In CI/Docker, variables come from the environment.
 if (existsSync('.env')) {
   process.loadEnvFile('.env')
 }

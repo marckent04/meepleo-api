@@ -11,7 +11,7 @@ import { LoggerService } from '../logger/logger.service'
 import { DATABASE_CONFIG } from './database.config'
 import { type Prisma, PrismaClient } from './generated/prisma/client'
 
-/** Seuil (ms) au-delà duquel une requête est loggée en debug en développement. */
+/** Threshold (ms) above which a query is logged at debug level in development. */
 const SLOW_QUERY_THRESHOLD_MS = 200
 
 type PrismaServiceOptions = Prisma.PrismaClientOptions & {
@@ -44,7 +44,7 @@ export class PrismaService
 
   onModuleInit(): void {
     if (this.logSlowQueries) {
-      // Les paramètres ne sont jamais loggés : ils peuvent contenir des secrets.
+      // Parameters are never logged: they may contain secrets.
       this.$on('query', (event) => {
         if (event.duration > SLOW_QUERY_THRESHOLD_MS) {
           this.logger.debug(
@@ -54,8 +54,8 @@ export class PrismaService
         }
       })
     }
-    // Pas de $connect() bloquant : le pool pg ouvre la connexion à la première
-    // requête, ce qui évite un aller-retour DB pendant le cold start Cloud Run.
+    // No blocking $connect(): the pg pool opens the connection on the first
+    // request, which avoids a DB round trip during the Cloud Run cold start.
   }
 
   async onModuleDestroy(): Promise<void> {

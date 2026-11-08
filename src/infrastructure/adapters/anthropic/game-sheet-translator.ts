@@ -37,8 +37,8 @@ const PROMPT_VERSION = promptVersion(
 const SETTINGS = toAiCallSettings({ effort: EFFORT, maxTokens: MAX_TOKENS })
 
 /**
- * Traduit une fiche existante dans une autre langue : un seul appel, sans
- * outils web. Les règles restent identiques d'une langue à l'autre.
+ * Translates an existing sheet into another language: a single call, without
+ * web tools. The rules stay identical from one language to the other.
  */
 @Injectable()
 export class GameSheetTranslator {
@@ -51,14 +51,14 @@ export class GameSheetTranslator {
     this.logger.setContext(GameSheetTranslator.name)
   }
 
-  /** Modèle d'IA utilisé pour traduire les fiches. */
+  /** AI model used to translate the sheets. */
   get model(): string {
     return this.config.sheetTranslationModel
   }
 
   /**
-   * Lève une AiCallFailedError portant la trace (tokens consommés, sortie
-   * brute…) en cas d'échec, y compris quand la traduction est incomplète.
+   * Throws an AiCallFailedError carrying the trace (tokens consumed, raw
+   * output…) on failure, including when the translation is incomplete.
    */
   async translate(
     sheet: GameSheet,
@@ -112,7 +112,7 @@ export class GameSheetTranslator {
     )
   }
 
-  /** La sortie brute, volumineuse, n'est conservée qu'en base. */
+  /** The bulky raw output is only kept in the database. */
   private logTrace(
     sheet: GameSheet,
     targetLanguage: string,
@@ -153,7 +153,7 @@ export class GameSheetTranslator {
     }
   }
 
-  /** Chaque règle source traduite exactement une fois, et autant d'avertissements. */
+  /** Each source rule translated exactly once, and as many warnings. */
   private assertComplete(
     sheet: GameSheet,
     output: GameSheetTranslationOutput,

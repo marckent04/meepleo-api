@@ -1,31 +1,31 @@
 # Meepleo API
 
-API REST NestJS 12 (Fastify) avec un cœur CQRS, une persistance Prisma 7 (PostgreSQL 17),
-des DTO Zod et une documentation OpenAPI générée depuis les schémas Zod.
+NestJS 12 (Fastify) REST API with a CQRS core, Prisma 7 persistence (PostgreSQL 17),
+Zod DTOs and an OpenAPI documentation generated from the Zod schemas.
 
-L'architecture, les règles de validation et la recette pour ajouter une feature sont décrites
-dans [ARCHITECTURE.md](ARCHITECTURE.md).
+The architecture, the validation rules and the recipe for adding a feature are described
+in [ARCHITECTURE.md](ARCHITECTURE.md).
 
-## Prérequis
+## Requirements
 
 - Node 24, Yarn classic (1.x)
-- Docker (pour PostgreSQL en local)
+- Docker (for PostgreSQL locally)
 
-## Démarrage
+## Getting started
 
 ```bash
 cp .env.example .env
 docker compose -f compose.dev.yml up
 ```
 
-Cette commande démarre PostgreSQL, applique les migrations, joue le seed puis lance l'API en
-mode watch.
+This command starts PostgreSQL, applies the migrations, runs the seed, then starts the API in
+watch mode.
 
-Si tu préfères lancer l'API hors de Docker :
+If you prefer to run the API outside Docker:
 
 ```bash
 cp .env.example .env
-docker compose -f compose.dev.yml up -d db   # POSTGRES_PORT=5433 si 5432 est déjà pris
+docker compose -f compose.dev.yml up -d db   # POSTGRES_PORT=5433 if 5432 is already taken
 yarn install
 yarn db:deploy && yarn db:seed
 yarn start:dev
@@ -33,57 +33,57 @@ yarn start:dev
 
 | URL | Description |
 |---|---|
-| http://localhost:3000/v1/health | Contrôle de santé (API + base de données) |
-| http://localhost:3000/docs | Swagger UI (hors production) |
-| http://localhost:3000/docs-json | Document OpenAPI (hors production) |
+| http://localhost:3000/v1/health | Health check (API + database) |
+| http://localhost:3000/docs | Swagger UI (non-production only) |
+| http://localhost:3000/docs-json | OpenAPI document (non-production only) |
 
-Si une variable d'environnement manque ou est invalide, l'application refuse de démarrer et
-affiche un message Zod qui liste les erreurs.
+If an environment variable is missing or invalid, the application refuses to start and
+prints a Zod message listing the errors.
 
-## Variables d'environnement
+## Environment variables
 
-| Variable | Défaut | Description |
+| Variable | Default | Description |
 |---|---|---|
-| `NODE_ENV` | `development` | `development`, `test` ou `production` |
-| `PORT` | `3000` | Port HTTP |
-| `DATABASE_URL` | — | URL `postgres://` ou `postgresql://` |
-| `DB_POOL_MAX` | `10` | Taille max du pool de connexions |
-| `LOG_LEVELS` | `warn,error` | Niveaux loggés, séparés par des virgules (`trace,debug,info,warn,error,fatal`) |
-| `POSTGRES_PORT` | `5432` | Port publié par le PostgreSQL de `compose.dev.yml` |
+| `NODE_ENV` | `development` | `development`, `test` or `production` |
+| `PORT` | `3000` | HTTP port |
+| `DATABASE_URL` | — | `postgres://` or `postgresql://` URL |
+| `DB_POOL_MAX` | `10` | Maximum size of the connection pool |
+| `LOG_LEVELS` | `warn,error` | Logged levels, comma-separated (`trace,debug,info,warn,error,fatal`) |
+| `POSTGRES_PORT` | `5432` | Port published by the PostgreSQL of `compose.dev.yml` |
 
-## Commandes
+## Commands
 
-| Commande | Rôle |
+| Command | Purpose |
 |---|---|
-| `yarn start:dev` | API en mode watch |
-| `yarn build` | `prisma generate` + compilation dans `dist/` |
-| `yarn start:prod` | Lance `dist/main.js` |
-| `yarn test` / `yarn test:watch` / `yarn test:cov` | Tests Vitest |
-| `yarn lint-and-format` | Biome (lint + format, avec corrections) |
-| `yarn db:generate` | Génère le client Prisma |
-| `yarn db:migrate --name <change>` | Crée et applique une migration (développement uniquement) |
-| `yarn db:deploy` | Applique les migrations en attente (CI, production) |
-| `yarn db:seed` | Seed idempotent (upsert uniquement) |
-| `yarn db:reset` | Recrée la base locale et rejoue migrations + seed |
+| `yarn start:dev` | API in watch mode |
+| `yarn build` | `prisma generate` + compilation into `dist/` |
+| `yarn start:prod` | Runs `dist/main.js` |
+| `yarn test` / `yarn test:watch` / `yarn test:cov` | Vitest tests |
+| `yarn lint-and-format` | Biome (lint + format, with fixes) |
+| `yarn db:generate` | Generates the Prisma client |
+| `yarn db:migrate --name <change>` | Creates and applies a migration (development only) |
+| `yarn db:deploy` | Applies pending migrations (CI, production) |
+| `yarn db:seed` | Idempotent seed (upsert only) |
+| `yarn db:reset` | Recreates the local database and replays migrations + seed |
 | `yarn db:studio` | Prisma Studio |
-| `yarn db:validate` | Valide le schéma Prisma et vérifie son formatage |
+| `yarn db:validate` | Validates the Prisma schema and checks its formatting |
 
-## Déploiement
+## Deployment
 
-L'image Docker a trois cibles :
+The Docker image has three targets:
 
-- `migrate` : job one-shot `yarn db:deploy && yarn db:seed`, à lancer avant chaque déploiement ;
-- `runtime` : image distroless Node 24 qui ne contient que `dist/` et les dépendances de
-  production ;
-- `builder` : étape intermédiaire.
+- `migrate`: one-shot job `yarn db:deploy && yarn db:seed`, to run before each deployment;
+- `runtime`: distroless Node 24 image containing only `dist/` and the production
+  dependencies;
+- `builder`: intermediate stage.
 
-L'application n'applique jamais les migrations au démarrage. `compose.prod.yml` montre
-l'enchaînement migrate → api.
+The application never applies migrations at startup. `compose.prod.yml` shows the
+migrate → api sequence.
 
 ## CI
 
-- `code_quality.yml` (à chaque pull request) appelle `quality.yml` : `biome ci`,
-  `db:validate`, build et tests, plus un job qui applique les migrations sur une base vide,
-  vérifie qu'aucune migration ne manque et joue le seed deux fois.
-- `release.yml` (manuel) relance la qualité puis `semantic-release` sur `main` (Conventional
+- `code_quality.yml` (on every pull request) calls `quality.yml`: `biome ci`,
+  `db:validate`, build and tests, plus a job that applies the migrations on an empty database,
+  checks that no migration is missing and runs the seed twice.
+- `release.yml` (manual) re-runs the quality checks then `semantic-release` on `main` (Conventional
   Commits).

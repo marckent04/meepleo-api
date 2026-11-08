@@ -1,4 +1,4 @@
-/** Jeu du catalogue (données utiles à l'identification). */
+/** Catalog game (data useful for identification). */
 export class Game {
   constructor(
     readonly id: string,
@@ -7,7 +7,7 @@ export class Game {
     readonly publisher: string | null,
     readonly edition: string | null,
     readonly bggId: number | null,
-    /** Règle officielle trouvée lors d'une génération précédente. */
+    /** Official rulebook found during a previous generation. */
     readonly ruleBookUrl: string | null = null,
   ) {}
 }
@@ -24,10 +24,10 @@ export const GAME_CATEGORIES = [
 ] as const
 export type GameCategory = (typeof GAME_CATEGORIES)[number]
 
-/** Résultat d'une recherche de jeu par nom (autocomplétion). */
+/** Result of a game search by name (autocomplete). */
 export type GameSearchResult = {
   id: string
-  /** Nom dans la langue demandée s'il est connu, sinon nom canonique. */
+  /** Name in the requested language if known, otherwise canonical name. */
   name: string
   year: number | null
   categories: GameCategory[]

@@ -13,7 +13,7 @@ export type StoredRefreshToken = {
 }
 
 export type CreateRefreshTokenParams = {
-  /** Claim `jti` du refresh token. */
+  /** `jti` claim of the refresh token. */
   id: string
   userId: string
   tokenHash: string
@@ -41,8 +41,8 @@ export class RefreshTokenRepository {
   }
 
   /**
-   * Révoque un token de façon atomique. `false` si un autre appel l'avait
-   * déjà révoqué (rejeu concurrent ou token volé).
+   * Revokes a token atomically. `false` if another call had
+   * already revoked it (concurrent replay or stolen token).
    */
   async revoke(id: string): Promise<boolean> {
     const { count } = await this.txHost.tx.refreshToken.updateMany({

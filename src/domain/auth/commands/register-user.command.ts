@@ -17,9 +17,9 @@ export type RegisterUserCommandParams = {
 }
 
 /**
- * Crée un compte. L'email et le username sont normalisés (trim + minuscules) :
- * l'unicité et le login sont insensibles à la casse. Le mot de passe est haché
- * avec argon2 avant d'être stocké.
+ * Creates an account. The email and username are normalized (trim + lowercase):
+ * uniqueness and login are case-insensitive. The password is hashed
+ * with argon2 before being stored.
  */
 export class RegisterUserCommand extends Command<User> {
   @IsEmail()

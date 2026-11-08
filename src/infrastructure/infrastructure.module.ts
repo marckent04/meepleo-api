@@ -24,7 +24,7 @@ const repositoryProviders = Object.values(repositories)
     ConfigModule.forRoot({ isGlobal: true, load: [APP_CONFIG] }),
     CqrsModule.forRoot(),
     DatabaseModule,
-    // Un seul ClsModule : correlation id du logger + propagation des transactions.
+    // A single ClsModule: logger correlation id + transaction propagation.
     ClsModule.forRoot({
       global: true,
       middleware: {

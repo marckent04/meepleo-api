@@ -1,17 +1,17 @@
 import type { GameAggregationFailedError } from '@/shared/errors'
 import type { GameSheetAggregationJob } from '@/shared/types'
 
-/** Une agrégation de fiche a été réservée (run RUNNING commité) : elle reste à exécuter. */
+/** A sheet aggregation was reserved (RUNNING run committed): it remains to be executed. */
 export class GameSheetAggregationStartedEvent {
   constructor(readonly job: GameSheetAggregationJob) {}
 }
 
-/** La fiche a été enregistrée dans la langue du job et le run clos en SUCCESS. */
+/** The sheet was saved in the job language and the run closed as SUCCESS. */
 export class GameSheetAggregatedEvent {
   constructor(readonly job: GameSheetAggregationJob) {}
 }
 
-/** L'agrégation a échoué ; le run a été clos en FAILURE (sauf si l'écriture a elle-même échoué). */
+/** The aggregation failed; the run was closed as FAILURE (unless the write itself failed). */
 export class GameSheetAggregationFailedEvent {
   constructor(
     readonly job: GameSheetAggregationJob,

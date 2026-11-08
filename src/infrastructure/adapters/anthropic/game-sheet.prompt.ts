@@ -1,9 +1,9 @@
 import type { Game } from '@/shared/types'
 
 /**
- * System prompt figé (aucune donnée variable) pour rester cacheable.
- * Les instructions sont en anglais ; la fiche est rédigée dans la langue
- * demandée dans le message utilisateur.
+ * Frozen system prompt (no variable data) so it stays cacheable.
+ * The instructions are in English; the sheet is written in the language
+ * requested in the user message.
  */
 export const GAME_SHEET_SYSTEM_PROMPT = `You write rule sheets for Meepleo, an app that helps people play board games at the table without rereading the whole rulebook. A sheet should let someone who has never played set up the game and play a full game.
 

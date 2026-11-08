@@ -1,6 +1,6 @@
-// Conventions : modèles PascalCase singulier + @@map("snake_case_pluriel"),
-// champs camelCase + @map("snake_case"), ids String @id @db.Uuid,
-// dates DateTime @db.Timestamptz(6). Voir ARCHITECTURE.md.
+// Conventions: singular PascalCase models + @@map("plural_snake_case"),
+// camelCase fields + @map("snake_case"), ids String @id @db.Uuid,
+// dates DateTime @db.Timestamptz(6). See ARCHITECTURE.md.
 
 generator client {
   provider     = "prisma-client"
@@ -13,11 +13,11 @@ datasource db {
 }
 
 // ---------------------------------------------------------------------------
-// Jeux et fiches de règles
+// Games and rule sheets
 //
-// Textes traduits : colonnes Json au format LocalizedText `{ "fr": "...", "en": "..." }`,
-// parsées uniquement dans les mappers.
-// `playerCounts` vide = la règle s'applique à toutes les configurations de joueurs.
+// Translated texts: Json columns in the LocalizedText format `{ "fr": "...", "en": "..." }`,
+// parsed only in the mappers.
+// An empty `playerCounts` = the rule applies to all player configurations.
 // ---------------------------------------------------------------------------
 
 enum GameCategory {
@@ -34,14 +34,14 @@ enum GameCategory {
 }
 
 enum RuleType {
-  SETUP // mise en place
-  TURN // étapes / actions d'un tour
-  SPECIAL // règles spéciales
-  VARIANT // variantes et règles optionnelles choisies par les joueurs
-  END_TRIGGER // déclencheurs de fin de manche / partie
-  SCORING // décompte
-  WINNER // condition de victoire
-  TIE_BREAKER // départage
+  SETUP // setup
+  TURN // steps / actions of a turn
+  SPECIAL // special rules
+  VARIANT // variants and optional rules chosen by the players
+  END_TRIGGER // round / game end triggers
+  SCORING // scoring
+  WINNER // victory condition
+  TIE_BREAKER // tie-breaker
 
   @@map("rule_type")
 }
@@ -55,8 +55,8 @@ enum SheetConfidence {
 }
 
 enum GameAggregationOperation {
-  GENERATION // génération complète (recherche web + extraction)
-  TRANSLATION // traduction d'une fiche existante
+  GENERATION // full generation (web search + extraction)
+  TRANSLATION // translation of an existing sheet
 
   @@map("game_aggregation_operation")
 }
@@ -64,7 +64,7 @@ enum GameAggregationOperation {
 enum GameAggregationStatus {
   SUCCESS
   FAILURE
-  RUNNING // en cours, en tâche de fond ; abandonné s'il dépasse le délai maximal
+  RUNNING // in progress, in the background; abandoned if it exceeds the maximum delay
 
   @@map("game_aggregation_status")
 }
@@ -83,7 +83,7 @@ model Game {
   publisher          String?
   edition            String?
   imageUrl           String?        @map("image_url")
-  /// URL de la règle officielle trouvée lors de la génération
+  /// URL of the official rulebook found during the generation
   ruleBookUrl        String?        @map("rule_book_url")
   categories         GameCategory[]
   minPlayers         Int?           @map("min_players")
@@ -93,8 +93,8 @@ model Game {
   minDuration        Int?           @map("min_duration_minutes")
   maxDuration        Int?           @map("max_duration_minutes")
 
-  // Fiche de règles : null tant qu'elle n'a pas été générée.
-  /// Codes ISO 639-1 des langues disponibles (ex. ["fr", "en"]), validés dans le code
+  // Rule sheet: null until it has been generated.
+  /// ISO 639-1 codes of the available languages (e.g. ["fr", "en"]), validated in code
   supportedLanguages String[]         @default([]) @map("supported_languages")
   /// LocalizedText
   turnSummary        Json?            @map("turn_summary")
@@ -108,7 +108,7 @@ model Game {
 
   barcodes        GameBarcode[]
   rules           GameRule[]
-  /// La fiche est générée dès qu'un run SUCCESS / GENERATION existe (date et modèle du plus récent).
+  /// The sheet is generated as soon as a SUCCESS / GENERATION run exists (date and model of the latest one).
   aggregationRuns GameAggregationRun[]
   catalogEntries  UserGame[]
   favoritedBy     UserFavorite[]
@@ -138,11 +138,11 @@ model GameRule {
   gameId       String   @map("game_id") @db.Uuid
   game         Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
   type         RuleType
-  /// Non unique : plusieurs alternatives selon le nombre de joueurs peuvent partager un ordre.
+  /// Not unique: several alternatives depending on the player count can share an order.
   order        Int
-  /// Rang d'affichage parmi les règles du même type (départage les ordres égaux)
+  /// Display rank among rules of the same type (breaks ties between equal orders)
   position     Int      @default(0)
-  /// [] = tous les joueurs
+  /// [] = all players
   playerCounts Int[]    @map("player_counts")
   optional     Boolean  @default(false)
   /// LocalizedText
@@ -156,49 +156,49 @@ model GameRule {
   @@map("game_rules")
 }
 
-/// Tentative d'agrégation de fiche (génération ou traduction), en cours, réussie ou non :
-/// durée, modèle, consommation et sortie brute de l'IA, conservées pour analyse.
-/// Créée RUNNING au lancement (createdAt = début), puis passée SUCCESS ou FAILURE.
+/// Sheet aggregation attempt (generation or translation), in progress, successful or not:
+/// duration, model, usage and raw AI output, kept for analysis.
+/// Created RUNNING at launch (createdAt = start), then moved to SUCCESS or FAILURE.
 model GameAggregationRun {
   id                       String                    @id @default(uuid(7)) @db.Uuid
   gameId                   String                    @map("game_id") @db.Uuid
   game                     Game                      @relation(fields: [gameId], references: [id], onDelete: Cascade)
   status                   GameAggregationStatus
-  /// Code ISO 639-1 de la langue demandée
+  /// ISO 639-1 code of the requested language
   language                 String
-  /// null si l'échec est survenu avant l'appel à l'IA (verrou, base de données…)
+  /// null if the failure occurred before the AI call (lock, database…)
   operation                GameAggregationOperation?
-  /// Langue source d'une traduction
+  /// Source language of a translation
   sourceLanguage           String?                   @map("source_language")
-  /// Modèle d'IA (ex. "claude-haiku-5-5"), null sans appel à l'IA
+  /// AI model (e.g. "claude-haiku-5-5"), null without an AI call
   model                    String?
-  /// Durée totale de l'opération (appels IA + enregistrement), en ms ; 0 tant que RUNNING
+  /// Total duration of the operation (AI calls + saving), in ms; 0 while RUNNING
   durationMs               Int                       @map("duration_ms")
-  /// Durée cumulée des appels à l'IA, en ms
+  /// Accumulated duration of the AI calls, in ms
   aiDurationMs             Int?                      @map("ai_duration_ms")
-  /// Nombre d'appels à l'API (relances pause_turn comprises)
+  /// Number of API calls (pause_turn retries included)
   requestCount             Int?                      @map("request_count")
-  /// Consommation cumulée sur tous les appels
+  /// Usage accumulated over all calls
   inputTokens              Int?                      @map("input_tokens")
   outputTokens             Int?                      @map("output_tokens")
   cacheCreationInputTokens Int?                      @map("cache_creation_input_tokens")
   cacheReadInputTokens     Int?                      @map("cache_read_input_tokens")
   webSearchRequests        Int?                      @map("web_search_requests")
   webFetchRequests         Int?                      @map("web_fetch_requests")
-  /// stop_reason de la dernière réponse
+  /// stop_reason of the last response
   stopReason               String?                   @map("stop_reason")
-  /// Empreinte du prompt système et du schéma de sortie
+  /// Fingerprint of the system prompt and the output schema
   promptVersion            String?                   @map("prompt_version")
-  /// Paramètres d'appel : { effort, maxTokens, tools }
+  /// Call parameters: { effort, maxTokens, tools }
   settings                 Json?
-  /// Sortie structurée brute de l'IA
+  /// Raw structured output of the AI
   output                   Json?
-  /// Texte brut de la réponse quand la sortie structurée n'a pas pu être lue
+  /// Raw response text when the structured output could not be read
   rawText                  String?                   @map("raw_text")
-  /// ErrorCode de l'AppError, sinon INTERNAL_SERVER_ERROR
+  /// ErrorCode of the AppError, otherwise INTERNAL_SERVER_ERROR
   errorCode                String?                   @map("error_code")
   errorMessage             String?                   @map("error_message")
-  /// Contexte technique (AppError.details, secrets masqués)
+  /// Technical context (AppError.details, secrets masked)
   errorDetails             Json?                     @map("error_details")
   createdAt                DateTime                  @default(now()) @map("created_at") @db.Timestamptz(6)
 
@@ -209,11 +209,11 @@ model GameAggregationRun {
 }
 
 // ---------------------------------------------------------------------------
-// Authentification
+// Authentication
 //
-// `email` et `username` sont stockés normalisés (minuscules) : l'unicité et le
-// login sont donc insensibles à la casse. Les refresh tokens ne sont jamais
-// stockés en clair, seulement leur empreinte SHA-256.
+// `email` and `username` are stored normalized (lowercase): uniqueness and
+// login are therefore case-insensitive. Refresh tokens are never
+// stored in clear, only their SHA-256 fingerprint.
 // ---------------------------------------------------------------------------
 
 model User {
@@ -232,14 +232,14 @@ model User {
 }
 
 model RefreshToken {
-  /// Identifiant du token (claim `jti` du JWT)
+  /// Token identifier (`jti` claim of the JWT)
   id        String    @id @db.Uuid
   userId    String    @map("user_id") @db.Uuid
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  /// Empreinte SHA-256 du refresh token
+  /// SHA-256 fingerprint of the refresh token
   tokenHash String    @unique @map("token_hash")
   expiresAt DateTime  @map("expires_at") @db.Timestamptz(6)
-  /// Renseigné à la rotation ou à la déconnexion ; un token révoqué présenté à nouveau signale un vol
+  /// Set on rotation or sign-out; a revoked token presented again signals a theft
   revokedAt DateTime? @map("revoked_at") @db.Timestamptz(6)
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
 
@@ -247,15 +247,15 @@ model RefreshToken {
   @@map("refresh_tokens")
 }
 
-/// Statut d'un jeu pour un utilisateur : dans sa bibliothèque ou dans sa liste de souhaits
+/// Status of a game for a user: in their library or in their wishlist
 enum UserGameStatus {
-  OWNED // possédé (bibliothèque)
-  WISHLIST // souhaité, non possédé
+  OWNED // owned (library)
+  WISHLIST // wished for, not owned
 
   @@map("user_game_status")
 }
 
-/// Jeu lié à un utilisateur : bibliothèque ou liste de souhaits (jamais les deux)
+/// Game linked to a user: library or wishlist (never both)
 model UserGame {
   id        String         @id @default(uuid(7)) @db.Uuid
   userId    String         @map("user_id") @db.Uuid

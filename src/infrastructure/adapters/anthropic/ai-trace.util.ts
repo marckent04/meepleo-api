@@ -3,8 +3,8 @@ import type Anthropic from '@anthropic-ai/sdk'
 import type { AiCallSettings, AiTrace, AiUsage } from '@/shared/types'
 
 /**
- * Empreinte courte du prompt système et du format de sortie : change dès que
- * l'un des deux change, pour comparer les fiches produites par version.
+ * Short fingerprint of the system prompt and the output format: changes as soon as
+ * either changes, to compare the sheets produced per version.
  */
 export function promptVersion(system: string, outputFormat: unknown): string {
   return createHash('sha256')
@@ -15,7 +15,7 @@ export function promptVersion(system: string, outputFormat: unknown): string {
     .slice(0, 12)
 }
 
-/** Paramètres d'appel, outils serveur compris (nom et plafond d'usage). */
+/** Call parameters, including server tools (name and usage cap). */
 export function toAiCallSettings(params: {
   effort: string
   maxTokens: number
@@ -40,8 +40,8 @@ type TracedResponse = Pick<
 > & { parsed_output?: unknown }
 
 /**
- * Accumule la trace d'une opération d'IA sur un ou plusieurs appels API :
- * durée, nombre d'appels, tokens, et sortie de la dernière réponse.
+ * Accumulates the trace of an AI operation over one or more API calls:
+ * duration, number of calls, tokens, and output of the last response.
  */
 export class AiTraceRecorder {
   private model: string
@@ -67,7 +67,7 @@ export class AiTraceRecorder {
     this.model = model
   }
 
-  /** Exécute un appel API en mesurant sa durée et en cumulant sa consommation. */
+  /** Runs an API call, measuring its duration and accumulating its usage. */
   async call<T extends TracedResponse>(request: () => Promise<T>): Promise<T> {
     this.requestCount++
     const start = performance.now()

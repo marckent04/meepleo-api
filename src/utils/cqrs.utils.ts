@@ -10,7 +10,7 @@ import { toErrorFields } from '@/shared/errors/validation-fields'
 
 const validationPipe = new ValidationPipe()
 
-/** Messages lisibles (« email must be an email »), comme le ValidationPipe Nest. */
+/** Readable messages (“email must be an email”), like the Nest ValidationPipe. */
 function toValidationMessages(
   errors: Parameters<ReturnType<ValidationPipe['createExceptionFactory']>>[0],
 ): string[] {
@@ -29,8 +29,8 @@ function toValidationMessages(
 }
 
 /**
- * Filet de sécurité indépendant du transport : valide les décorateurs
- * class-validator de la Command/Query avant son exécution.
+ * Transport-independent safety net: validates the class-validator
+ * decorators of the Command/Query before it runs.
  */
 async function validatePayload(
   data: object,

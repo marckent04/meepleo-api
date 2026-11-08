@@ -28,14 +28,14 @@ import {
 } from '../dto'
 import { ApiErrorResponses } from '../errors'
 
-/** Limite stricte (par IP) sur les routes qui ouvrent ou prolongent une session. */
+/** Strict limit (per IP) on routes that open or extend a session. */
 const AUTH_THROTTLE = { default: { ttl: 60_000, limit: 10 } }
 
 @ApiTags('auth')
 @ApiHeader({
   name: 'accept-language',
   required: true,
-  description: `Langue des messages d'erreur (${SUPPORTED_LOCALES.join(', ')}).`,
+  description: `Language of error messages (${SUPPORTED_LOCALES.join(', ')}).`,
 })
 @Controller({ path: 'auth', version: '1' })
 export class AuthController {
@@ -48,9 +48,9 @@ export class AuthController {
   @Public()
   @Throttle(AUTH_THROTTLE)
   @ApiOperation({
-    summary: 'Créer un compte',
+    summary: 'Create an account',
     description:
-      "Email, nom d'utilisateur et mot de passe. Le mot de passe est haché avec argon2id. Connectez-vous ensuite via `/auth/login`.",
+      'Email, username and password. The password is hashed with argon2id. Then sign in via `/auth/login`.',
   })
   @ZodResponse({ status: 201, type: UserResponseDto })
   @ApiErrorResponses(400, 409, 422, 429, 500)
@@ -64,7 +64,7 @@ export class AuthController {
   @HttpCode(200)
   @Throttle(AUTH_THROTTLE)
   @ApiOperation({
-    summary: "Se connecter avec un nom d'utilisateur et un mot de passe",
+    summary: 'Sign in with a username and a password',
   })
   @ZodResponse({ status: 200, type: AuthTokensResponseDto })
   @ApiErrorResponses(400, 401, 429, 500)
@@ -78,9 +78,9 @@ export class AuthController {
   @HttpCode(200)
   @Throttle(AUTH_THROTTLE)
   @ApiOperation({
-    summary: 'Renouveler les tokens',
+    summary: 'Renew the tokens',
     description:
-      "Le refresh token est à usage unique (rotation) : l'ancien est révoqué. Présenter un refresh token déjà utilisé révoque toutes les sessions du compte.",
+      "The refresh token is single-use (rotation): the previous one is revoked. Presenting an already used refresh token revokes all the account's sessions.",
   })
   @ZodResponse({ status: 200, type: AuthTokensResponseDto })
   @ApiErrorResponses(400, 401, 429, 500)
@@ -95,10 +95,10 @@ export class AuthController {
   @Public()
   @HttpCode(204)
   @ApiOperation({
-    summary: 'Se déconnecter',
-    description: 'Révoque le refresh token. Idempotent.',
+    summary: 'Sign out',
+    description: 'Revokes the refresh token. Idempotent.',
   })
-  @ApiResponse({ status: 204, description: 'Refresh token révoqué' })
+  @ApiResponse({ status: 204, description: 'Refresh token revoked' })
   @ApiErrorResponses(400, 500)
   async logout(@Body() body: RefreshTokenBodyDto): Promise<void> {
     await this.commandBus.execute(new LogoutCommand(body))
@@ -106,7 +106,7 @@ export class AuthController {
 
   @Get('me')
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Compte de l'utilisateur connecté" })
+  @ApiOperation({ summary: "Current user's account" })
   @ZodResponse({ status: 200, type: CurrentUserResponseDto })
   @ApiErrorResponses(401, 500)
   async me(@CurrentUserId() userId: string): Promise<CurrentUserResponseDto> {

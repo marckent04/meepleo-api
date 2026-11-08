@@ -6,7 +6,7 @@ import { AcceptLanguageGuard } from './guards/accept-language.guard'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
 import { ErrorCodeOnFailureInterceptor } from './interceptors/error-code-on-failure.interceptor'
 
-/** Comportements transverses aux transports, déclarés une seule fois. */
+/** Cross-cutting behaviors shared by all transports, declared once. */
 @Module({
   imports: [ThrottlerModule.forRoot([{ ttl: 60_000, limit: 60 }])],
   providers: [

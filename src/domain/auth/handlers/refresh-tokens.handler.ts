@@ -17,8 +17,8 @@ function invalidRefreshToken(message: string): UnauthenticatedError {
   })
 }
 
-// Volontairement sans @Transactional : la révocation de toutes les sessions
-// sur rejeu doit être validée même si l'erreur est ensuite levée.
+// Deliberately not @Transactional: revoking all sessions on replay
+// must be committed even if the error is thrown afterwards.
 @CommandHandler(RefreshTokensCommand)
 export class RefreshTokensHandler extends AppCommandHandler<
   RefreshTokensCommand,
@@ -48,7 +48,7 @@ export class RefreshTokensHandler extends AppCommandHandler<
       throw invalidRefreshToken('Unknown or expired refresh token')
     }
 
-    // Révocation atomique : un seul appel concurrent peut consommer le token.
+    // Atomic revocation: only one concurrent call can consume the token.
     const consumed = await this.refreshTokenRepository.revoke(id)
     if (!consumed) {
       this.logger.warn(

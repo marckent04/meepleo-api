@@ -20,7 +20,7 @@ import {
 } from '../game-sheet-aggregation.constants'
 import { RequestGameSheetHandler } from './request-game-sheet.handler'
 
-// La transaction est testée de bout en bout ; ici, on teste la décision.
+// The transaction is tested end to end; here we test the decision.
 vi.mock('@nestjs-cls/transactional', async (importOriginal) => ({
   ...(await importOriginal<object>()),
   Transactional: () => () => undefined,
@@ -141,7 +141,7 @@ describe('RequestGameSheetHandler', () => {
       sourceLanguage: null,
       model: 'claude-opus-5-5',
     })
-    // Publié une fois le run créé, pour que la saga lance l'agrégation.
+    // Published once the run is created, so the saga starts the aggregation.
     expect(eventBus.publish).toHaveBeenCalledWith(
       new GameSheetAggregationStartedEvent({
         runId: newRunId,

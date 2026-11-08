@@ -4,10 +4,10 @@ import type { GameAggregationOperation } from '@/shared/errors'
 import type { GameSheetAggregationJob } from '@/shared/types'
 
 /**
- * Exécute une agrégation réservée par RequestGameSheetCommand (génération ou
- * traduction), enregistre la fiche, clôt le run et publie
- * GameSheetAggregatedEvent ou GameSheetAggregationFailedEvent. Long (appels à
- * l'IA) : lancé en tâche de fond par GameSheetSagas, hors transaction.
+ * Runs an aggregation reserved by RequestGameSheetCommand (generation or
+ * translation), saves the sheet, closes the run and publishes
+ * GameSheetAggregatedEvent or GameSheetAggregationFailedEvent. Long (AI calls):
+ * started in the background by GameSheetSagas, outside any transaction.
  */
 export class AggregateGameSheetCommand extends Command<void> {
   @IsUUID()

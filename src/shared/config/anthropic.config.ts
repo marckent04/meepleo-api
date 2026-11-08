@@ -4,7 +4,7 @@ import { parseEnv } from './parse-env'
 
 export const ANTHROPIC_CONFIG_KEY = 'anthropic'
 
-/** Niveaux d'effort (raisonnement) acceptés pour la génération des fiches. */
+/** Effort (reasoning) levels accepted for sheet generation. */
 export const SHEET_EFFORTS = ['low', 'medium', 'high'] as const
 export type SheetEffort = (typeof SHEET_EFFORTS)[number]
 
@@ -20,14 +20,14 @@ const AnthropicEnvSchema = z.object({
 
 export type AnthropicConfig = {
   apiKey: string
-  /** Modèle qui génère les fiches de règles. */
+  /** Model that generates the rule sheets. */
   sheetModel: string
   /**
-   * Effort du modèle qui génère les fiches : moins d'effort, moins de tokens
-   * de raisonnement et une génération plus rapide. À comparer via les runs.
+   * Effort of the model that generates the sheets: less effort, fewer reasoning
+   * tokens and faster generation. To compare via the runs.
    */
   sheetEffort: SheetEffort
-  /** Modèle qui traduit une fiche existante dans une autre langue. */
+  /** Model that translates an existing sheet into another language. */
   sheetTranslationModel: string
 }
 

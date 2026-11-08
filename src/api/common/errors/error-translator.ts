@@ -4,9 +4,9 @@ import { genericErrorCodeForStatus, isErrorCode } from '@/shared/errors'
 import type { Locale } from '@/shared/i18n/locale'
 
 export type ErrorTranslator = {
-  /** Message traduit du code de l'erreur (repli sur le code générique du statut). */
+  /** Translated message for the error code (falls back to the generic status code). */
   error(error: AppError): string
-  /** Message traduit d'une contrainte de validation (repli sur `validation.default`). */
+  /** Translated message for a validation constraint (falls back to `validation.default`). */
   constraint(name: string): string
 }
 

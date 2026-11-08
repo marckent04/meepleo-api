@@ -1,6 +1,6 @@
 import type { GameSheet } from '@/shared/types'
 
-/** System prompt figé (aucune donnée variable) pour rester cacheable. */
+/** Frozen system prompt (no variable data) so it stays cacheable. */
 export const GAME_SHEET_TRANSLATION_SYSTEM_PROMPT = `You translate board game rule sheets for Meepleo, an app that helps people play board games at the table without rereading the whole rulebook.
 
 You receive a rule sheet as JSON, written in a source language, and a target language. Translate every text field into the target language.
@@ -45,7 +45,7 @@ export type SourceRule = {
   text: string
 }
 
-/** Toutes les règles d'une fiche, à plat, dans l'ordre d'affichage. */
+/** All the rules of a sheet, flat, in display order. */
 export function listSourceRules(sheet: GameSheet): SourceRule[] {
   return [
     ...sheet.setup.map((r) => ({ ...r, section: 'setup', title: null })),

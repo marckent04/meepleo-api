@@ -12,8 +12,8 @@ export type CQRSValidationExceptionParams = {
 }
 
 /**
- * Payload de Command/Query invalide. Origine `user` → 400 VALIDATION_FAILED
- * avec les champs ; origine `system` → 500 sans exposer les détails.
+ * Invalid Command/Query payload. `user` origin → 400 VALIDATION_FAILED
+ * with the fields; `system` origin → 500 without exposing the details.
  */
 export class CQRSValidationException extends AppError {
   readonly statusCode: number

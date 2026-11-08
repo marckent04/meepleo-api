@@ -40,7 +40,7 @@ export class GameRepository {
     >,
   ) {}
 
-  /** Lève NotFoundError (GAME_NOT_FOUND) si le jeu n'existe pas ou est supprimé. */
+  /** Throws NotFoundError (GAME_NOT_FOUND) if the game does not exist or is deleted. */
   async findById(id: string): Promise<Game> {
     const record = await this.txHost.tx.game.findFirst({
       where: { id, deletedAt: null },
@@ -50,9 +50,9 @@ export class GameRepository {
   }
 
   /**
-   * Jeux non supprimés dont le nom canonique ou le nom dans `language`
-   * contient `text` (casse et accents ignorés), les plus pertinents en
-   * premier. Voir `searchGamesSql`.
+   * Non-deleted games whose canonical name or name in `language`
+   * contains `text` (case and accents ignored), most relevant
+   * first. See `searchGamesSql`.
    */
   async search(
     text: string,
@@ -66,8 +66,8 @@ export class GameRepository {
   }
 
   /**
-   * Ids des jeux non supprimés ayant ces identifiants BGG, dans l'ordre de
-   * `bggIds` ; les identifiants inconnus sont ignorés.
+   * Ids of the non-deleted games having these BGG identifiers, in the order of
+   * `bggIds`; unknown identifiers are ignored.
    */
   async findIdsByBggIds(
     bggIds: number[],
@@ -84,9 +84,9 @@ export class GameRepository {
   }
 
   /**
-   * Fiche du jeu dans `language`, ou `null` si elle n'y est pas encore
-   * agrégée (absence attendue : la fiche est produite à la demande).
-   * Lève NotFoundError (GAME_NOT_FOUND) si le jeu n'existe pas.
+   * Sheet of the game in `language`, or `null` if it is not yet
+   * aggregated there (expected absence: the sheet is produced on demand).
+   * Throws NotFoundError (GAME_NOT_FOUND) if the game does not exist.
    */
   async findSheet(id: string, language: string): Promise<GameSheet | null> {
     const record = await this.findWithRules(id)
@@ -95,7 +95,7 @@ export class GameRepository {
       : null
   }
 
-  /** Lève NotFoundError (GAME_NOT_FOUND) si le jeu n'existe pas. */
+  /** Throws NotFoundError (GAME_NOT_FOUND) if the game does not exist. */
   async findSheetStatus(id: string): Promise<GameSheetStatus> {
     const record = await this.txHost.tx.game.findFirst({
       where: { id, deletedAt: null },
@@ -109,9 +109,9 @@ export class GameRepository {
   }
 
   /**
-   * Verrouille la ligne du jeu (`SELECT … FOR UPDATE`) jusqu'à la fin de la
-   * transaction en cours. N'a d'effet que dans une transaction.
-   * Lève NotFoundError (GAME_NOT_FOUND) si le jeu n'existe pas.
+   * Locks the game row (`SELECT … FOR UPDATE`) until the end of the
+   * current transaction. Only has an effect inside a transaction.
+   * Throws NotFoundError (GAME_NOT_FOUND) if the game does not exist.
    */
   async lockById(id: string): Promise<void> {
     const rows = await this.txHost.tx.$queryRaw<{ id: string }[]>(
@@ -121,9 +121,9 @@ export class GameRepository {
   }
 
   /**
-   * Enregistre une fiche générée : remplace les règles existantes et fait de
-   * `sheet.language` la seule langue disponible. À appeler dans une transaction,
-   * avec l'enregistrement du run de génération qui marque la fiche comme générée.
+   * Saves a generated sheet: replaces the existing rules and makes
+   * `sheet.language` the only available language. To call in a transaction,
+   * together with saving the generation run that marks the sheet as generated.
    */
   async saveGeneratedSheet(sheet: GameSheet): Promise<void> {
     const current = await this.findWithRules(sheet.gameId)
@@ -142,7 +142,7 @@ export class GameRepository {
     }
   }
 
-  /** Ajoute la langue d'une traduction à la fiche existante. À appeler dans une transaction. */
+  /** Adds a translation's language to the existing sheet. To call in a transaction. */
   async saveTranslation(translation: GameSheetTranslation): Promise<void> {
     const current = await this.findWithRules(translation.gameId)
     const data = toGameSheetTranslationData(translation, current)

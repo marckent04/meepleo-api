@@ -10,7 +10,7 @@ import {
   UnauthenticatedError,
 } from '@/shared/errors'
 
-/** Statut porté par une erreur Fastify (JSON invalide, corps trop gros…). */
+/** Status carried by a Fastify error (invalid JSON, body too large…). */
 function frameworkStatus(exception: unknown): number | undefined {
   if (exception instanceof HttpException) return exception.getStatus()
   if (
@@ -44,8 +44,8 @@ function fromStatus(status: number, exception: Error): AppError {
 }
 
 /**
- * Normalise toute exception en AppError : AppError tel quel, exception HTTP
- * (Nest ou Fastify) mappée par statut, tout le reste → InternalError.
+ * Normalizes any exception into an AppError: AppError as is, HTTP exception
+ * (Nest or Fastify) mapped by status, everything else → InternalError.
  */
 export function toAppError(exception: unknown): AppError {
   if (exception instanceof AppError) return exception

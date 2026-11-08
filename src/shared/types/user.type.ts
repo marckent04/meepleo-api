@@ -1,4 +1,4 @@
-/** Compte utilisateur. `email` et `username` sont normalisés en minuscules. */
+/** User account. `email` and `username` are normalized to lowercase. */
 export type User = {
   id: string
   email: string
@@ -6,20 +6,20 @@ export type User = {
   createdAt: Date
 }
 
-/** Compte de l'utilisateur connecté, avec le nombre de jeux de chacune de ses listes. */
+/** Current user's account, with the number of games in each of their lists. */
 export type CurrentUser = User & {
   catalogCount: number
   wishlistCount: number
   favoritesCount: number
 }
 
-/** Utilisateur et empreinte argon2 de son mot de passe (login uniquement). */
+/** User and argon2 fingerprint of their password (login only). */
 export type UserCredentials = User & { passwordHash: string }
 
-/** Paire de tokens renvoyée après un login ou un refresh. */
+/** Token pair returned after a login or a refresh. */
 export type AuthTokens = {
   accessToken: string
   refreshToken: string
-  /** Durée de vie de l'access token, en secondes. */
+  /** Access token lifetime, in seconds. */
   expiresIn: number
 }

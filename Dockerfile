@@ -1,22 +1,22 @@
 # syntax=docker/dockerfile:1
 
-# ---- builder : dépendances complètes, client Prisma, compilation ----
+# ---- builder: full dependencies, Prisma client, compilation ----
 FROM node:24-bookworm AS builder
 WORKDIR /app
-# prisma.config.ts valide DATABASE_URL même pour `prisma generate` : URL factice,
-# jamais contactée pendant le build.
+# prisma.config.ts validates DATABASE_URL even for `prisma generate`: dummy URL,
+# never contacted during the build.
 ENV DATABASE_URL=postgresql://build:build@localhost:5432/build
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --ignore-scripts
 COPY . .
 RUN yarn build
 
-# ---- migrate : job one-shot lancé avant chaque déploiement ----
+# ---- migrate: one-shot job run before each deployment ----
 FROM builder AS migrate
-# Doit être fourni à l'exécution : une valeur vide fait échouer la validation Zod.
+# Must be provided at runtime: an empty value fails the Zod validation.
 CMD ["sh", "-c", "yarn db:deploy && yarn db:seed"]
 
-# ---- prod-deps : dépendances de production uniquement ----
+# ---- prod-deps: production dependencies only ----
 FROM node:24-bookworm AS prod-deps
 WORKDIR /app
 COPY package.json yarn.lock ./
@@ -30,8 +30,8 @@ ENV NODE_ENV=production
 COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY package.json ./
-# Cache de compilation V8 pré-chauffé au build avec le binaire node du runtime
-# (même version garantie) : moins de parsing/compilation au cold start.
+# V8 compile cache pre-warmed at build time with the runtime's node binary
+# (same version guaranteed): less parsing/compilation on cold start.
 ENV NODE_COMPILE_CACHE=/app/.cache/node
 RUN ["/nodejs/bin/node", "-e", "require('./dist/app.module')"]
 EXPOSE 8080

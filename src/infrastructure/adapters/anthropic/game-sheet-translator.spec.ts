@@ -164,7 +164,7 @@ describe('GameSheetTranslator', () => {
     expect(error).toBeInstanceOf(AiCallFailedError)
     expect(error.cause).toBeInstanceOf(InternalError)
     expect(error.code).toBe(ErrorCode.GAME_SHEET_TRANSLATION_FAILED)
-    // La sortie incomplète est conservée pour diagnostic.
+    // The incomplete output is kept for diagnosis.
     expect(error.trace.output).toEqual({ ...output, ...changes })
   })
 

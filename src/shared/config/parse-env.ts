@@ -1,8 +1,8 @@
 import { z } from 'zod'
 
 /**
- * Valide process.env avec un schéma Zod. z.object() ignore les variables
- * inconnues ; toutes les erreurs sont rapportées en une fois.
+ * Validates process.env with a Zod schema. z.object() ignores unknown
+ * variables; all errors are reported at once.
  */
 export function parseEnv<TSchema extends z.ZodType>(
   schema: TSchema,

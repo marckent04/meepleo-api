@@ -1,8 +1,8 @@
 export const USERNAME_MIN_LENGTH = 3
 export const USERNAME_MAX_LENGTH = 30
-/** Lettres, chiffres et underscore. */
+/** Letters, digits and underscore. */
 export const USERNAME_PATTERN = /^[a-zA-Z0-9_]+$/
 export const PASSWORD_MIN_LENGTH = 8
-/** Borne haute : argon2 est coûteux, on évite d'hasher des entrées géantes. */
+/** Upper bound: argon2 is costly, so we avoid hashing huge inputs. */
 export const PASSWORD_MAX_LENGTH = 128
 export const EMAIL_MAX_LENGTH = 254

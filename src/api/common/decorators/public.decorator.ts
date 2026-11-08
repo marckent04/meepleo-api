@@ -2,5 +2,5 @@ import { SetMetadata } from '@nestjs/common'
 
 export const IS_PUBLIC = 'isPublic'
 
-/** Ouvre la route (ou le contrôleur) aux requêtes sans access token. */
+/** Opens the route (or controller) to requests without an access token. */
 export const Public = () => SetMetadata(IS_PUBLIC, true)

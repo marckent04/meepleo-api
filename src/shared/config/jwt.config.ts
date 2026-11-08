@@ -4,7 +4,7 @@ import { parseEnv } from './parse-env'
 
 export const JWT_CONFIG_KEY = 'jwt'
 
-/** Durée : nombre de secondes ou suffixe s/m/h/d (ex. `15m`, `30d`). */
+/** Duration: number of seconds or s/m/h/d suffix (e.g. `15m`, `30d`). */
 const DurationSchema = z.string().regex(/^\d+[smhd]?$/)
 
 const JwtEnvSchema = z
@@ -15,16 +15,16 @@ const JwtEnvSchema = z
     JWT_REFRESH_TTL: DurationSchema.default('30d'),
   })
   .refine((env) => env.JWT_ACCESS_SECRET !== env.JWT_REFRESH_SECRET, {
-    message: 'JWT_ACCESS_SECRET et JWT_REFRESH_SECRET doivent être distincts',
+    message: 'JWT_ACCESS_SECRET and JWT_REFRESH_SECRET must be distinct',
     path: ['JWT_REFRESH_SECRET'],
   })
 
 export type JwtConfig = {
   accessSecret: string
   refreshSecret: string
-  /** Durée de vie de l'access token (ex. `15m`). */
+  /** Access token lifetime (e.g. `15m`). */
   accessTtl: string
-  /** Durée de vie du refresh token (ex. `30d`). */
+  /** Refresh token lifetime (e.g. `30d`). */
   refreshTtl: string
 }
 

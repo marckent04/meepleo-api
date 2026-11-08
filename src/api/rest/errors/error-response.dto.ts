@@ -6,27 +6,27 @@ export const ErrorResponseSchema = z
   .object({
     code: z
       .enum(ErrorCode)
-      .describe('Code stable sur lequel le client branche sa logique'),
+      .describe('Stable code the client branches its logic on'),
     message: z
       .string()
-      .describe('Message traduit selon Accept-Language, affichable tel quel'),
+      .describe('Message translated per Accept-Language, displayable as is'),
     fields: z
       .array(
         z.object({
           field: z
             .string()
-            .describe('Chemin du champ invalide (ex. `items.0.name`)'),
-          message: z.string().describe('Message traduit de la contrainte'),
+            .describe('Path of the invalid field (e.g. `items.0.name`)'),
+          message: z.string().describe('Translated constraint message'),
         }),
       )
       .optional()
-      .describe('Champs invalides (VALIDATION_FAILED uniquement)'),
-    correlationId: z.string().describe('À communiquer au support'),
+      .describe('Invalid fields (VALIDATION_FAILED only)'),
+    correlationId: z.string().describe('To provide to support'),
   })
-  // Pas de .meta({ id }) sur le schéma racine d'un DTO : avec @nestjs/swagger 12,
-  // cleanupOpenApiDoc le dupliquerait. Le composant OpenAPI prend le nom de la
-  // classe (ErrorResponseDto).
-  .describe("Corps de toute réponse d'erreur")
+  // No .meta({ id }) on a DTO's root schema: with @nestjs/swagger 12,
+  // cleanupOpenApiDoc would duplicate it. The OpenAPI component takes the name
+  // of the class (ErrorResponseDto).
+  .describe('Body of every error response')
 
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>
 

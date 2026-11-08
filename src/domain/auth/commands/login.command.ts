@@ -8,7 +8,7 @@ export type LoginCommandParams = {
   password: string
 }
 
-/** Authentifie par username + mot de passe et émet une paire de tokens. */
+/** Authenticates by username + password and issues a token pair. */
 export class LoginCommand extends Command<AuthTokens> {
   @IsString()
   @MinLength(1)

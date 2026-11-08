@@ -7,7 +7,7 @@ import type { PrismaService } from '../prisma.service'
 import { rethrowPrismaError } from '../prisma-errors'
 
 export type CreateUserParams = {
-  /** Déjà normalisés en minuscules. */
+  /** Already normalized to lowercase. */
   email: string
   username: string
   passwordHash: string

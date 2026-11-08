@@ -5,9 +5,7 @@ import { CatalogEntrySchema } from './catalog.dto'
 
 export const WishlistResponseSchema = z
   .array(CatalogEntrySchema)
-  .describe(
-    "Jeux de la liste de souhaits de l'utilisateur, derniers ajouts d'abord",
-  )
+  .describe("Games in the user's wishlist, most recently added first")
 
 export class WishlistResponseDto extends createZodDto(WishlistResponseSchema, {
   codec: true,
@@ -24,7 +22,7 @@ export class WishlistResponseDto extends createZodDto(WishlistResponseSchema, {
 export const WishlistGameIdParamSchema = z.object({
   gameId: z
     .uuid()
-    .describe('Identifiant du jeu')
+    .describe('Game identifier')
     .meta({ example: '0195d1a2-0000-7000-8000-000000000001' }),
 })
 

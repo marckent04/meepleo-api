@@ -3,17 +3,17 @@ import { ApiResponse } from '@nestjs/swagger'
 import { ErrorResponseDto } from './error-response.dto'
 
 const DESCRIPTIONS: Record<number, string> = {
-  400: 'Requête invalide (VALIDATION_FAILED, BAD_REQUEST)',
-  401: 'Authentification requise',
-  403: 'Action non autorisée',
-  404: 'Ressource introuvable',
-  409: 'Conflit avec une ressource existante',
-  422: 'Règle métier non respectée',
-  429: 'Trop de requêtes',
-  500: 'Erreur interne',
+  400: 'Invalid request (VALIDATION_FAILED, BAD_REQUEST)',
+  401: 'Authentication required',
+  403: 'Action not allowed',
+  404: 'Resource not found',
+  409: 'Conflict with an existing resource',
+  422: 'Business rule violated',
+  429: 'Too many requests',
+  500: 'Internal error',
 }
 
-/** Documente dans Swagger les réponses d'erreur possibles d'une route. */
+/** Documents in Swagger the possible error responses of a route. */
 export const ApiErrorResponses = (...statuses: number[]) =>
   applyDecorators(
     ...statuses.map((status) =>

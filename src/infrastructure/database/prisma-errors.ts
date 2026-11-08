@@ -12,9 +12,9 @@ export type PrismaErrorCodes = {
 }
 
 /**
- * Champs en conflit d'une erreur P2002. Avec un driver adapter, Prisma les
- * expose dans `meta.driverAdapterError.cause.constraint.fields` plutôt que
- * dans `meta.target`.
+ * Conflicting fields of a P2002 error. With a driver adapter, Prisma
+ * exposes them in `meta.driverAdapterError.cause.constraint.fields` rather than
+ * in `meta.target`.
  */
 function conflictTarget(meta: Record<string, unknown> | undefined): unknown {
   if (meta?.target !== undefined) return meta.target
@@ -25,8 +25,8 @@ function conflictTarget(meta: Record<string, unknown> | undefined): unknown {
 }
 
 /**
- * Traduit les erreurs Prisma connues en AppError ; relance tout le reste tel
- * quel (le filtre d'exception en fera une InternalError).
+ * Translates known Prisma errors into AppError; rethrows everything else as
+ * is (the exception filter will turn it into an InternalError).
  */
 export function rethrowPrismaError(
   error: unknown,

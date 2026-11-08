@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 
-// @Transactional() est neutralisé dans les tests unitaires : les handlers sont
-// testés sans contexte CLS ni transaction réelle.
+// @Transactional() is neutralized in unit tests: handlers are
+// tested without a CLS context or a real transaction.
 vi.mock('@nestjs-cls/transactional', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@nestjs-cls/transactional')>()),
   Transactional:

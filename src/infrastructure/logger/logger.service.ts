@@ -6,12 +6,12 @@ import { CORRELATION_ID_KEY } from './correlation-id.util'
 const LOG_FIELDS_KEY = 'logFields'
 
 export type LogFields = Record<string, unknown>
-/** Message, erreur (sérialisée en `err`) ou champs structurés. */
+/** Message, error (serialized as `err`) or structured fields. */
 export type LogSubject = string | Error | LogFields
 
 /**
- * Logger applicatif : chaque log porte le contexte, le correlationId de la
- * requête courante (CLS) et les champs assignés via `assign()`.
+ * Application logger: each log carries the context, the correlationId of the
+ * current request (CLS) and the fields assigned via `assign()`.
  */
 @Injectable({ scope: Scope.TRANSIENT })
 export class LoggerService {
@@ -23,7 +23,7 @@ export class LoggerService {
     this.context = context
   }
 
-  /** Ajoute des champs à tous les logs suivants de la requête courante. */
+  /** Adds fields to all subsequent logs of the current request. */
   assign(fields: LogFields): void {
     if (!this.cls.isActive()) return
     this.cls.set(LOG_FIELDS_KEY, { ...this.requestFields(), ...fields })
@@ -62,8 +62,8 @@ export class LoggerService {
       ...(this.context ? { context: this.context } : {}),
       ...this.requestFields(),
     }
-    // Logger racine : les bindings de requête viennent de CLS (et non de
-    // pino-http) pour fonctionner aussi hors HTTP (cls.run dans un script).
+    // Root logger: request bindings come from CLS (not from
+    // pino-http) so it also works outside HTTP (cls.run in a script).
     const logger = PinoLogger.root
     if (typeof subject === 'string') {
       logger[level](bindings, subject)

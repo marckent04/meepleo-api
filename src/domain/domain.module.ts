@@ -10,8 +10,8 @@ import * as healthHandlers from './health/handlers'
 import * as wishlistHandlers from './wishlist/handlers'
 
 /**
- * Ajouter un handler = l'exporter depuis le barrel `handlers` de sa feature ;
- * une saga, depuis le barrel `sagas`.
+ * Adding a handler = exporting it from its feature's `handlers` barrel;
+ * a saga, from the `sagas` barrel.
  */
 @Module({
   imports: [CqrsModule],

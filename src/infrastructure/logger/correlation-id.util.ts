@@ -15,9 +15,9 @@ function headerValue(value: string | string[] | undefined): string | undefined {
 }
 
 /**
- * Identifiant de corrélation de la requête : réutilise `x-correlation-id` /
- * `x-request-id` sinon en génère un. Mémoïsé sur la requête pour que pino-http
- * et CLS partagent la même valeur.
+ * Correlation id of the request: reuses `x-correlation-id` /
+ * `x-request-id`, otherwise generates one. Memoized on the request so pino-http
+ * and CLS share the same value.
  */
 export function resolveCorrelationId(req: object): string {
   const request = req as RequestLike

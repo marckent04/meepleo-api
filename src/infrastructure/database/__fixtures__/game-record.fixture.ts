@@ -2,7 +2,7 @@ import type { GameWithRulesRecord } from '../mappers'
 
 export const GAME_ID = '0195d1a2-0000-7000-8000-000000000001'
 
-/** Jeu issu du seed BGG, sans fiche. */
+/** Game from the BGG seed, without a sheet. */
 export function gameRecord(
   overrides: Partial<GameWithRulesRecord> = {},
 ): GameWithRulesRecord {

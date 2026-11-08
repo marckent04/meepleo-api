@@ -3,24 +3,24 @@ import { z } from 'zod'
 import { type CatalogEntry, GAME_CATEGORIES } from '@/shared/types'
 
 export const CatalogEntrySchema = z.object({
-  id: z.uuid().describe('Identifiant du jeu'),
+  id: z.uuid().describe('Game identifier'),
   name: z
     .string()
     .describe(
-      "Nom dans la langue d'Accept-Language si la fiche y a été générée, sinon nom canonique",
+      'Name in the Accept-Language language if the sheet was generated in it, otherwise canonical name',
     )
     .meta({ example: 'Catan' }),
-  year: z.number().int().nullable().describe('Année de publication'),
-  categories: z.array(z.enum(GAME_CATEGORIES)).describe('Catégories du jeu'),
+  year: z.number().int().nullable().describe('Publication year'),
+  categories: z.array(z.enum(GAME_CATEGORIES)).describe('Game categories'),
   addedAt: z.iso
     .datetime()
-    .describe("Date d'ajout au catalogue (ISO 8601, UTC)")
+    .describe('Date added to the catalog (ISO 8601, UTC)')
     .meta({ example: '2026-01-01T12:00:00.000Z' }),
 })
 
 export const CatalogResponseSchema = z
   .array(CatalogEntrySchema)
-  .describe("Jeux du catalogue de l'utilisateur, derniers ajouts d'abord")
+  .describe("Games in the user's catalog, most recently added first")
 
 export class CatalogResponseDto extends createZodDto(CatalogResponseSchema, {
   codec: true,
@@ -37,7 +37,7 @@ export class CatalogResponseDto extends createZodDto(CatalogResponseSchema, {
 export const CatalogGameIdParamSchema = z.object({
   gameId: z
     .uuid()
-    .describe('Identifiant du jeu')
+    .describe('Game identifier')
     .meta({ example: '0195d1a2-0000-7000-8000-000000000001' }),
 })
 

@@ -25,15 +25,15 @@ export type StartGameAggregationParams = {
   gameId: string
   language: string
   operation: GameAggregationOperation
-  /** Langue source d'une traduction. */
+  /** Source language of a translation. */
   sourceLanguage?: string | null
-  /** Modèle d'IA prévu pour l'opération. */
+  /** AI model planned for the operation. */
   model: string
 }
 
 export type RecordGameAggregationSuccessParams = {
   runId: string
-  /** Durée totale de l'opération (appels IA + enregistrement), en ms. */
+  /** Total duration of the operation (AI calls + saving), in ms. */
   durationMs: number
   trace: AiTrace
 }
@@ -73,7 +73,7 @@ const toJson = (value: unknown): Prisma.InputJsonValue | undefined =>
     ? undefined
     : (value as Prisma.InputJsonValue)
 
-/** Colonnes issues de la trace de l'IA : durée, consommation, sortie brute. */
+/** Columns coming from the AI trace: duration, usage, raw output. */
 function traceToColumns(trace: AiTrace) {
   return {
     model: trace.model,
@@ -94,9 +94,9 @@ function traceToColumns(trace: AiTrace) {
 }
 
 /**
- * Trace de chaque tentative d'agrégation de fiche. Un run est créé RUNNING au
- * lancement, puis passé SUCCESS ou FAILURE. Le dernier run SUCCESS de
- * génération fait foi : c'est lui qui marque la fiche comme générée.
+ * Trace of each sheet aggregation attempt. A run is created RUNNING at
+ * launch, then moved to SUCCESS or FAILURE. The latest successful generation
+ * run is authoritative: it is what marks the sheet as generated.
  */
 @Injectable()
 export class GameAggregationRunRepository {
@@ -106,7 +106,7 @@ export class GameAggregationRunRepository {
     >,
   ) {}
 
-  /** Crée le run RUNNING d'une agrégation qui démarre ; renvoie son id. */
+  /** Creates the RUNNING run of an aggregation that starts; returns its id. */
   async start({
     gameId,
     language,
@@ -133,7 +133,7 @@ export class GameAggregationRunRepository {
     }
   }
 
-  /** Run le plus récent du jeu dans `language`, quel que soit son statut. */
+  /** Most recent run of the game in `language`, whatever its status. */
   async findLatest(
     gameId: string,
     language: string,
@@ -159,7 +159,7 @@ export class GameAggregationRunRepository {
     }
   }
 
-  /** Une génération du jeu, dans n'importe quelle langue, a démarré après `startedAfter` et tourne encore. */
+  /** A generation of the game, in any language, started after `startedAfter` and is still running. */
   async hasRunningGeneration(
     gameId: string,
     startedAfter: Date,
@@ -175,7 +175,7 @@ export class GameAggregationRunRepository {
     return count > 0
   }
 
-  /** Clôt un run en SUCCESS. À appeler dans la transaction qui enregistre la fiche. */
+  /** Closes a run as SUCCESS. To call in the transaction that saves the sheet. */
   async recordSuccess({
     runId,
     durationMs,
@@ -196,8 +196,8 @@ export class GameAggregationRunRepository {
   }
 
   /**
-   * Clôt un run en FAILURE. La durée et la trace de l'IA ne sont connues que
-   * pour une GameAggregationFailedError.
+   * Closes a run as FAILURE. The duration and the AI trace are only known
+   * for a GameAggregationFailedError.
    */
   async recordFailure({
     runId,
