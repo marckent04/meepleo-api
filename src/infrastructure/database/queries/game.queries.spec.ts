@@ -1,4 +1,9 @@
-import { escapeLike, lockGameSql, searchGamesSql } from './game.queries'
+import {
+  escapeLike,
+  lockGameSql,
+  searchGamesSql,
+  updateGameRuleTranslationsSql,
+} from './game.queries'
 
 const GAME_ID = '0195d1a2-0000-7000-8000-000000000001'
 
@@ -27,5 +32,19 @@ describe('searchGamesSql', () => {
     expect(query.values).toContain('cat\\_')
     expect(query.values).toContain('fr')
     expect(query.values.at(-1)).toBe(5)
+  })
+})
+
+describe('updateGameRuleTranslationsSql', () => {
+  it('binds all rules as a single JSON parameter', () => {
+    const rows = [
+      { id: 'rule-1', text: { fr: 'a', en: 'b' } },
+      { id: 'rule-2', text: { fr: 'c', en: 'd' }, title: { fr: 'e', en: 'f' } },
+    ]
+    const query = updateGameRuleTranslationsSql(rows)
+
+    expect(query.sql).toContain('UPDATE game_rules')
+    expect(query.values).toHaveLength(1)
+    expect(JSON.parse(query.values[0] as string)).toEqual(rows)
   })
 })

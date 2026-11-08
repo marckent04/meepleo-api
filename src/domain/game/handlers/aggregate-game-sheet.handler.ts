@@ -28,6 +28,11 @@ import {
   GameSheetAggregationFailedEvent,
 } from '../events'
 
+// Prisma's default interactive transaction timeout (5 s) is too short for
+// saving a sheet. See TECHNICAL-DEBT.md.
+const SAVE_TRANSACTION_TIMEOUT_MS = 30_000
+const SAVE_TRANSACTION_MAX_WAIT_MS = 10_000
+
 type AggregationResult =
   | { operation: 'generation'; result: GameSheet; trace: AiTrace }
   | { operation: 'translation'; result: GameSheetTranslation; trace: AiTrace }
@@ -117,7 +122,10 @@ export class AggregateGameSheetHandler extends AppCommandHandler<
   }
 
   /** The SUCCESS run is written with the sheet: it is what marks it as aggregated. */
-  @Transactional<TransactionalAdapterPrisma>()
+  @Transactional<TransactionalAdapterPrisma>({
+    timeout: SAVE_TRANSACTION_TIMEOUT_MS,
+    maxWait: SAVE_TRANSACTION_MAX_WAIT_MS,
+  })
   private async save(
     runId: string,
     gameId: string,

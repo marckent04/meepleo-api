@@ -18,6 +18,30 @@ export function lockGameSql(id: string): Prisma.Sql {
     SELECT id FROM games WHERE id = ${id}::uuid AND deleted_at IS NULL FOR UPDATE`
 }
 
+export type GameRuleTranslationRow = {
+  id: string
+  text: unknown
+  title?: unknown
+}
+
+/**
+ * Updates the text (and the title, when provided) of several rules in a
+ * single statement, instead of one `UPDATE` per rule. A missing `title`
+ * keeps the current one.
+ */
+export function updateGameRuleTranslationsSql(
+  rows: GameRuleTranslationRow[],
+): Prisma.Sql {
+  return Prisma.sql`
+    UPDATE game_rules AS r
+    SET text = v.text,
+        title = COALESCE(v.title, r.title),
+        updated_at = now()
+    FROM jsonb_to_recordset(${JSON.stringify(rows)}::jsonb)
+      AS v(id uuid, text jsonb, title jsonb)
+    WHERE r.id = v.id`
+}
+
 export type SearchGamesSqlParams = {
   text: string
   language: string

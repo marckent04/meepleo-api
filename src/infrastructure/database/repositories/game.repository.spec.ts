@@ -238,7 +238,7 @@ describe('GameRepository — game sheet', () => {
     expect(tx.gameRule.createMany).toHaveBeenCalledWith({ data: [] })
   })
 
-  it('adds the language and updates each rule when saving a translation', async () => {
+  it('adds the language and updates the rules in one statement when saving a translation', async () => {
     const rule = {
       id: 'rule-1',
       gameId: GAME_ID,
@@ -257,7 +257,7 @@ describe('GameRepository — game sheet', () => {
         findFirst: vi.fn().mockResolvedValue({ ...aggregated, rules: [rule] }),
         update: vi.fn(),
       },
-      gameRule: { update: vi.fn() },
+      $executeRaw: vi.fn(),
     })
 
     await new GameRepository(host).saveTranslation(
@@ -278,9 +278,11 @@ describe('GameRepository — game sheet', () => {
       where: { id: GAME_ID },
       data: expect.objectContaining({ supportedLanguages: ['fr', 'en'] }),
     })
-    expect(tx.gameRule.update).toHaveBeenCalledWith({
-      where: { id: 'rule-1' },
-      data: { text: { fr: 'Mélangez.', en: 'Shuffle.' } },
-    })
+    expect(tx.$executeRaw).toHaveBeenCalledTimes(1)
+    const query = tx.$executeRaw.mock.calls[0][0]
+    expect(query.sql).toContain('UPDATE game_rules')
+    expect(JSON.parse(query.values[0])).toEqual([
+      { id: 'rule-1', text: { fr: 'Mélangez.', en: 'Shuffle.' } },
+    ])
   })
 })

@@ -23,7 +23,11 @@ import {
 } from '../mappers'
 import type { PrismaService } from '../prisma.service'
 import { rethrowPrismaError } from '../prisma-errors'
-import { lockGameSql, searchGamesSql } from '../queries'
+import {
+  lockGameSql,
+  searchGamesSql,
+  updateGameRuleTranslationsSql,
+} from '../queries'
 
 function gameNotFound(id: string): NotFoundError {
   return new NotFoundError('Game not found', {
@@ -151,11 +155,16 @@ export class GameRepository {
         where: { id: translation.gameId },
         data: data.game,
       })
-      for (const rule of data.rules) {
-        await this.txHost.tx.gameRule.update({
-          where: { id: rule.id },
-          data: rule.data,
-        })
+      if (data.rules.length > 0) {
+        await this.txHost.tx.$executeRaw(
+          updateGameRuleTranslationsSql(
+            data.rules.map(({ id, data: rule }) => ({
+              id,
+              text: rule.text,
+              title: rule.title,
+            })),
+          ),
+        )
       }
     } catch (error) {
       rethrowPrismaError(error, { notFound: ErrorCode.GAME_NOT_FOUND })
