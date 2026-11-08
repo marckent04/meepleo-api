@@ -17,6 +17,7 @@ export enum ErrorCode {
   GAME_NOT_FOUND = 'GAME_NOT_FOUND',
   GAME_SHEET_GENERATION_FAILED = 'GAME_SHEET_GENERATION_FAILED',
   GAME_SHEET_TRANSLATION_FAILED = 'GAME_SHEET_TRANSLATION_FAILED',
+  GAME_BARCODE_LOOKUP_FAILED = 'GAME_BARCODE_LOOKUP_FAILED',
   LANGUAGE_REQUIRED = 'LANGUAGE_REQUIRED',
   UNSUPPORTED_LANGUAGE = 'UNSUPPORTED_LANGUAGE',
   EMAIL_ALREADY_USED = 'EMAIL_ALREADY_USED',
@@ -81,6 +82,10 @@ export const ERROR_CODES: Record<
   [ErrorCode.GAME_SHEET_TRANSLATION_FAILED]: {
     expected: false,
     description: 'AI translation of the rule sheet failed',
+  },
+  [ErrorCode.GAME_BARCODE_LOOKUP_FAILED]: {
+    expected: false,
+    description: 'The external barcode lookup failed',
   },
   [ErrorCode.LANGUAGE_REQUIRED]: {
     expected: true,

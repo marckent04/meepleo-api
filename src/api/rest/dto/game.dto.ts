@@ -1,5 +1,6 @@
 import { createZodDto } from 'nestjs-zod'
 import { z } from 'zod'
+import { GAME_BARCODE_PATTERN } from '@/domain/game/commands/find-games-by-barcode.command'
 import {
   SEARCH_GAMES_MAX_LENGTH,
   SEARCH_GAMES_MAX_LIMIT,
@@ -19,6 +20,18 @@ export const GameIdParamSchema = z.object({
 })
 
 export class GameIdParamDto extends createZodDto(GameIdParamSchema) {}
+
+export const GameBarcodeParamSchema = z.object({
+  code: z
+    .string()
+    .regex(GAME_BARCODE_PATTERN)
+    .describe(
+      'Barcode printed on the game box (EAN-8, UPC-A, EAN-13): 8 to 14 digits',
+    )
+    .meta({ example: '3421272109111' }),
+})
+
+export class GameBarcodeParamDto extends createZodDto(GameBarcodeParamSchema) {}
 
 export const SearchGamesQuerySchema = z.object({
   search: z

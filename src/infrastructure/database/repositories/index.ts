@@ -1,5 +1,7 @@
+export * from './barcode-lookup-miss.repository'
 export * from './game.repository'
 export * from './game-aggregation-run.repository'
+export * from './game-barcode.repository'
 export * from './health.repository'
 export * from './refresh-token.repository'
 export * from './user.repository'

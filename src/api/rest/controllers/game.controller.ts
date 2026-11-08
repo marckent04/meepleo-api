@@ -1,10 +1,12 @@
 import { Controller, Get, Param, Query, Res } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { Throttle } from '@nestjs/throttler'
 import type { FastifyReply } from 'fastify'
 import { ZodResponse, ZodSerializerDto } from 'nestjs-zod'
 import {
   AGGREGATION_POLL_INTERVAL_SECONDS,
+  FindGamesByBarcodeCommand,
   RequestGameSheetCommand,
   SearchGamesQuery,
 } from '@/domain/game'
@@ -12,6 +14,7 @@ import { ErrorCode } from '@/shared/errors'
 import { type Locale, SUPPORTED_LOCALES } from '@/shared/i18n/locale'
 import { ErrorCodeOnFailure, Language, Public } from '../../common/decorators'
 import {
+  GameBarcodeParamDto,
   GameIdParamDto,
   GameLookupResponseSchema,
   GamePendingResponseDto,
@@ -20,6 +23,9 @@ import {
   SearchGamesQueryDto,
 } from '../dto'
 import { ApiErrorResponses } from '../errors'
+
+/** Each unknown barcode costs an external lookup, and the route is public. */
+const BARCODE_THROTTLE = { default: { ttl: 60_000, limit: 10 } }
 
 @ApiTags('games')
 @Public()
@@ -53,6 +59,27 @@ export class GameController {
         limit: query.limit,
         language,
       }),
+    )
+    return GameSearchResponseDto.fromDomain(results)
+  }
+
+  // Declared before `:id` so that `barcodes` is not taken for a game id.
+  @Get('barcodes/:code')
+  @Throttle(BARCODE_THROTTLE)
+  @ApiOperation({
+    summary: 'Find games by barcode',
+    description:
+      'Games sold under an EAN / UPC barcode, named in the Accept-Language language when known. Known barcodes are answered from the database; unknown ones are looked up externally (slow), and the result is saved: barcodes matching a single game are linked to it, barcodes matching nothing are never looked up again. Usually one game; several when the barcode is a bundle; empty when nothing matches.',
+  })
+  @ZodResponse({ status: 200, type: GameSearchResponseDto })
+  @ApiErrorResponses(400, 429, 500)
+  @ErrorCodeOnFailure(ErrorCode.GAME_BARCODE_LOOKUP_FAILED)
+  async findByBarcode(
+    @Param() params: GameBarcodeParamDto,
+    @Language() language: Locale,
+  ): Promise<GameSearchResponseDto> {
+    const results = await this.commandBus.execute(
+      new FindGamesByBarcodeCommand({ code: params.code, language }),
     )
     return GameSearchResponseDto.fromDomain(results)
   }

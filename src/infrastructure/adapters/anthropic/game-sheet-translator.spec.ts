@@ -14,6 +14,8 @@ const config: AnthropicConfig = {
   sheetModel: 'claude-opus-5-5',
   sheetEffort: 'medium',
   sheetTranslationModel: 'claude-haiku-5-5',
+  barcodeModel: 'claude-haiku-5-5',
+  barcodeEffort: 'low',
 }
 
 const game = new Game(gameId, 'Dnup', 2021, 'Gigamic', null, 123)

@@ -2,7 +2,11 @@ import { createTransactionHostMock } from '@/__tests__/utils/prisma.mock'
 import { ErrorCode, NotFoundError } from '@/shared/errors'
 import { Game, GameSheetTranslation } from '@/shared/types'
 import { GAME_ID, gameRecord } from '../__fixtures__/game-record.fixture'
-import { LATEST_GENERATION_RUN, toStoredGameSheet } from '../mappers'
+import {
+  GAME_SEARCH_RESULT_SELECT,
+  LATEST_GENERATION_RUN,
+  toStoredGameSheet,
+} from '../mappers'
 import { lockGameSql, searchGamesSql } from '../queries'
 import { GameRepository } from './game.repository'
 
@@ -65,6 +69,132 @@ describe('GameRepository', () => {
       { bggId: 456, id: other },
       { bggId: 123, id },
     ])
+  })
+
+  it('finds search results by id in the requested order, skipping unknown ones', async () => {
+    const other = '0195d1a2-0000-7000-8000-000000000002'
+    const { host, tx } = createTransactionHostMock({
+      game: {
+        findMany: vi.fn().mockResolvedValue([
+          {
+            id,
+            name: 'CATAN',
+            localizedNames: { fr: 'Catane' },
+            year: 1995,
+            categories: ['STRATEGY'],
+          },
+          {
+            id: other,
+            name: 'Azul',
+            localizedNames: null,
+            year: 2017,
+            categories: [],
+          },
+        ]),
+      },
+    })
+    const unknown = '0195d1a2-0000-7000-8000-000000000003'
+
+    const results = await new GameRepository(host).findSearchResultsByIds(
+      [other, unknown, id],
+      'fr',
+    )
+
+    expect(tx.game.findMany).toHaveBeenCalledWith({
+      where: { id: { in: [other, unknown, id] }, deletedAt: null },
+      select: GAME_SEARCH_RESULT_SELECT,
+    })
+    expect(results).toEqual([
+      { id: other, name: 'Azul', year: 2017, categories: [] },
+      { id, name: 'Catane', year: 1995, categories: ['strategy'] },
+    ])
+  })
+
+  it('creates identified games, ignoring existing BGG ids', async () => {
+    const { host, tx } = createTransactionHostMock({
+      game: { createMany: vi.fn().mockResolvedValue({ count: 1 }) },
+    })
+
+    await new GameRepository(host).createFromIdentification([
+      {
+        bggId: 13,
+        name: 'CATAN',
+        localizedName: 'Catane',
+        year: 1995,
+        categories: ['strategy'],
+      },
+    ])
+
+    expect(tx.game.createMany).toHaveBeenCalledWith({
+      data: [
+        { bggId: 13, name: 'CATAN', year: 1995, categories: ['STRATEGY'] },
+      ],
+      skipDuplicates: true,
+    })
+  })
+
+  it('creates nothing without identified games', async () => {
+    const { host, tx } = createTransactionHostMock({
+      game: { createMany: vi.fn() },
+    })
+
+    await new GameRepository(host).createFromIdentification([])
+
+    expect(tx.game.createMany).not.toHaveBeenCalled()
+  })
+
+  it('adds a missing localized name, keeping the other languages', async () => {
+    const { host, tx } = createTransactionHostMock({
+      game: {
+        findFirst: vi
+          .fn()
+          .mockResolvedValue({ localizedNames: { en: 'Catan' } }),
+        update: vi.fn().mockResolvedValue({}),
+      },
+    })
+
+    await new GameRepository(host).addLocalizedNameIfMissing(id, 'fr', 'Catane')
+
+    expect(tx.game.findFirst).toHaveBeenCalledWith({
+      where: { id, deletedAt: null },
+      select: { localizedNames: true },
+    })
+    expect(tx.game.update).toHaveBeenCalledWith({
+      where: { id },
+      data: { localizedNames: { en: 'Catan', fr: 'Catane' } },
+    })
+  })
+
+  it('keeps an already known localized name', async () => {
+    const { host, tx } = createTransactionHostMock({
+      game: {
+        findFirst: vi
+          .fn()
+          .mockResolvedValue({ localizedNames: { fr: 'Catane' } }),
+        update: vi.fn(),
+      },
+    })
+
+    await new GameRepository(host).addLocalizedNameIfMissing(
+      id,
+      'fr',
+      'Les Colons de Catane',
+    )
+
+    expect(tx.game.update).not.toHaveBeenCalled()
+  })
+
+  it('throws GAME_NOT_FOUND when adding a name to an unknown game', async () => {
+    const { host } = createTransactionHostMock({
+      game: { findFirst: vi.fn().mockResolvedValue(null) },
+    })
+
+    const error = await new GameRepository(host)
+      .addLocalizedNameIfMissing(id, 'fr', 'Catane')
+      .catch((e) => e)
+
+    expect(error).toBeInstanceOf(NotFoundError)
+    expect(error.code).toBe(ErrorCode.GAME_NOT_FOUND)
   })
 
   it('throws GAME_NOT_FOUND when the game does not exist', async () => {

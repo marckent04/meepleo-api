@@ -1,8 +1,15 @@
-import { Game, type GameCategory, type GameSearchResult } from '@/shared/types'
+import {
+  Game,
+  type GameCategory,
+  type GameSearchResult,
+  type IdentifiedGame,
+} from '@/shared/types'
 import type {
   GameCategory as GameCategoryRecord,
   Game as GameRecord,
+  Prisma,
 } from '../generated/prisma/client'
+import { localized } from './localized-text.mapper'
 
 export function toGame(record: GameRecord): Game {
   return new Game(
@@ -14,6 +21,14 @@ export function toGame(record: GameRecord): Game {
     record.bggId,
     record.ruleBookUrl,
   )
+}
+
+function toGameCategory(category: GameCategoryRecord): GameCategory {
+  return category.toLowerCase() as GameCategory
+}
+
+function toGameCategoryRecord(category: GameCategory): GameCategoryRecord {
+  return category.toUpperCase() as GameCategoryRecord
 }
 
 /** Raw row of `GameRepository.search`. */
@@ -30,8 +45,44 @@ export function toGameSearchResult(row: GameSearchRow): GameSearchResult {
     id: row.id,
     name: row.localized_name || row.name,
     year: row.year,
-    categories: row.categories.map(
-      (category) => category.toLowerCase() as GameCategory,
-    ),
+    categories: row.categories.map(toGameCategory),
+  }
+}
+
+/** Columns needed to build a GameSearchResult through Prisma. */
+export const GAME_SEARCH_RESULT_SELECT = {
+  id: true,
+  name: true,
+  localizedNames: true,
+  year: true,
+  categories: true,
+} satisfies Prisma.GameSelect
+
+export type GameSearchResultRecord = Prisma.GameGetPayload<{
+  select: typeof GAME_SEARCH_RESULT_SELECT
+}>
+
+/** Name in `language` when known, otherwise canonical name. */
+export function toGameSearchResultFromRecord(
+  record: GameSearchResultRecord,
+  language: string,
+): GameSearchResult {
+  return {
+    id: record.id,
+    name: localized(record.localizedNames, language) || record.name,
+    year: record.year,
+    categories: record.categories.map(toGameCategory),
+  }
+}
+
+/** New catalog game created from a barcode lookup (no sheet yet). */
+export function toIdentifiedGameCreateData(
+  game: IdentifiedGame,
+): Prisma.GameCreateManyInput {
+  return {
+    bggId: game.bggId,
+    name: game.name,
+    year: game.year,
+    categories: game.categories.map(toGameCategoryRecord),
   }
 }

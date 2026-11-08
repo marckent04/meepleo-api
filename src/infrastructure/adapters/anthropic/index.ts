@@ -1,4 +1,6 @@
 export * from './anthropic.client'
+export * from './anthropic-game-barcode-lookup'
+export * from './game-barcode.schema'
 export * from './game-sheet.schema'
 export * from './game-sheet-generator'
 export * from './game-sheet-translation.schema'

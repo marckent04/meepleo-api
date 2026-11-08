@@ -2,7 +2,9 @@ import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 import { ANTHROPIC_CONFIG, JWT_CONFIG } from '@/shared/config'
+import { GameBarcodeLookup } from '@/shared/types'
 import {
+  AnthropicGameBarcodeLookup,
   anthropicClientProvider,
   GameSheetGenerator,
   GameSheetTranslator,
@@ -23,6 +25,8 @@ import { DisposableEmailChecker, PasswordHasher, TokenService } from './auth'
   ],
   providers: [
     anthropicClientProvider,
+    // Port bound to its current provider: switch adapters here only.
+    { provide: GameBarcodeLookup, useClass: AnthropicGameBarcodeLookup },
     GameSheetGenerator,
     GameSheetTranslator,
     DisposableEmailChecker,
@@ -30,6 +34,7 @@ import { DisposableEmailChecker, PasswordHasher, TokenService } from './auth'
     TokenService,
   ],
   exports: [
+    GameBarcodeLookup,
     GameSheetGenerator,
     GameSheetTranslator,
     DisposableEmailChecker,

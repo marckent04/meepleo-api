@@ -133,6 +133,17 @@ model GameBarcode {
   @@map("game_barcodes")
 }
 
+/// Barcodes the external lookup could not resolve: never looked up again.
+/// Technical cache (no soft delete), purged by hard delete.
+model BarcodeLookupMiss {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  /// EAN / UPC
+  code      String   @unique
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("barcode_lookup_misses")
+}
+
 model GameRule {
   id           String   @id @default(uuid(7)) @db.Uuid
   gameId       String   @map("game_id") @db.Uuid

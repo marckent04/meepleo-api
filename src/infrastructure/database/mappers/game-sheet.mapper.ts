@@ -17,6 +17,12 @@ import {
   RuleType,
   SheetConfidence as SheetConfidenceRecord,
 } from '../generated/prisma/client'
+import {
+  isRecord,
+  localized,
+  toLocalizedText,
+  withLanguage,
+} from './localized-text.mapper'
 
 /**
  * `aggregationRuns` relation reduced to the latest successful generation: its
@@ -42,37 +48,6 @@ export type GameSheetStatusRecord = Pick<GameRecord, 'supportedLanguages'> & {
 export type GameWithRulesRecord = GameRecord & {
   rules: GameRuleRecord[]
   aggregationRuns: GenerationRunRecord[]
-}
-
-/** `{ "fr": "...", "en": "..." }` */
-type LocalizedText = Record<string, string>
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value)
-}
-
-function toLocalizedText(value: Prisma.JsonValue | null): LocalizedText {
-  if (!isRecord(value)) return {}
-  return Object.fromEntries(
-    Object.entries(value).filter(
-      (entry): entry is [string, string] => typeof entry[1] === 'string',
-    ),
-  )
-}
-
-function localized(
-  value: Prisma.JsonValue | null,
-  language: string,
-): string | null {
-  return toLocalizedText(value)[language] ?? null
-}
-
-function withLanguage(
-  value: Prisma.JsonValue | null,
-  language: string,
-  text: string,
-): LocalizedText {
-  return { ...toLocalizedText(value), [language]: text }
 }
 
 function toArray(value: Prisma.JsonValue | null): Prisma.JsonValue[] {

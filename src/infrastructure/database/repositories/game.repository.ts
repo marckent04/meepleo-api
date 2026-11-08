@@ -8,18 +8,24 @@ import type {
   GameSheet,
   GameSheetStatus,
   GameSheetTranslation,
+  IdentifiedGame,
 } from '@/shared/types'
 import {
+  GAME_SEARCH_RESULT_SELECT,
   type GameSearchRow,
   type GameWithRulesRecord,
   isGameSheetAggregated,
   LATEST_GENERATION_RUN,
+  localized,
   toGame,
   toGameSearchResult,
+  toGameSearchResultFromRecord,
   toGameSheetStatus,
   toGameSheetTranslationData,
   toGeneratedGameSheetData,
+  toIdentifiedGameCreateData,
   toStoredGameSheet,
+  withLanguage,
 } from '../mappers'
 import type { PrismaService } from '../prisma.service'
 import { rethrowPrismaError } from '../prisma-errors'
@@ -85,6 +91,68 @@ export class GameRepository {
       const id = idByBggId.get(bggId)
       return id ? [{ bggId, id }] : []
     })
+  }
+
+  /**
+   * Non-deleted games as search results, in the order of `ids`; unknown ids
+   * are ignored. Name in `language` when known, otherwise canonical name.
+   */
+  async findSearchResultsByIds(
+    ids: string[],
+    language: string,
+  ): Promise<GameSearchResult[]> {
+    const records = await this.txHost.tx.game.findMany({
+      where: { id: { in: ids }, deletedAt: null },
+      select: GAME_SEARCH_RESULT_SELECT,
+    })
+    const recordById = new Map(records.map((r) => [r.id, r]))
+    return ids.flatMap((id) => {
+      const record = recordById.get(id)
+      return record ? [toGameSearchResultFromRecord(record, language)] : []
+    })
+  }
+
+  /**
+   * Creates the catalog games identified by a barcode lookup. Idempotent: a
+   * game whose BGG id already exists is ignored (concurrent lookups).
+   */
+  async createFromIdentification(games: IdentifiedGame[]): Promise<void> {
+    if (games.length === 0) return
+    try {
+      await this.txHost.tx.game.createMany({
+        data: games.map(toIdentifiedGameCreateData),
+        skipDuplicates: true,
+      })
+    } catch (error) {
+      rethrowPrismaError(error)
+    }
+  }
+
+  /**
+   * Sets the game's name in `language` unless one is already known.
+   * Throws NotFoundError (GAME_NOT_FOUND) if the game does not exist.
+   */
+  async addLocalizedNameIfMissing(
+    id: string,
+    language: string,
+    name: string,
+  ): Promise<void> {
+    const record = await this.txHost.tx.game.findFirst({
+      where: { id, deletedAt: null },
+      select: { localizedNames: true },
+    })
+    if (!record) throw gameNotFound(id)
+    if (localized(record.localizedNames, language)) return
+    try {
+      await this.txHost.tx.game.update({
+        where: { id },
+        data: {
+          localizedNames: withLanguage(record.localizedNames, language, name),
+        },
+      })
+    } catch (error) {
+      rethrowPrismaError(error, { notFound: ErrorCode.GAME_NOT_FOUND })
+    }
   }
 
   /**

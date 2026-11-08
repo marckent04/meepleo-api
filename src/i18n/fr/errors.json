@@ -12,6 +12,7 @@
   "GAME_NOT_FOUND": "Ce jeu est introuvable.",
   "GAME_SHEET_GENERATION_FAILED": "La fiche de règles n'a pas pu être générée. Réessayez plus tard.",
   "GAME_SHEET_TRANSLATION_FAILED": "La fiche de règles n'a pas pu être traduite. Réessayez plus tard.",
+  "GAME_BARCODE_LOOKUP_FAILED": "Le code-barres n'a pas pu être recherché. Réessayez plus tard.",
   "LANGUAGE_REQUIRED": "L'en-tête Accept-Language est obligatoire.",
   "UNSUPPORTED_LANGUAGE": "Cette langue n'est pas prise en charge. Langues disponibles : {supported}.",
   "EMAIL_ALREADY_USED": "Un compte existe déjà avec cet email.",
