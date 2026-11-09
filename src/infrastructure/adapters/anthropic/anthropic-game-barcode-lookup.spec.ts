@@ -68,7 +68,13 @@ describe('AnthropicGameBarcodeLookup', () => {
     const request = parse.mock.calls[0][0]
     expect(request).toMatchObject({
       model: 'claude-sonnet-5-5',
-      system: GAME_BARCODE_SYSTEM_PROMPT,
+      system: [
+        {
+          type: 'text',
+          text: GAME_BARCODE_SYSTEM_PROMPT,
+          cache_control: { type: 'ephemeral' },
+        },
+      ],
       output_config: { effort: 'low' },
     })
     expect(request.tools.map((t: { type: string }) => t.type)).toEqual([

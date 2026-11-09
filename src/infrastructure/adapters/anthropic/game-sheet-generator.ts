@@ -11,7 +11,7 @@ import {
   promptVersion,
   toAiCallSettings,
 } from './ai-trace.util'
-import { ANTHROPIC_CLIENT } from './anthropic.client'
+import { ANTHROPIC_CLIENT, cachedSystemPrompt } from './anthropic.client'
 import {
   buildGameSheetUserPrompt,
   GAME_SHEET_SYSTEM_PROMPT,
@@ -139,7 +139,7 @@ export class GameSheetGenerator {
       return await this.client.messages.parse({
         model,
         max_tokens: MAX_TOKENS,
-        system: GAME_SHEET_SYSTEM_PROMPT,
+        system: cachedSystemPrompt(GAME_SHEET_SYSTEM_PROMPT),
         messages,
         tools: WEB_TOOLS,
         output_config: {

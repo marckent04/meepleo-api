@@ -11,7 +11,7 @@ import {
   promptVersion,
   toAiCallSettings,
 } from './ai-trace.util'
-import { ANTHROPIC_CLIENT } from './anthropic.client'
+import { ANTHROPIC_CLIENT, cachedSystemPrompt } from './anthropic.client'
 import {
   buildGameBarcodeUserPrompt,
   GAME_BARCODE_SYSTEM_PROMPT,
@@ -146,7 +146,7 @@ export class AnthropicGameBarcodeLookup implements GameBarcodeLookup {
       return await this.client.messages.parse({
         model: this.model,
         max_tokens: MAX_TOKENS,
-        system: GAME_BARCODE_SYSTEM_PROMPT,
+        system: cachedSystemPrompt(GAME_BARCODE_SYSTEM_PROMPT),
         messages,
         tools: WEB_TOOLS,
         output_config: {

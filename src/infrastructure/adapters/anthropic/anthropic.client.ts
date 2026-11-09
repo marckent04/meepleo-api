@@ -11,3 +11,13 @@ export const anthropicClientProvider: Provider = {
   useFactory: (config: ConfigType<typeof ANTHROPIC_CONFIG>) =>
     new Anthropic({ apiKey: config.apiKey }),
 }
+
+/**
+ * Wraps a frozen system prompt in a block carrying a cache breakpoint.
+ * Tools render before the system prompt, so the cached prefix covers the
+ * tools and the system prompt; the per-request variables stay in the user
+ * message, after the breakpoint.
+ */
+export function cachedSystemPrompt(text: string): Anthropic.TextBlockParam[] {
+  return [{ type: 'text', text, cache_control: { type: 'ephemeral' } }]
+}
