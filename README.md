@@ -8,7 +8,7 @@ in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Requirements
 
-- Node 24, Yarn classic (1.x)
+- Node 24, pnpm (version pinned by the `packageManager` field, via Corepack)
 - Docker (for PostgreSQL locally)
 
 ## Getting started
@@ -26,9 +26,9 @@ If you prefer to run the API outside Docker:
 ```bash
 cp .env.example .env
 docker compose -f compose.dev.yml up -d db   # POSTGRES_PORT=5433 if 5432 is already taken
-yarn install
-yarn db:deploy && yarn db:seed
-yarn start:dev
+pnpm install
+pnpm db:deploy && pnpm db:seed
+pnpm start:dev
 ```
 
 | URL | Description |
@@ -55,24 +55,24 @@ prints a Zod message listing the errors.
 
 | Command | Purpose |
 |---|---|
-| `yarn start:dev` | API in watch mode |
-| `yarn build` | `prisma generate` + compilation into `dist/` |
-| `yarn start:prod` | Runs `dist/main.js` |
-| `yarn test` / `yarn test:watch` / `yarn test:cov` | Vitest tests |
-| `yarn lint-and-format` | Biome (lint + format, with fixes) |
-| `yarn db:generate` | Generates the Prisma client |
-| `yarn db:migrate --name <change>` | Creates and applies a migration (development only) |
-| `yarn db:deploy` | Applies pending migrations (CI, production) |
-| `yarn db:seed` | Idempotent seed (upsert only) |
-| `yarn db:reset` | Recreates the local database and replays migrations + seed |
-| `yarn db:studio` | Prisma Studio |
-| `yarn db:validate` | Validates the Prisma schema and checks its formatting |
+| `pnpm start:dev` | API in watch mode |
+| `pnpm build` | `prisma generate` + compilation into `dist/` |
+| `pnpm start:prod` | Runs `dist/main.js` |
+| `pnpm test` / `pnpm test:watch` / `pnpm test:cov` | Vitest tests |
+| `pnpm lint-and-format` | Biome (lint + format, with fixes) |
+| `pnpm db:generate` | Generates the Prisma client |
+| `pnpm db:migrate --name <change>` | Creates and applies a migration (development only) |
+| `pnpm db:deploy` | Applies pending migrations (CI, production) |
+| `pnpm db:seed` | Idempotent seed (upsert only) |
+| `pnpm db:reset` | Recreates the local database and replays migrations + seed |
+| `pnpm db:studio` | Prisma Studio |
+| `pnpm db:validate` | Validates the Prisma schema and checks its formatting |
 
 ## Deployment
 
 The Docker image has three targets:
 
-- `migrate`: one-shot job `yarn db:deploy && yarn db:seed`, to run before each deployment;
+- `migrate`: one-shot job `pnpm db:deploy && pnpm db:seed`, to run before each deployment;
 - `runtime`: distroless Node 24 image containing only `dist/` and the production
   dependencies;
 - `builder`: intermediate stage.

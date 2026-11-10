@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo \"build exit=$?\")",
+      "Bash(sed -i '' 's/yarn /pnpm /g' CLAUDE.md ARCHITECTURE.md README.md prisma/seed.ts src/scripts/pregenerate-game-sheets.ts src/scripts/backfill-scoring-templates.ts src/scripts/backfill-game-covers.ts)",
+      "Bash(sed -i '' 's/Node >= 24, Yarn\\\\./Node >= 24, pnpm./' CLAUDE.md)",
+      "Bash(sed -i '' 's/Node 24, Yarn classic \\(1.x\\)/Node 24, pnpm \\(version pinned by the `packageManager` field, via Corepack\\)/' README.md)",
+      "Bash(sed -i '' 's|// Set by yarn/npm on `yarn start`; absent with `node dist/main`.|// Set by the package manager on `pnpm start`; absent with `node dist/main`.|' src/shared/config/app.config.ts)",
+      "Bash(pnpm biome *)"
+    ]
+  }
+}

@@ -12,18 +12,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: yarn
+          cache: pnpm
       - uses: biomejs/setup-biome@v2
         with:
           version: latest
       - run: biome ci .
-      - run: yarn install --frozen-lockfile
-      - run: yarn db:validate
-      - run: yarn build
-      - run: yarn test
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm db:validate
+      - run: pnpm build
+      - run: pnpm test
 
   migrations:
     runs-on: ubuntu-latest
@@ -43,18 +44,19 @@ jobs:
           --health-retries 10
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: yarn
-      - run: yarn install --frozen-lockfile
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - name: Apply migrations on an empty database
-        run: yarn db:deploy
+        run: pnpm db:deploy
       - name: Check that no migration is missing
         run: >-
-          yarn prisma migrate diff
+          pnpm prisma migrate diff
           --from-config-datasource
           --to-schema prisma/schema.prisma
           --exit-code
       - name: Seed twice (must be idempotent)
-        run: yarn db:seed && yarn db:seed
+        run: pnpm db:seed && pnpm db:seed

@@ -4,6 +4,7 @@
   "description": "Meepleo REST API (NestJS + CQRS + Prisma)",
   "private": true,
   "license": "UNLICENSED",
+  "packageManager": "pnpm@12.3.4",
   "engines": {
     "node": ">=24"
   },

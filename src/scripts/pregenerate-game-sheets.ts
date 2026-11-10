@@ -2,8 +2,8 @@
  * Pre-generates the sheets of chosen games, outside any HTTP request: users
  * then find them immediately (200) instead of waiting for the generation.
  *
- *   yarn sheets:pregenerate --language fr 13 822 30549
- *   yarn sheets:pregenerate --language fr --file bgg-ids.txt --concurrency 3
+ *   pnpm sheets:pregenerate --language fr 13 822 30549
+ *   pnpm sheets:pregenerate --language fr --file bgg-ids.txt --concurrency 3
  *
  * Identifiers are BGG ids (one per line in --file). Costly:
  * each missing sheet triggers an AI generation (~1 min). Replayable:

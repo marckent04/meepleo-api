@@ -2,9 +2,9 @@
  * One-shot backfill of the box cover image of the games whose sheet was
  * aggregated before the cover was collected (`image_url` still null).
  *
- *   yarn games:backfill-covers --dry-run --limit 5
- *   yarn games:backfill-covers --concurrency 3
- *   yarn games:backfill-covers --dry-run --bgg-id 40398 --bgg-id 13
+ *   pnpm games:backfill-covers --dry-run --limit 5
+ *   pnpm games:backfill-covers --concurrency 3
+ *   pnpm games:backfill-covers --dry-run --bgg-id 40398 --bgg-id 13
  *
  * For each game, Claude searches the web for the box cover image URL (a
  * short lookup, much cheaper than a sheet generation); the URL is kept only

@@ -10,7 +10,7 @@ export type NodeEnv = (typeof NODE_ENVS)[number]
 const AppEnvSchema = z.object({
   NODE_ENV: z.enum(NODE_ENVS).default('development'),
   PORT: z.coerce.number().int().min(1).max(65535).default(3000),
-  // Set by yarn/npm on `yarn start`; absent with `node dist/main`.
+  // Set by the package manager on `pnpm start`; absent with `node dist/main`.
   npm_package_version: z.string().default('0.0.0'),
 })
 

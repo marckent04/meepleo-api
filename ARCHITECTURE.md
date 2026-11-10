@@ -81,8 +81,8 @@ To add an error: add the code to `ERROR_CODES`, then its message in
   `where` coming from the caller. Every read filters `deletedAt: null`.
 - `rethrowPrismaError` translates known errors (`P2002` → `ConflictError`, `P2025` →
   `NotFoundError`, `P2003` → `BadRequestError`).
-- Migrations: `yarn db:migrate --name <change>` in development (review the SQL and commit it),
-  `yarn db:deploy` in CI and production. The application never migrates at startup.
+- Migrations: `pnpm db:migrate --name <change>` in development (review the SQL and commit it),
+  `pnpm db:deploy` in CI and production. The application never migrates at startup.
 - `prisma/seed.ts` only does `upsert`s: it can be replayed at will.
 
 ## Logs
@@ -100,7 +100,7 @@ To add an error: add the code to `ERROR_CODES`, then its message in
 Example with a `Tag` aggregate:
 
 1. Add the `Tag` model to `prisma/schema.prisma` (`@@map`, `@map`, indexes), then run
-   `yarn db:migrate --name add-tag` and review the generated SQL.
+   `pnpm db:migrate --name add-tag` and review the generated SQL.
 2. Create the domain model `shared/types/tag.type.ts` (pure class) and export it from
    `shared/types/index.ts`.
 3. Create the mapper `infrastructure/database/mappers/tag.mapper.ts`

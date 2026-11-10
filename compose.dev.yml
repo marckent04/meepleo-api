@@ -20,7 +20,7 @@ services:
   api:
     image: node:24-bookworm
     working_dir: /app
-    command: sh -c "yarn install && yarn db:deploy && yarn db:seed && yarn start:dev"
+    command: sh -c "corepack enable && pnpm install && pnpm db:deploy && pnpm db:seed && pnpm start:dev"
     env_file: .env
     environment:
       DATABASE_URL: postgresql://app:app@db:5432/app?schema=public

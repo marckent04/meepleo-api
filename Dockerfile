@@ -6,22 +6,24 @@ WORKDIR /app
 # prisma.config.ts validates DATABASE_URL even for `prisma generate`: dummy URL,
 # never contacted during the build.
 ENV DATABASE_URL=postgresql://build:build@localhost:5432/build
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile --ignore-scripts
+# Corepack provides the pnpm version pinned by the `packageManager` field.
+RUN corepack enable
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile --ignore-scripts
 COPY . .
-RUN yarn build
+RUN pnpm build
 
 # ---- migrate: one-shot job run before each deployment ----
 FROM builder AS migrate
 # Must be provided at runtime: an empty value fails the Zod validation.
-CMD ["sh", "-c", "yarn db:deploy && yarn db:seed"]
+CMD ["sh", "-c", "pnpm db:deploy && pnpm db:seed"]
 
 # ---- prod-deps: production dependencies only ----
 FROM node:24-bookworm AS prod-deps
 WORKDIR /app
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile --production --ignore-scripts \
-  && yarn cache clean
+RUN corepack enable
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile --prod --ignore-scripts
 
 # ---- runtime : image distroless, aucun CLI Prisma ----
 FROM gcr.io/distroless/nodejs24-debian12 AS runtime

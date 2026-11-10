@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Meepleo REST API: NestJS 12 + Fastify + CQRS + Prisma (PostgreSQL) + Zod. Node >= 24, Yarn.
+Meepleo REST API: NestJS 12 + Fastify + CQRS + Prisma (PostgreSQL) + Zod. Node >= 24, pnpm.
 
 Full details live in [ARCHITECTURE.md](ARCHITECTURE.md). This file is the short list of rules
 you must follow when changing the code. **Respect the existing structure and conventions; do
@@ -27,15 +27,15 @@ to English.
 ## Commands
 
 ```
-yarn start:dev          # run with watch
-yarn build              # prisma generate + nest build
-yarn test               # vitest run
-yarn lint-and-format    # biome check --write (run before finishing)
-yarn db:migrate --name <change>   # dev migration (review the generated SQL)
-yarn db:deploy          # CI / production migrations
+pnpm start:dev          # run with watch
+pnpm build              # prisma generate + nest build
+pnpm test               # vitest run
+pnpm lint-and-format    # biome check --write (run before finishing)
+pnpm db:migrate --name <change>   # dev migration (review the generated SQL)
+pnpm db:deploy          # CI / production migrations
 ```
 
-Always run `yarn lint-and-format` and `yarn test` (and `yarn build` for structural changes)
+Always run `pnpm lint-and-format` and `pnpm test` (and `pnpm build` for structural changes)
 before considering a task done.
 
 ## Layout and dependency direction

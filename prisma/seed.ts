@@ -1,6 +1,6 @@
 /**
  * Idempotent seed, safe to replay: `upsert` only.
- * Run by `yarn db:seed`, and after `prisma migrate deploy` in the
+ * Run by `pnpm db:seed`, and after `prisma migrate deploy` in the
  * `migrate` step of the Docker image.
  */
 import { readFileSync } from 'node:fs'

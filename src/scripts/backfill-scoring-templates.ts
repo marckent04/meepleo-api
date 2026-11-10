@@ -2,9 +2,9 @@
  * One-shot backfill of the score sheet template of the games whose sheet was
  * generated before templates were derived (`scoring_template` still null).
  *
- *   yarn games:backfill-scoring --dry-run --limit 5
- *   yarn games:backfill-scoring --concurrency 3
- *   yarn games:backfill-scoring --dry-run --bgg-id 432 --bgg-id 13
+ *   pnpm games:backfill-scoring --dry-run --limit 5
+ *   pnpm games:backfill-scoring --concurrency 3
+ *   pnpm games:backfill-scoring --dry-run --bgg-id 432 --bgg-id 13
  *
  * For each game, Claude derives the template from the stored sheet, in the
  * language it was generated in (no web search: a short call). Outside dry
