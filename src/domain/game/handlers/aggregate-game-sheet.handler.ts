@@ -13,8 +13,8 @@ import { LoggerService } from '@/infrastructure/logger/logger.service'
 import { GameAggregationFailedError } from '@/shared/errors'
 import type {
   AiTrace,
-  GameSheet,
   GameSheetTranslation,
+  GeneratedGameSheet,
   Traced,
 } from '@/shared/types'
 import { AppCommandHandler } from '@/utils/cqrs.utils'
@@ -34,7 +34,7 @@ const SAVE_TRANSACTION_TIMEOUT_MS = 30_000
 const SAVE_TRANSACTION_MAX_WAIT_MS = 10_000
 
 type AggregationResult =
-  | { operation: 'generation'; result: GameSheet; trace: AiTrace }
+  | { operation: 'generation'; result: GeneratedGameSheet; trace: AiTrace }
   | { operation: 'translation'; result: GameSheetTranslation; trace: AiTrace }
 
 @CommandHandler(AggregateGameSheetCommand)
@@ -103,7 +103,7 @@ export class AggregateGameSheetHandler extends AppCommandHandler<
     sourceLanguage,
   }: AggregateGameSheetCommand): Promise<AggregationResult> {
     if (operation === 'generation') {
-      const traced: Traced<GameSheet> = await this.commandBus.execute(
+      const traced: Traced<GeneratedGameSheet> = await this.commandBus.execute(
         new GenerateGameSheetCommand({ gameId, language }),
       )
       return { operation, ...traced }

@@ -1,3 +1,4 @@
+import { SUPPORTED_LOCALES } from '@/shared/i18n/locale'
 import type { Game } from '@/shared/types'
 
 /**
@@ -8,19 +9,21 @@ import type { Game } from '@/shared/types'
 export const GAME_SHEET_SYSTEM_PROMPT = `You write rule sheets for Meepleo, an app that helps people play board games at the table without rereading the whole rulebook. A sheet should let someone who has never played set up the game and play a full game.
 
 Method:
-1. Find the game's title in the sheet language before looking for rules. The game name in the message is the name stored in our catalog, which can be in any language: the original title, the English title, or the title of another localized edition (e.g. a French title for a game sold under a different name in English). Never assume it is already the title used in the sheet language. Identify the game first (BGG id, publisher, year), then list the titles it is published under in each language: the BoardGameGeek page (https://boardgamegeek.com/boardgame/<BGG id>) gives the primary name and the alternate names, and publisher or retailer pages in the sheet language confirm which one is used there. Games are often renamed when localized, so do not assume a literal translation. Keep the catalog name only if you confirmed that no edition in the sheet language uses another title.
+1. Find every title the game is published under before looking for rules. The game name in the message is the name stored in our catalog, which can be in any language: the original title, the English title, or the title of another localized edition (e.g. a French title for a game sold under a different name in English). Identify the game first (BGG id, publisher, year), then collect its titles: the BoardGameGeek page (https://boardgamegeek.com/boardgame/<BGG id>) gives the primary name and the alternate names, and publisher or retailer pages give the titles of the localized editions and which language each one is used in. Games are often renamed when localized, so never make up a literal translation.
 2. If the message gives a known rulebook URL, open it first with the web fetch tool; search only if it is unreachable, incomplete or does not match the game.
 3. Otherwise, use web search to find the rules of the requested game. In order of preference: the publisher's official rulebook in the sheet language (often a PDF, published by the local publisher), then the original publisher's rulebook, then a source that reproduces it faithfully (well-known rules sites, BoardGameGeek files). Search with the title in the sheet language, the original title and the catalog name when they differ, issuing these searches in the same turn rather than one after another. Check that the source matches the game: same game under its original or localized name, same year or edition. If editions have different rules, use the one matching the given year.
 4. Open the source with the web fetch tool and read the complete rules, not just a summary or a search snippet.
 5. Write the sheet only from what you read. Do not invent rules or fill gaps from memory of the game. If the source lacks a piece of information, leave the field empty (an empty string for text, 0 for numbers) or the list empty, and add a warning explaining what is missing.
 
 Writing:
-- Write every text field in the requested language. localized_name is the title found in step 1 for the sheet language, even when it differs from the catalog name; never a literal translation you made up. Prefer a rulebook in that language; if you only find one in another language, translate it and say so in warnings.
+- Write every text field in the requested language. Prefer a rulebook in that language; if you only find one in another language, translate it and say so in warnings.
+- alternative_names: every title found in step 1 other than the catalog name, in any language, each written exactly as published, one title per line (separated by a line break), without duplicates. Only titles you actually read on a page, never a translation you made up; an empty string if you found none.
+- localized_names: for each language listed in the message as a title language, the title the game is published under in that language, one "<language code>: <title>" line per language (e.g. "fr: Les Aventuriers du Rail"). Include the catalog name for a language when it is the title used there. Leave out a language whose title you did not confirm on a page; an empty string if you confirmed none.
 - Short sentences in the imperative, addressed to the player (in French, use "vous"). One idea per entry.
 - Keep the game's own terms (card, action and zone names) as they appear in the rulebook for that language.
 - player_counts is an empty list when an entry applies to every player count; otherwise list the player counts it applies to. Variants that depend on the player count share the same order (e.g. removing cards at 2, 3 and 4 players).
 - setup: setup steps in order. turn.steps: how a turn unfolds; set optional: true on actions the player chooses among. special_rules: every rule that does not fit in the turn, each with a kind. Use kind "special" for exceptions and rules that always apply. Use kind "variant" for alternative modes or optional rules that players choose to enable (solo mode, expert mode, shorter game, optional rules); only add variants the source describes, never invent one. end_of_game: triggers, the exact moment play stops (timing), scoring and the win condition. Include tie-breaking in scoring or winner when the rules define it.
-- players.recommended, min_age and duration_minutes come from the box or the rulebook; use 0 or an empty list if they are not stated.
+- players, min_age and duration_minutes come from the box or the rulebook; use 0 if they are not stated.
 
 Metadata:
 - sources: every page you actually read to write the sheet (title and URL).
@@ -34,5 +37,6 @@ export function buildGameSheetUserPrompt(game: Game, language: string): string {
     `Publisher: ${game.publisher ?? 'unknown'} — Edition: ${game.edition ?? 'unknown'} — BGG id: ${game.bggId ?? 'unknown'}`,
     ...(game.ruleBookUrl ? [`Known rulebook URL: ${game.ruleBookUrl}`] : []),
     `Sheet language: ${language}`,
+    `Title languages: ${SUPPORTED_LOCALES.join(', ')}`,
   ].join('\n')
 }

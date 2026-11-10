@@ -40,11 +40,13 @@ describe('GameSheetOutputSchema', () => {
     const { schema } = zodOutputFormat(GameSheetOutputSchema)
     let unions = 0
     let ids = 0
+    let arrays = 0
     const walk = (node: unknown): void => {
       if (Array.isArray(node)) return node.forEach(walk)
       if (node === null || typeof node !== 'object') return
       const record = node as Record<string, unknown>
       if (Array.isArray(record.anyOf) || Array.isArray(record.type)) unions++
+      if (record.type === 'array') arrays++
       const properties = record.properties as
         | Record<string, unknown>
         | undefined
@@ -55,5 +57,8 @@ describe('GameSheetOutputSchema', () => {
 
     expect(unions).toBe(0)
     expect(ids).toBe(0)
+    // Adding a single array of strings (alternative_names) was enough to get
+    // a 400 "compiled grammar is too large": keep lists as strings instead.
+    expect(arrays).toBeLessThanOrEqual(10)
   })
 })

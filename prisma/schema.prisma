@@ -72,10 +72,12 @@ enum GameAggregationStatus {
 model Game {
   id                 String         @id @default(uuid(7)) @db.Uuid
   bggId              Int?           @unique @map("bgg_id")
-  /// Nom canonique (BGG)
+  /// Canonical name (BGG)
   name               String
-  /// LocalizedText
   localizedNames     Json?          @map("localized_names")
+  /// Other titles the game is published under (localized editions, BGG
+  /// alternate names), without language; filled by the sheet generation
+  alternativeNames   String[]       @default([]) @map("alternative_names")
   /// LocalizedText
   description        Json?
   year               Int?
@@ -88,7 +90,6 @@ model Game {
   categories         GameCategory[]
   minPlayers         Int?           @map("min_players")
   maxPlayers         Int?           @map("max_players")
-  recommendedPlayers Int[]          @map("recommended_players")
   minAge             Int?           @map("min_age")
   minDuration        Int?           @map("min_duration_minutes")
   maxDuration        Int?           @map("max_duration_minutes")

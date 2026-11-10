@@ -11,7 +11,6 @@ export class GameSheetTranslation {
     readonly gameId: string,
     readonly sourceLanguage: string,
     readonly language: string,
-    readonly localizedName: string,
     readonly description: string,
     readonly turnSummary: string,
     readonly endTiming: string,

@@ -1,7 +1,7 @@
 import dnupOutput from '@/infrastructure/adapters/anthropic/__fixtures__/dnup-sheet.output.json'
 import type { GameSheetOutput } from '@/infrastructure/adapters/anthropic/game-sheet.schema'
 import { toGameSheet } from '@/infrastructure/adapters/anthropic/game-sheet-generator'
-import { GameSheetTranslation } from '@/shared/types'
+import { Game, GameSheetTranslation } from '@/shared/types'
 import { GAME_ID, gameRecord } from '../__fixtures__/game-record.fixture'
 import type { GameRule as GameRuleRecord } from '../generated/prisma/client'
 import {
@@ -13,10 +13,17 @@ import {
 } from './game-sheet.mapper'
 
 const generated = toGameSheet(
-  GAME_ID,
+  new Game(GAME_ID, 'Dnup', 2021, 'Gigamic', null, 123),
   'fr',
   'claude-haiku-5-5',
-  dnupOutput as GameSheetOutput,
+  {
+    ...dnupOutput,
+    game: {
+      ...dnupOutput.game,
+      alternative_names: 'Dnup: Duo',
+      localized_names: 'fr: Pund',
+    },
+  } as GameSheetOutput,
 )
 
 /** Simulates writing a generated sheet to the database. */
@@ -102,6 +109,29 @@ describe('game sheet mapper', () => {
     })
   })
 
+  it('merges the alternative and localized names with the existing ones', () => {
+    const data = toGeneratedGameSheetData(
+      generated,
+      gameRecord({
+        alternativeNames: ['Catane', 'pund'],
+        localizedNames: { de: 'Dnup DE' },
+      }),
+    )
+
+    expect(data.game.alternativeNames).toEqual(['Catane', 'pund', 'Dnup: Duo'])
+    // The titles found replace their language, the others are kept.
+    expect(data.game.localizedNames).toEqual({ de: 'Dnup DE', fr: 'Pund' })
+  })
+
+  it('reads the names back, falling back to the catalog name', () => {
+    const record = storeGenerated()
+    expect(toStoredGameSheet(record, 'fr').game).toMatchObject({
+      localizedName: 'Pund',
+      alternativeNames: ['Dnup: Duo', 'Pund'],
+    })
+    expect(toStoredGameSheet(record, 'en').game.localizedName).toBe('Dnup')
+  })
+
   it('maps "every player count" to an empty array and back to null', () => {
     const data = toGeneratedGameSheetData(generated, gameRecord())
     const allPlayers = generated.setup.find((e) => e.playerCounts === null)
@@ -126,7 +156,6 @@ describe('game sheet mapper', () => {
       GAME_ID,
       'fr',
       'en',
-      'Dnup',
       'English description',
       'English summary',
       'English timing',
@@ -140,6 +169,7 @@ describe('game sheet mapper', () => {
 
     const data = toGameSheetTranslationData(translation, record)
 
+    expect(data.game).not.toHaveProperty('localizedNames')
     expect(data.rules.map((r) => r.id)).toEqual(ruleIds)
     expect(data.game.supportedLanguages).toEqual(['fr', 'en'])
     const updated = {
@@ -166,7 +196,6 @@ describe('game sheet mapper', () => {
       GAME_ID,
       'fr',
       'en',
-      'Dnup',
       '',
       '',
       '',

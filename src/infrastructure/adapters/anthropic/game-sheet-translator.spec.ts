@@ -23,8 +23,14 @@ const game = new Game(gameId, 'Dnup', 2021, 'Gigamic', null, 123)
 const sheet = new GameSheet(
   gameId,
   'fr',
-  { localizedName: 'Dnup', edition: null, publisher: null, ruleBookUrl: null },
-  { min: 2, max: 5, recommended: [] },
+  {
+    localizedName: 'Dnup',
+    alternativeNames: [],
+    edition: null,
+    publisher: null,
+    ruleBookUrl: null,
+  },
+  { min: 2, max: 5 },
   8,
   { min: 20, max: 20 },
   'Description',
@@ -65,7 +71,6 @@ const sheet = new GameSheet(
 )
 
 const output: GameSheetTranslationOutput = {
-  localized_name: 'Dnup',
   description: 'Description EN',
   turn_summary: 'Summary',
   end_timing: 'Immediately',
@@ -107,7 +112,7 @@ describe('GameSheetTranslator', () => {
     expect(translator.model).toBe('claude-haiku-5-5')
   })
 
-  it('translates the sheet with capped web tools for the game name', async () => {
+  it('translates the sheet without web tools', async () => {
     parse.mockResolvedValue(response())
 
     const { result: translation, trace } = await translator.translate(
@@ -128,10 +133,7 @@ describe('GameSheetTranslator', () => {
         },
       ],
     })
-    expect(request.tools.map((t: { type: string }) => t.type)).toEqual([
-      'web_search_20250305',
-      'web_fetch_20250910',
-    ])
+    expect(request).not.toHaveProperty('tools')
     const prompt = request.messages[0].content
     expect(prompt).toContain('Catalog game: Dnup (2021)')
     expect(prompt).toContain('Publisher: Gigamic — BGG id: 123')
@@ -144,7 +146,6 @@ describe('GameSheetTranslator', () => {
         gameId,
         'fr',
         'en',
-        'Dnup',
         'Description EN',
         'Summary',
         'Immediately',
@@ -157,14 +158,7 @@ describe('GameSheetTranslator', () => {
       requestCount: 1,
       stopReason: 'end_turn',
       output,
-      settings: {
-        effort: 'low',
-        maxTokens: 16_000,
-        tools: [
-          { name: 'web_search', maxUses: 2 },
-          { name: 'web_fetch', maxUses: 1 },
-        ],
-      },
+      settings: { effort: 'low', maxTokens: 16_000, tools: [] },
       usage: { inputTokens: 10, outputTokens: 20 },
     })
   })
@@ -194,6 +188,7 @@ describe('GameSheetTranslator', () => {
   it.each([
     ['a truncated output', { stop_reason: 'max_tokens' }],
     ['an unparsed output', { parsed_output: null }],
+    ['a paused output', { stop_reason: 'pause_turn', parsed_output: null }],
   ])('fails on %s', async (_, overrides) => {
     parse.mockResolvedValue(response(overrides))
 
@@ -202,35 +197,6 @@ describe('GameSheetTranslator', () => {
         code: ErrorCode.GAME_SHEET_TRANSLATION_FAILED,
       },
     )
-  })
-
-  it('resumes a paused server tool loop', async () => {
-    const paused = response({
-      stop_reason: 'pause_turn',
-      content: [{ type: 'server_tool_use', id: 'srv_1', name: 'web_search' }],
-      parsed_output: null,
-    })
-    parse.mockResolvedValueOnce(paused).mockResolvedValueOnce(response())
-
-    const { trace } = await translator.translate(game, sheet, 'en')
-
-    expect(parse).toHaveBeenCalledTimes(2)
-    expect(parse.mock.calls[1][0].messages[1]).toEqual({
-      role: 'assistant',
-      content: paused.content,
-    })
-    expect(trace).toMatchObject({ requestCount: 2, stopReason: 'end_turn' })
-  })
-
-  it('gives up after too many pause_turn continuations', async () => {
-    parse.mockResolvedValue(
-      response({ stop_reason: 'pause_turn', parsed_output: null }),
-    )
-
-    const error = await translator.translate(game, sheet, 'en').catch((e) => e)
-
-    expect(error.code).toBe(ErrorCode.GAME_SHEET_TRANSLATION_FAILED)
-    expect(parse).toHaveBeenCalledTimes(4)
   })
 
   it('wraps Anthropic API errors', async () => {

@@ -2,7 +2,7 @@ export const SUPPORTED_LOCALES = ['fr', 'en'] as const
 export type Locale = (typeof SUPPORTED_LOCALES)[number]
 export const DEFAULT_LOCALE: Locale = 'fr'
 
-function isSupportedLocale(value: string): value is Locale {
+export function isSupportedLocale(value: string): value is Locale {
   return (SUPPORTED_LOCALES as readonly string[]).includes(value)
 }
 

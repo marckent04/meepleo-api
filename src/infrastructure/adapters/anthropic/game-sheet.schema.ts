@@ -22,10 +22,17 @@ const OrderedEntrySchema = EntrySchema.extend({ order: z.number().int() })
 
 export const GameSheetOutputSchema = z.object({
   game: z.object({
-    localized_name: z
+    // A single string, not an array: one more array would exceed the
+    // maximum grammar size accepted by the API (see special_rules).
+    alternative_names: z
       .string()
       .describe(
-        'Title the game is published under in the sheet language, which may differ from the catalog name',
+        'Other titles the game is published under (localized editions, BoardGameGeek alternate names), catalog name excluded; one title per line, empty string when none',
+      ),
+    localized_names: z
+      .string()
+      .describe(
+        'Confirmed title in each title language, one "<language code>: <title>" line per language; empty string when none',
       ),
     edition: UnknownText,
     publisher: UnknownText,
@@ -34,7 +41,6 @@ export const GameSheetOutputSchema = z.object({
   players: z.object({
     min: UnknownInt,
     max: UnknownInt,
-    recommended: z.array(z.number().int()),
   }),
   min_age: UnknownInt,
   duration_minutes: z.object({

@@ -33,6 +33,13 @@ describe('searchGamesSql', () => {
     expect(query.values).toContain('fr')
     expect(query.values.at(-1)).toBe(5)
   })
+
+  it('also matches and ranks the alternative names', () => {
+    const query = searchGamesSql({ text: 'pund', language: 'fr', limit: 5 })
+
+    expect(query.sql).toContain('f_search_names(alternative_names) LIKE')
+    expect(query.sql).toContain('unnest(alternative_names)')
+  })
 })
 
 describe('updateGameRuleTranslationsSql', () => {

@@ -1,6 +1,6 @@
 import { Command } from '@nestjs/cqrs'
 import { IsISO6391, IsUUID } from 'class-validator'
-import type { GameSheet, Traced } from '@/shared/types'
+import type { GeneratedGameSheet, Traced } from '@/shared/types'
 
 export type GenerateGameSheetCommandParams = {
   gameId: string
@@ -10,7 +10,9 @@ export type GenerateGameSheetCommandParams = {
 
 /** Generates with AI a game's rule sheet in a language, without persisting it.
  * Also returns the AI call trace (duration, tokens, raw output). */
-export class GenerateGameSheetCommand extends Command<Traced<GameSheet>> {
+export class GenerateGameSheetCommand extends Command<
+  Traced<GeneratedGameSheet>
+> {
   @IsUUID()
   readonly gameId: string
 

@@ -49,11 +49,13 @@ export type SearchGamesSqlParams = {
 }
 
 /**
- * Non-deleted games whose canonical name or name in `language`
- * contains `text` (case and accents ignored). Order: names starting with
- * `text`, then trigram similarity, then alphabetical order.
- * Relies on `f_unaccent` and the trigram indexes of the migration
- * `add_game_name_search`. Rows: `GameSearchRow`.
+ * Non-deleted games whose canonical name, name in `language` or one of the
+ * alternative names contains `text` (case and accents ignored). Order:
+ * displayed name starting with `text`, then an alternative name starting with
+ * it, then the best trigram similarity, then alphabetical order.
+ * Relies on `f_unaccent`, `f_search_names` and the trigram indexes of the
+ * migrations `add_game_name_search` and `add_game_alternative_names`.
+ * Rows: `GameSearchRow`.
  */
 export function searchGamesSql({
   text,
@@ -72,10 +74,19 @@ export function searchGamesSql({
     FROM games
     WHERE deleted_at IS NULL
       AND (f_unaccent(lower(name)) LIKE f_unaccent(${contains}::text)
-           OR f_unaccent(lower(localized_names ->> ${language}::text)) LIKE f_unaccent(${contains}::text))
+           OR f_unaccent(lower(localized_names ->> ${language}::text)) LIKE f_unaccent(${contains}::text)
+           OR f_search_names(alternative_names) LIKE f_unaccent(${contains}::text))
     ORDER BY
       f_unaccent(lower(coalesce(localized_names ->> ${language}::text, name))) LIKE f_unaccent(${startsWith}::text) DESC,
-      similarity(f_unaccent(lower(coalesce(localized_names ->> ${language}::text, name))), f_unaccent(${term}::text)) DESC,
+      EXISTS (
+        SELECT 1 FROM unnest(alternative_names) AS alternative(value)
+        WHERE f_unaccent(lower(alternative.value)) LIKE f_unaccent(${startsWith}::text)
+      ) DESC,
+      greatest(
+        similarity(f_unaccent(lower(coalesce(localized_names ->> ${language}::text, name))), f_unaccent(${term}::text)),
+        (SELECT max(similarity(f_unaccent(lower(alternative.value)), f_unaccent(${term}::text)))
+         FROM unnest(alternative_names) AS alternative(value))
+      ) DESC,
       name ASC
     LIMIT ${limit}::int`
 }

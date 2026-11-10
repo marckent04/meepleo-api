@@ -115,6 +115,12 @@ export const GameResponseSchema = z
           .string()
           .describe('Game name in the sheet language')
           .meta({ example: 'Dnup' }),
+        alternativeNames: z
+          .array(z.string())
+          .describe(
+            'Other titles the game is published under (localized editions, BoardGameGeek alternate names), in any language',
+          )
+          .meta({ example: ['Pund'] }),
         edition: z.string().nullable().describe('Edition'),
         publisher: z.string().nullable().describe('Publisher'),
         ruleBookUrl: z
@@ -127,9 +133,6 @@ export const GameResponseSchema = z
       .object({
         min: z.number().int().nullable().describe('Minimum number of players'),
         max: z.number().int().nullable().describe('Maximum number of players'),
-        recommended: z
-          .array(z.number().int())
-          .describe('Recommended player counts'),
       })
       .describe('Number of players'),
     minAge: z.number().int().nullable().describe('Minimum age'),

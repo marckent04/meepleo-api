@@ -8,6 +8,7 @@ import type {
   GameSheet,
   GameSheetStatus,
   GameSheetTranslation,
+  GeneratedGameSheet,
   IdentifiedGame,
 } from '@/shared/types'
 import {
@@ -197,7 +198,7 @@ export class GameRepository {
    * `sheet.language` the only available language. To call in a transaction,
    * together with saving the generation run that marks the sheet as generated.
    */
-  async saveGeneratedSheet(sheet: GameSheet): Promise<void> {
+  async saveGeneratedSheet(sheet: GeneratedGameSheet): Promise<void> {
     const current = await this.findWithRules(sheet.gameId)
     const data = toGeneratedGameSheetData(sheet, current)
     try {

@@ -21,8 +21,14 @@ const headers = { 'accept-language': 'fr' }
 const sheet = new GameSheet(
   gameId,
   'fr',
-  { localizedName: 'Dnup', edition: null, publisher: null, ruleBookUrl: null },
-  { min: 2, max: 5, recommended: [] },
+  {
+    localizedName: 'Dnup',
+    alternativeNames: ['Pund'],
+    edition: null,
+    publisher: null,
+    ruleBookUrl: null,
+  },
+  { min: 2, max: 5 },
   8,
   { min: 15, max: null },
   'Un jeu de cartes.',
@@ -86,7 +92,7 @@ describe('GET /v1/games/:id (integration)', () => {
     expect(response.json()).toMatchObject({
       gameId,
       language: 'fr',
-      game: { localizedName: 'Dnup' },
+      game: { localizedName: 'Dnup', alternativeNames: ['Pund'] },
       generatedAt: '2026-11-06T12:00:00.000Z',
     })
     expect(response.json()).not.toHaveProperty('status')

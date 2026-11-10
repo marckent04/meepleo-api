@@ -1,14 +1,14 @@
 {
   "game": {
-    "localized_name": "Dnup",
+    "alternative_names": "",
+    "localized_names": "fr: Dnup\nen: Dnup",
     "edition": "",
     "publisher": "",
     "rule_book_url": "https://www.regles-du-jeu.net/regles-de-dnup/"
   },
   "players": {
     "min": 2,
-    "max": 5,
-    "recommended": []
+    "max": 5
   },
   "min_age": 8,
   "duration_minutes": {

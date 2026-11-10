@@ -22,21 +22,39 @@ export type GameSheetScoringEntry = GameSheetOrderedEntry & { title: string }
 
 export type GameSheetSource = { title: string; url: string }
 
-/** Rule sheet generated for a game, in a language. */
-export class GameSheet {
+/** Game identification common to generated and stored sheets. */
+type BaseGameSheetGame = {
+  /** Other titles the game is published under, without language. */
+  alternativeNames: string[]
+  edition: string | null
+  publisher: string | null
+  ruleBookUrl: string | null
+}
+
+/** Game identification produced by the generation. */
+export type GeneratedGameSheetGame = BaseGameSheetGame & {
+  /** Confirmed title per supported language (ISO 639-1 code -> title). */
+  localizedNames: Record<string, string>
+}
+
+/** Game identification of a stored sheet, read in a language. */
+export type GameSheetGame = BaseGameSheetGame & {
+  /** Name displayed in the sheet language: its title, or the catalog name. */
+  localizedName: string
+}
+
+/**
+ * Rule sheet of a game, in a language. Read from the database by default;
+ * see `GeneratedGameSheet` for the output of the generation.
+ */
+export class GameSheet<TGame extends BaseGameSheetGame = GameSheetGame> {
   constructor(
     readonly gameId: string,
     readonly language: string,
-    readonly game: {
-      localizedName: string
-      edition: string | null
-      publisher: string | null
-      ruleBookUrl: string | null
-    },
+    readonly game: TGame,
     readonly players: {
       min: number | null
       max: number | null
-      recommended: number[]
     },
     readonly minAge: number | null,
     readonly durationMinutes: { min: number | null; max: number | null },
@@ -59,6 +77,9 @@ export class GameSheet {
     readonly generatedAt: Date,
   ) {}
 }
+
+/** Sheet produced by the generation: no name in the sheet language. */
+export type GeneratedGameSheet = GameSheet<GeneratedGameSheetGame>
 
 /** Aggregation state of a game's sheet, all languages combined. */
 export type GameSheetStatus = {

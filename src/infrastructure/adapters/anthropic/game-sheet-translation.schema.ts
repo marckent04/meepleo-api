@@ -5,7 +5,6 @@ import { z } from 'zod'
  * via `output_config.format`.
  */
 export const GameSheetTranslationOutputSchema = z.object({
-  localized_name: z.string(),
   description: z.string(),
   turn_summary: z.string(),
   end_timing: z.string(),

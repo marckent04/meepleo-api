@@ -15,11 +15,12 @@ const sheet = new GameSheet(
   'fr',
   {
     localizedName: 'Dnup',
+    alternativeNames: ['Pund'],
     edition: null,
     publisher: 'Gigamic',
     ruleBookUrl: null,
   },
-  { min: 2, max: 5, recommended: [3] },
+  { min: 2, max: 5 },
   8,
   { min: 20, max: 20 },
   'Description',
@@ -67,7 +68,11 @@ describe('GameResponseDto', () => {
     expect(response).toMatchObject({
       gameId: id(0),
       language: 'fr',
-      game: { localizedName: 'Dnup', publisher: 'Gigamic' },
+      game: {
+        localizedName: 'Dnup',
+        alternativeNames: ['Pund'],
+        publisher: 'Gigamic',
+      },
       generatedAt: '2026-01-01T12:00:00.000Z',
     })
     expect(GameResponseSchema.safeParse(response).success).toBe(true)

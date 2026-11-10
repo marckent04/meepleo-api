@@ -1,6 +1,10 @@
 import { createTransactionHostMock } from '@/__tests__/utils/prisma.mock'
 import { ErrorCode, NotFoundError } from '@/shared/errors'
-import { Game, GameSheetTranslation } from '@/shared/types'
+import {
+  Game,
+  GameSheetTranslation,
+  type GeneratedGameSheet,
+} from '@/shared/types'
 import { GAME_ID, gameRecord } from '../__fixtures__/game-record.fixture'
 import {
   GAME_SEARCH_RESULT_SELECT,
@@ -352,7 +356,11 @@ describe('GameRepository — game sheet', () => {
       },
       gameRule: { deleteMany: vi.fn(), createMany: vi.fn() },
     })
-    const sheet = toStoredGameSheet(aggregated, 'fr')
+    const stored = toStoredGameSheet(aggregated, 'fr')
+    const sheet: GeneratedGameSheet = {
+      ...stored,
+      game: { ...stored.game, localizedNames: { fr: 'Dnup' } },
+    }
 
     await new GameRepository(host).saveGeneratedSheet(sheet)
 
@@ -363,6 +371,7 @@ describe('GameRepository — game sheet', () => {
       where: { id: GAME_ID },
       data: expect.objectContaining({
         supportedLanguages: ['fr'],
+        localizedNames: { fr: 'Dnup' },
       }),
     })
     expect(tx.gameRule.createMany).toHaveBeenCalledWith({ data: [] })
@@ -395,7 +404,6 @@ describe('GameRepository — game sheet', () => {
         GAME_ID,
         'fr',
         'en',
-        'Dnup',
         'D',
         'S',
         'T',

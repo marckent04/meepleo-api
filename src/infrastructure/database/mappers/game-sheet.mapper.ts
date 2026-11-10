@@ -4,6 +4,7 @@ import {
   type GameSheetSource,
   type GameSheetStatus,
   type GameSheetTranslation,
+  type GeneratedGameSheet,
   type SheetConfidence,
 } from '@/shared/types'
 import type {
@@ -122,6 +123,7 @@ export function toStoredGameSheet(
     language,
     {
       localizedName: localized(record.localizedNames, language) ?? record.name,
+      alternativeNames: record.alternativeNames,
       edition: record.edition,
       publisher: record.publisher,
       ruleBookUrl: record.ruleBookUrl,
@@ -129,7 +131,6 @@ export function toStoredGameSheet(
     {
       min: record.minPlayers,
       max: record.maxPlayers,
-      recommended: record.recommendedPlayers,
     },
     record.minAge,
     { min: record.minDuration, max: record.maxDuration },
@@ -174,13 +175,26 @@ export type GeneratedGameSheetData = {
   rules: Prisma.GameRuleCreateManyInput[]
 }
 
+/** Existing names first, then the new ones; duplicates ignored (case-insensitive). */
+function mergeNames(current: string[], added: string[]): string[] {
+  const seen = new Set<string>()
+  return [...current, ...added].filter((name) => {
+    const key = name.toLowerCase()
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}
+
 /**
  * Write data of a generated sheet. Untranslated columns
  * (publisher, players, age, duration…) are only filled if they are empty:
- * BGG data remains the reference.
+ * BGG data remains the reference. The alternative names found are added to
+ * the existing ones; the localized titles found replace those of their
+ * language, the other languages are kept.
  */
 export function toGeneratedGameSheetData(
-  sheet: GameSheet,
+  sheet: GeneratedGameSheet,
   current: GameRecord,
 ): GeneratedGameSheetData {
   const language = sheet.language
@@ -203,10 +217,13 @@ export function toGeneratedGameSheetData(
 
   return {
     game: {
-      localizedNames: withLanguage(
-        current.localizedNames,
-        language,
-        sheet.game.localizedName,
+      localizedNames: {
+        ...toLocalizedText(current.localizedNames),
+        ...sheet.game.localizedNames,
+      },
+      alternativeNames: mergeNames(
+        current.alternativeNames,
+        sheet.game.alternativeNames,
       ),
       description: withLanguage(
         current.description,
@@ -218,10 +235,6 @@ export function toGeneratedGameSheetData(
       ruleBookUrl: current.ruleBookUrl ?? sheet.game.ruleBookUrl,
       minPlayers: current.minPlayers ?? sheet.players.min,
       maxPlayers: current.maxPlayers ?? sheet.players.max,
-      recommendedPlayers:
-        current.recommendedPlayers.length > 0
-          ? current.recommendedPlayers
-          : sheet.players.recommended,
       minAge: current.minAge ?? sheet.minAge,
       minDuration: current.minDuration ?? sheet.durationMinutes.min,
       maxDuration: current.maxDuration ?? sheet.durationMinutes.max,
@@ -286,11 +299,6 @@ export function toGameSheetTranslationData(
 
   return {
     game: {
-      localizedNames: withLanguage(
-        current.localizedNames,
-        language,
-        translation.localizedName,
-      ),
       description: withLanguage(
         current.description,
         language,

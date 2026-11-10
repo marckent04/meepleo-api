@@ -30,38 +30,18 @@ import {
 
 const MAX_TOKENS = 16_000
 const EFFORT = 'low'
-/** Maximum retries when the server tool loop is interrupted (`pause_turn`). */
-const MAX_CONTINUATIONS = 3
-
-/**
- * Only used to find the game's title in the target language, so the caps
- * stay low. Base variants for the same reason as in GameSheetGenerator.
- */
-const WEB_TOOLS: Anthropic.ToolUnion[] = [
-  { type: 'web_search_20250305', name: 'web_search', max_uses: 2 },
-  {
-    type: 'web_fetch_20250910',
-    name: 'web_fetch',
-    max_uses: 1,
-    max_content_tokens: 20_000,
-  },
-]
 
 const OUTPUT_FORMAT = zodOutputFormat(GameSheetTranslationOutputSchema)
 const PROMPT_VERSION = promptVersion(
   GAME_SHEET_TRANSLATION_SYSTEM_PROMPT,
   OUTPUT_FORMAT,
 )
-const SETTINGS = toAiCallSettings({
-  effort: EFFORT,
-  maxTokens: MAX_TOKENS,
-  tools: WEB_TOOLS,
-})
+const SETTINGS = toAiCallSettings({ effort: EFFORT, maxTokens: MAX_TOKENS })
 
 /**
- * Translates an existing sheet into another language. The web tools are only
- * used to find the game's published title in the target language; the rules
- * stay identical from one language to the other.
+ * Translates an existing sheet into another language, without web tools:
+ * the rules stay identical from one language to the other, and the game's
+ * titles are collected during the generation (`alternativeNames`).
  */
 @Injectable()
 export class GameSheetTranslator {
@@ -122,17 +102,7 @@ export class GameSheetTranslator {
       },
     ]
 
-    let response = await recorder.call(() => this.request(messages))
-    for (let i = 0; response.stop_reason === 'pause_turn'; i++) {
-      if (i >= MAX_CONTINUATIONS) {
-        throw this.failure('Too many pause_turn continuations', sheet, {
-          stopReason: response.stop_reason,
-        })
-      }
-      // Resuming happens on the final server_tool_use block, without a new user message.
-      messages.push({ role: 'assistant', content: response.content })
-      response = await recorder.call(() => this.request(messages))
-    }
+    const response = await recorder.call(() => this.request(messages))
 
     if (response.stop_reason !== 'end_turn' || !response.parsed_output) {
       throw this.failure('Translation output is missing or truncated', sheet, {
@@ -147,7 +117,6 @@ export class GameSheetTranslator {
       sheet.gameId,
       sheet.language,
       targetLanguage,
-      output.localized_name,
       output.description,
       output.turn_summary,
       output.end_timing,
@@ -178,7 +147,6 @@ export class GameSheetTranslator {
         max_tokens: MAX_TOKENS,
         system: cachedSystemPrompt(GAME_SHEET_TRANSLATION_SYSTEM_PROMPT),
         messages,
-        tools: WEB_TOOLS,
         output_config: { effort: EFFORT, format: OUTPUT_FORMAT },
       })
     } catch (error) {
