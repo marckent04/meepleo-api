@@ -1,9 +1,9 @@
 import { createParamDecorator, type ExecutionContext } from '@nestjs/common'
-import type { FastifyRequest } from 'fastify'
+import type { NodeRequest } from '@nestjs/platform-node'
 import { DEFAULT_LOCALE, type Locale, parseLocale } from '@/shared/i18n/locale'
 
 /** Request whose language was resolved by AcceptLanguageGuard. */
-export type LocalizedRequest = FastifyRequest & { locale?: Locale }
+export type LocalizedRequest = NodeRequest & { locale?: Locale }
 
 /** Request language, resolved and validated by AcceptLanguageGuard. */
 export const Language = createParamDecorator(

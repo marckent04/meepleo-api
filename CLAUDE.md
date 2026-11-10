@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Meepleo REST API: NestJS 12 + Fastify + CQRS + Prisma (PostgreSQL) + Zod. Node >= 24, pnpm.
+Meepleo REST API: NestJS 12 + node:http (NodeAdapter) + CQRS + Prisma (PostgreSQL) + Zod. Node >= 24, pnpm.
 
 Full details live in [ARCHITECTURE.md](ARCHITECTURE.md). This file is the short list of rules
 you must follow when changing the code. **Respect the existing structure and conventions; do

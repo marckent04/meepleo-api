@@ -1,9 +1,6 @@
 import { VersioningType } from '@nestjs/common'
 import { CommandBus } from '@nestjs/cqrs'
-import {
-  FastifyAdapter,
-  type NestFastifyApplication,
-} from '@nestjs/platform-fastify'
+import { type NestNodeApplication, NodeAdapter } from '@nestjs/platform-node'
 import { Test } from '@nestjs/testing'
 import type { MockInstance } from 'vitest'
 import { mockLoggerService } from '@/__tests__/utils/logger-service.mock'
@@ -45,7 +42,7 @@ const sheet = new GameSheet(
 )
 
 describe('GET /v1/games/:id (integration)', () => {
-  let app: NestFastifyApplication
+  let app: NestNodeApplication
   let execute: MockInstance<CommandBus['execute']>
 
   beforeAll(async () => {
@@ -63,12 +60,11 @@ describe('GET /v1/games/:id (integration)', () => {
       .useValue(mockLoggerService)
       .compile()
 
-    app = moduleRef.createNestApplication<NestFastifyApplication>(
-      new FastifyAdapter(),
+    app = moduleRef.createNestApplication<NestNodeApplication>(
+      new NodeAdapter(),
     )
     app.enableVersioning({ type: VersioningType.URI })
     await app.init()
-    await app.getHttpAdapter().getInstance().ready()
     // The controller is tested alone: the domain has its own tests.
     execute = vi.spyOn(app.get(CommandBus), 'execute')
   })

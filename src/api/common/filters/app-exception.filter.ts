@@ -1,5 +1,5 @@
 import { type ArgumentsHost, Catch, type ExceptionFilter } from '@nestjs/common'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { NodeRequest, NodeResponse } from '@nestjs/platform-node'
 import { ClsService } from 'nestjs-cls'
 import { I18nService } from 'nestjs-i18n'
 import { CORRELATION_ID_KEY } from '@/infrastructure/logger/correlation-id.util'
@@ -27,8 +27,8 @@ export class AppExceptionFilter implements ExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const http = host.switchToHttp()
-    const request = http.getRequest<FastifyRequest>()
-    const reply = http.getResponse<FastifyReply>()
+    const request = http.getRequest<NodeRequest>()
+    const reply = http.getResponse<NodeResponse>()
     const error = toAppError(exception)
 
     this.log(error, request)
@@ -45,7 +45,7 @@ export class AppExceptionFilter implements ExceptionFilter {
       .send(formatRestError(error, translator, correlationId))
   }
 
-  private log(error: AppError, request: FastifyRequest): void {
+  private log(error: AppError, request: NodeRequest): void {
     const fields = {
       code: error.code,
       statusCode: error.statusCode,

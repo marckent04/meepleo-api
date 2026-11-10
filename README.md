@@ -1,6 +1,6 @@
 # Meepleo API
 
-NestJS 12 (Fastify) REST API with a CQRS core, Prisma 7 persistence (PostgreSQL 17),
+NestJS 12 (node:http) REST API with a CQRS core, Prisma 7 persistence (PostgreSQL 17),
 Zod DTOs and an OpenAPI documentation generated from the Zod schemas.
 
 The architecture, the validation rules and the recipe for adding a feature are described

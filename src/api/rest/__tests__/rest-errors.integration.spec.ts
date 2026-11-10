@@ -1,8 +1,5 @@
 import { Body, Controller, Post, VersioningType } from '@nestjs/common'
-import {
-  FastifyAdapter,
-  type NestFastifyApplication,
-} from '@nestjs/platform-fastify'
+import { type NestNodeApplication, NodeAdapter } from '@nestjs/platform-node'
 import { Test } from '@nestjs/testing'
 import { createZodDto } from 'nestjs-zod'
 import { z } from 'zod'
@@ -32,7 +29,7 @@ class EchoController {
 }
 
 describe('REST errors (integration)', () => {
-  let app: NestFastifyApplication
+  let app: NestNodeApplication
   const healthRepository = { ping: vi.fn() }
   const gameRepository = { search: vi.fn() }
 
@@ -58,12 +55,11 @@ describe('REST errors (integration)', () => {
       .useValue(mockLoggerService)
       .compile()
 
-    app = moduleRef.createNestApplication<NestFastifyApplication>(
-      new FastifyAdapter(),
+    app = moduleRef.createNestApplication<NestNodeApplication>(
+      new NodeAdapter(),
     )
     app.enableVersioning({ type: VersioningType.URI })
     await app.init()
-    await app.getHttpAdapter().getInstance().ready()
   })
 
   afterAll(async () => {

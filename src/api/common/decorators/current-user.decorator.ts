@@ -1,8 +1,8 @@
 import { createParamDecorator, type ExecutionContext } from '@nestjs/common'
-import type { FastifyRequest } from 'fastify'
+import type { NodeRequest } from '@nestjs/platform-node'
 
 /** Request whose user was resolved by JwtAuthGuard. */
-export type AuthenticatedRequest = FastifyRequest & { userId?: string }
+export type AuthenticatedRequest = NodeRequest & { userId?: string }
 
 /** Authenticated user id (`sub` claim of the access token). */
 export const CurrentUserId = createParamDecorator(

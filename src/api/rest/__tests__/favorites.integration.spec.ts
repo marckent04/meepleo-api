@@ -1,9 +1,6 @@
 import { VersioningType } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
-import {
-  FastifyAdapter,
-  type NestFastifyApplication,
-} from '@nestjs/platform-fastify'
+import { type NestNodeApplication, NodeAdapter } from '@nestjs/platform-node'
 import { Test } from '@nestjs/testing'
 import type { MockInstance } from 'vitest'
 import { mockLoggerService } from '@/__tests__/utils/logger-service.mock'
@@ -22,7 +19,7 @@ const userId = '0195d1a2-0000-7000-8000-000000000001'
 const gameId = '0195d1a2-0000-7000-8000-000000000002'
 
 describe('/v1/favorites (integration)', () => {
-  let app: NestFastifyApplication
+  let app: NestNodeApplication
   let commandExecute: MockInstance<CommandBus['execute']>
   let queryExecute: MockInstance<QueryBus['execute']>
   let headers: Record<string, string>
@@ -42,12 +39,11 @@ describe('/v1/favorites (integration)', () => {
       .useValue(mockLoggerService)
       .compile()
 
-    app = moduleRef.createNestApplication<NestFastifyApplication>(
-      new FastifyAdapter(),
+    app = moduleRef.createNestApplication<NestNodeApplication>(
+      new NodeAdapter(),
     )
     app.enableVersioning({ type: VersioningType.URI })
     await app.init()
-    await app.getHttpAdapter().getInstance().ready()
     commandExecute = vi.spyOn(app.get(CommandBus), 'execute')
     queryExecute = vi.spyOn(app.get(QueryBus), 'execute')
     const { token } = await app.get(TokenService).signAccessToken(userId)

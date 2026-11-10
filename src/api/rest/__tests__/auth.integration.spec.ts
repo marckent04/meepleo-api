@@ -1,9 +1,6 @@
 import { VersioningType } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
-import {
-  FastifyAdapter,
-  type NestFastifyApplication,
-} from '@nestjs/platform-fastify'
+import { type NestNodeApplication, NodeAdapter } from '@nestjs/platform-node'
 import { Test } from '@nestjs/testing'
 import type { MockInstance } from 'vitest'
 import { mockLoggerService } from '@/__tests__/utils/logger-service.mock'
@@ -34,7 +31,7 @@ const user = {
 const tokens = { accessToken: 'a', refreshToken: 'r', expiresIn: 900 }
 
 describe('/v1/auth (integration)', () => {
-  let app: NestFastifyApplication
+  let app: NestNodeApplication
   let commandExecute: MockInstance<CommandBus['execute']>
   let queryExecute: MockInstance<QueryBus['execute']>
 
@@ -53,12 +50,11 @@ describe('/v1/auth (integration)', () => {
       .useValue(mockLoggerService)
       .compile()
 
-    app = moduleRef.createNestApplication<NestFastifyApplication>(
-      new FastifyAdapter(),
+    app = moduleRef.createNestApplication<NestNodeApplication>(
+      new NodeAdapter(),
     )
     app.enableVersioning({ type: VersioningType.URI })
     await app.init()
-    await app.getHttpAdapter().getInstance().ready()
     commandExecute = vi.spyOn(app.get(CommandBus), 'execute')
     queryExecute = vi.spyOn(app.get(QueryBus), 'execute')
   })

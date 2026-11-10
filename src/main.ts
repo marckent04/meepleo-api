@@ -1,18 +1,15 @@
 import { ConsoleLogger, VersioningType } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
-import {
-  FastifyAdapter,
-  type NestFastifyApplication,
-} from '@nestjs/platform-fastify'
+import { type NestNodeApplication, NodeAdapter } from '@nestjs/platform-node'
 import { useContainer } from 'class-validator'
 import { Logger as PinoNestLogger } from 'nestjs-pino'
 import { AppModule } from './app.module'
 import { APP_CONFIG, type AppConfig } from './shared/config'
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create<NestFastifyApplication>(
+  const app = await NestFactory.create<NestNodeApplication>(
     AppModule,
-    new FastifyAdapter({ trustProxy: true }),
+    new NodeAdapter({ trustProxy: true }),
     {
       bufferLogs: true,
       // The error bubbles up to the catch below instead of an immediate process.exit.

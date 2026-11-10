@@ -10,7 +10,7 @@ import {
   UnauthenticatedError,
 } from '@/shared/errors'
 
-/** Status carried by a Fastify error (invalid JSON, body too large…). */
+/** Status carried by a Node adapter error (invalid JSON, body too large…). */
 function frameworkStatus(exception: unknown): number | undefined {
   if (exception instanceof HttpException) return exception.getStatus()
   if (
@@ -45,7 +45,7 @@ function fromStatus(status: number, exception: Error): AppError {
 
 /**
  * Normalizes any exception into an AppError: AppError as is, HTTP exception
- * (Nest or Fastify) mapped by status, everything else → InternalError.
+ * (Nest or the HTTP adapter) mapped by status, everything else → InternalError.
  */
 export function toAppError(exception: unknown): AppError {
   if (exception instanceof AppError) return exception

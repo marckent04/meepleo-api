@@ -1,8 +1,8 @@
 import { Controller, Get, Param, Query, Res } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
+import type { NodeResponse } from '@nestjs/platform-node'
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { Throttle } from '@nestjs/throttler'
-import type { FastifyReply } from 'fastify'
 import { ZodResponse, ZodSerializerDto } from 'nestjs-zod'
 import {
   AGGREGATION_POLL_INTERVAL_SECONDS,
@@ -118,7 +118,7 @@ export class GameController {
   async findOne(
     @Param() params: GameIdParamDto,
     @Language() language: Locale,
-    @Res({ passthrough: true }) reply: FastifyReply,
+    @Res({ passthrough: true }) reply: NodeResponse,
   ): Promise<GameResponseDto | GamePendingResponseDto> {
     // Command rather than query: the first request starts the aggregation.
     const availability = await this.commandBus.execute(
