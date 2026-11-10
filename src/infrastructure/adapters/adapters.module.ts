@@ -1,15 +1,19 @@
-import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
-import { JwtModule } from '@nestjs/jwt'
-import { ANTHROPIC_CONFIG, JWT_CONFIG } from '@/shared/config'
-import { GameBarcodeLookup } from '@/shared/types'
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import { JwtModule } from "@nestjs/jwt";
+import {
+  ANTHROPIC_CONFIG,
+  GAME_SHEET_CONFIG,
+  JWT_CONFIG,
+} from "@/shared/config";
+import { GameBarcodeLookup } from "@/shared/types";
 import {
   AnthropicGameBarcodeLookup,
   anthropicClientProvider,
   GameSheetGenerator,
   GameSheetTranslator,
-} from './anthropic'
-import { DisposableEmailChecker, PasswordHasher, TokenService } from './auth'
+} from "./anthropic";
+import { DisposableEmailChecker, PasswordHasher, TokenService } from "./auth";
 
 /**
  * External integrations outside the database (third-party APIs, SDKs…). Each
@@ -19,6 +23,7 @@ import { DisposableEmailChecker, PasswordHasher, TokenService } from './auth'
 @Module({
   imports: [
     ConfigModule.forFeature(ANTHROPIC_CONFIG),
+    ConfigModule.forFeature(GAME_SHEET_CONFIG),
     ConfigModule.forFeature(JWT_CONFIG),
     // Secrets and durations passed on each call by TokenService.
     JwtModule.register({}),

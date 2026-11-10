@@ -38,11 +38,13 @@ function response(overrides: Record<string, unknown> = {}) {
 }
 
 describe('GameSheetGenerator', () => {
+  const sheetConfig = { failureCooldownSeconds: 120 }
   const parse = vi.fn()
   const client = { messages: { parse } } as unknown as Anthropic
   const generator = new GameSheetGenerator(
     client,
     config,
+    sheetConfig,
     mockLoggerService as unknown as LoggerService,
   )
 
@@ -200,6 +202,7 @@ describe('GameSheetGenerator', () => {
     const lowEffort = new GameSheetGenerator(
       client,
       { ...config, sheetEffort: 'low' },
+      sheetConfig,
       mockLoggerService as unknown as LoggerService,
     )
 

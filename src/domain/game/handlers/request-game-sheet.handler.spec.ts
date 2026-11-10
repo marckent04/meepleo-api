@@ -14,10 +14,7 @@ import { ErrorCode, InternalError } from '@/shared/errors'
 import type { GameAggregationRunSummary, GameSheet } from '@/shared/types'
 import { RequestGameSheetCommand } from '../commands'
 import { GameSheetAggregationStartedEvent } from '../events'
-import {
-  AGGREGATION_FAILURE_COOLDOWN_MS,
-  AGGREGATION_STALE_AFTER_MS,
-} from '../game-sheet-aggregation.constants'
+import { AGGREGATION_STALE_AFTER_MS } from '../game-sheet-aggregation.constants'
 import { RequestGameSheetHandler } from './request-game-sheet.handler'
 
 // The transaction is tested end to end; here we test the decision.
@@ -30,6 +27,7 @@ const gameId = '0195d1a2-0000-7000-8000-000000000001'
 const runId = '0195d1a2-0000-7000-8000-0000000000aa'
 const newRunId = '0195d1a2-0000-7000-8000-0000000000bb'
 const sheet = { gameId, language: 'en' } as GameSheet
+const FAILURE_COOLDOWN_MS = 120_000
 const NOW = new Date('2026-11-06T12:00:00Z').getTime()
 
 function run(
@@ -71,7 +69,13 @@ describe('RequestGameSheetHandler', () => {
           provide: GameAggregationRunRepository,
           useValue: gameAggregationRunRepository,
         },
-        { provide: GameSheetGenerator, useValue: { model: 'claude-opus-5-5' } },
+        {
+          provide: GameSheetGenerator,
+          useValue: {
+            model: 'claude-opus-5-5',
+            failureCooldownMs: FAILURE_COOLDOWN_MS,
+          },
+        },
         {
           provide: GameSheetTranslator,
           useValue: { model: 'claude-haiku-5-5' },
@@ -231,7 +235,7 @@ describe('RequestGameSheetHandler', () => {
     gameAggregationRunRepository.findLatest.mockResolvedValue(
       run({
         status: 'failure',
-        startedAt: new Date(NOW - AGGREGATION_FAILURE_COOLDOWN_MS - 1),
+        startedAt: new Date(NOW - FAILURE_COOLDOWN_MS - 1),
       }),
     )
 

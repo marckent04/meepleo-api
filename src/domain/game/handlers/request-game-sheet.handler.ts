@@ -22,10 +22,7 @@ import type {
 import { AppCommandHandler } from '@/utils/cqrs.utils'
 import { RequestGameSheetCommand } from '../commands'
 import { GameSheetAggregationStartedEvent } from '../events'
-import {
-  AGGREGATION_FAILURE_COOLDOWN_MS,
-  AGGREGATION_STALE_AFTER_MS,
-} from '../game-sheet-aggregation.constants'
+import { AGGREGATION_STALE_AFTER_MS } from '../game-sheet-aggregation.constants'
 
 @CommandHandler(RequestGameSheetCommand)
 export class RequestGameSheetHandler extends AppCommandHandler<
@@ -89,7 +86,8 @@ export class RequestGameSheetHandler extends AppCommandHandler<
       await this.abandon(latest)
     } else if (
       latest?.status === 'failure' &&
-      now - latest.startedAt.getTime() < AGGREGATION_FAILURE_COOLDOWN_MS
+      now - latest.startedAt.getTime() <
+        this.gameSheetGenerator.failureCooldownMs
     ) {
       throw recentFailure(latest)
     }

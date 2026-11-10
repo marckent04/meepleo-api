@@ -3,7 +3,7 @@ import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod'
 import { Inject, Injectable } from '@nestjs/common'
 import type { ConfigType } from '@nestjs/config'
 import { LoggerService } from '@/infrastructure/logger/logger.service'
-import { ANTHROPIC_CONFIG } from '@/shared/config'
+import { ANTHROPIC_CONFIG, GAME_SHEET_CONFIG } from '@/shared/config'
 import { AiCallFailedError, ErrorCode, InternalError } from '@/shared/errors'
 import { isSupportedLocale } from '@/shared/i18n/locale'
 import {
@@ -57,6 +57,8 @@ export class GameSheetGenerator {
     @Inject(ANTHROPIC_CLIENT) private readonly client: Anthropic,
     @Inject(ANTHROPIC_CONFIG.KEY)
     private readonly config: ConfigType<typeof ANTHROPIC_CONFIG>,
+    @Inject(GAME_SHEET_CONFIG.KEY)
+    private readonly sheetConfig: ConfigType<typeof GAME_SHEET_CONFIG>,
     private readonly logger: LoggerService,
   ) {
     this.logger.setContext(GameSheetGenerator.name)
@@ -65,6 +67,11 @@ export class GameSheetGenerator {
   /** AI model used to generate the sheets. */
   get model(): string {
     return this.config.sheetModel
+  }
+
+  /** Delay (ms) during which a failed aggregation is not retried. */
+  get failureCooldownMs(): number {
+    return this.sheetConfig.failureCooldownSeconds * 1000
   }
 
   /**
