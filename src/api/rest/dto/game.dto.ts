@@ -115,12 +115,6 @@ export const GameResponseSchema = z
           .string()
           .describe('Game name in the sheet language')
           .meta({ example: 'Dnup' }),
-        alternativeNames: z
-          .array(z.string())
-          .describe(
-            'Other titles the game is published under (localized editions, BoardGameGeek alternate names), in any language',
-          )
-          .meta({ example: ['Pund'] }),
         edition: z.string().nullable().describe('Edition'),
         publisher: z.string().nullable().describe('Publisher'),
         ruleBookUrl: z

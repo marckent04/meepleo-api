@@ -41,7 +41,7 @@ const SETTINGS = toAiCallSettings({ effort: EFFORT, maxTokens: MAX_TOKENS })
 /**
  * Translates an existing sheet into another language, without web tools:
  * the rules stay identical from one language to the other, and the game's
- * titles are collected during the generation (`alternativeNames`).
+ * titles are collected during the generation (`localizedNames`).
  */
 @Injectable()
 export class GameSheetTranslator {

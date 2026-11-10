@@ -23,7 +23,6 @@ const sheet = new GameSheet(
   'fr',
   {
     localizedName: 'Dnup',
-    alternativeNames: ['Pund'],
     edition: null,
     publisher: null,
     ruleBookUrl: null,
@@ -92,7 +91,7 @@ describe('GET /v1/games/:id (integration)', () => {
     expect(response.json()).toMatchObject({
       gameId,
       language: 'fr',
-      game: { localizedName: 'Dnup', alternativeNames: ['Pund'] },
+      game: { localizedName: 'Dnup' },
       generatedAt: '2026-11-06T12:00:00.000Z',
     })
     expect(response.json()).not.toHaveProperty('status')

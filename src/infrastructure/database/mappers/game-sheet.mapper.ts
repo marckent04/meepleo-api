@@ -123,7 +123,6 @@ export function toStoredGameSheet(
     language,
     {
       localizedName: localized(record.localizedNames, language) ?? record.name,
-      alternativeNames: record.alternativeNames,
       edition: record.edition,
       publisher: record.publisher,
       ruleBookUrl: record.ruleBookUrl,
@@ -175,23 +174,11 @@ export type GeneratedGameSheetData = {
   rules: Prisma.GameRuleCreateManyInput[]
 }
 
-/** Existing names first, then the new ones; duplicates ignored (case-insensitive). */
-function mergeNames(current: string[], added: string[]): string[] {
-  const seen = new Set<string>()
-  return [...current, ...added].filter((name) => {
-    const key = name.toLowerCase()
-    if (seen.has(key)) return false
-    seen.add(key)
-    return true
-  })
-}
-
 /**
  * Write data of a generated sheet. Untranslated columns
  * (publisher, players, age, duration…) are only filled if they are empty:
- * BGG data remains the reference. The alternative names found are added to
- * the existing ones; the localized titles found replace those of their
- * language, the other languages are kept.
+ * BGG data remains the reference. The localized titles found replace those
+ * of their language, the other languages are kept.
  */
 export function toGeneratedGameSheetData(
   sheet: GeneratedGameSheet,
@@ -221,10 +208,6 @@ export function toGeneratedGameSheetData(
         ...toLocalizedText(current.localizedNames),
         ...sheet.game.localizedNames,
       },
-      alternativeNames: mergeNames(
-        current.alternativeNames,
-        sheet.game.alternativeNames,
-      ),
       description: withLanguage(
         current.description,
         language,

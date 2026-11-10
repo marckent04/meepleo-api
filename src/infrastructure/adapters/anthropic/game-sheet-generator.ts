@@ -192,24 +192,6 @@ const textOrNull = (value: string): string | null => value.trim() || null
 const intOrNull = (value: number): number | null => (value > 0 ? value : null)
 
 /**
- * One title per line in the output; returns them trimmed (list bullets
- * removed), non-empty, deduplicated (case-insensitive), catalog name excluded.
- */
-export function parseAlternativeNames(
-  names: string,
-  catalogName: string,
-): string[] {
-  const seen = new Set([catalogName.trim().toLowerCase()])
-  return names.split(/\r?\n/).flatMap((name) => {
-    const trimmed = name.replace(/^\s*[-*•]\s+/, '').trim()
-    const key = trimmed.toLowerCase()
-    if (!trimmed || seen.has(key)) return []
-    seen.add(key)
-    return [trimmed]
-  })
-}
-
-/**
  * One "<language code>: <title>" line per language in the output; keeps the
  * supported languages only, the first title of each.
  */
@@ -227,10 +209,6 @@ export function parseLocalizedNames(names: string): Record<string, string> {
   return result
 }
 
-/**
- * The localized titles are also alternative names, so that a search in any
- * language finds the game.
- */
 export function toGameSheet(
   game: Game,
   language: string,
@@ -248,18 +226,11 @@ export function toGameSheet(
     })
   const ofKind = (kind: 'special' | 'variant') =>
     output.special_rules.filter((r) => r.kind === kind)
-  const localizedNames = parseLocalizedNames(output.game.localized_names)
   return new GameSheet(
     game.id,
     language,
     {
-      localizedNames,
-      alternativeNames: parseAlternativeNames(
-        [output.game.alternative_names, ...Object.values(localizedNames)].join(
-          '\n',
-        ),
-        game.name,
-      ),
+      localizedNames: parseLocalizedNames(output.game.localized_names),
       edition: textOrNull(output.game.edition),
       publisher: textOrNull(output.game.publisher),
       ruleBookUrl: textOrNull(output.game.rule_book_url),

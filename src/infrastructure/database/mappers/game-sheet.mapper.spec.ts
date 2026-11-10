@@ -20,7 +20,6 @@ const generated = toGameSheet(
     ...dnupOutput,
     game: {
       ...dnupOutput.game,
-      alternative_names: 'Dnup: Duo',
       localized_names: 'fr: Pund',
     },
   } as GameSheetOutput,
@@ -109,26 +108,19 @@ describe('game sheet mapper', () => {
     })
   })
 
-  it('merges the alternative and localized names with the existing ones', () => {
+  it('merges the localized names with the existing ones', () => {
     const data = toGeneratedGameSheetData(
       generated,
-      gameRecord({
-        alternativeNames: ['Catane', 'pund'],
-        localizedNames: { de: 'Dnup DE' },
-      }),
+      gameRecord({ localizedNames: { de: 'Dnup DE' } }),
     )
 
-    expect(data.game.alternativeNames).toEqual(['Catane', 'pund', 'Dnup: Duo'])
     // The titles found replace their language, the others are kept.
     expect(data.game.localizedNames).toEqual({ de: 'Dnup DE', fr: 'Pund' })
   })
 
   it('reads the names back, falling back to the catalog name', () => {
     const record = storeGenerated()
-    expect(toStoredGameSheet(record, 'fr').game).toMatchObject({
-      localizedName: 'Pund',
-      alternativeNames: ['Dnup: Duo', 'Pund'],
-    })
+    expect(toStoredGameSheet(record, 'fr').game.localizedName).toBe('Pund')
     expect(toStoredGameSheet(record, 'en').game.localizedName).toBe('Dnup')
   })
 

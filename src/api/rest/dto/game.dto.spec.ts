@@ -15,7 +15,6 @@ const sheet = new GameSheet(
   'fr',
   {
     localizedName: 'Dnup',
-    alternativeNames: ['Pund'],
     edition: null,
     publisher: 'Gigamic',
     ruleBookUrl: null,
@@ -70,7 +69,6 @@ describe('GameResponseDto', () => {
       language: 'fr',
       game: {
         localizedName: 'Dnup',
-        alternativeNames: ['Pund'],
         publisher: 'Gigamic',
       },
       generatedAt: '2026-01-01T12:00:00.000Z',

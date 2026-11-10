@@ -83,7 +83,7 @@ describe('GameSheetGenerator', () => {
       language: 'fr',
       generatedBy: 'claude-haiku-5-5',
       confidence: 'high',
-      game: { alternativeNames: [], edition: null, publisher: null },
+      game: { edition: null, publisher: null },
       players: { min: 2, max: 5 },
       minAge: 8,
     })
@@ -143,7 +143,6 @@ describe('GameSheetGenerator', () => {
       ...dnupOutput,
       game: {
         ...dnupOutput.game,
-        alternative_names: 'Zug um Zug',
         localized_names:
           '- FR : Les Aventuriers du Rail\nen: Ticket to Ride\nde: Zug um Zug\nfr: Autre\nen:  \nnot a line',
       },
@@ -158,33 +157,6 @@ describe('GameSheetGenerator', () => {
     expect(sheet.game.localizedNames).toEqual({
       fr: 'Les Aventuriers du Rail',
       en: 'Ticket to Ride',
-    })
-    // The localized titles can be searched too.
-    expect(sheet.game.alternativeNames).toEqual([
-      'Zug um Zug',
-      'Les Aventuriers du Rail',
-      'Ticket to Ride',
-    ])
-  })
-
-  it('cleans the alternative names found', async () => {
-    const output = {
-      ...dnupOutput,
-      game: {
-        ...dnupOutput.game,
-        alternative_names: ' Pund \r\nDNUP\n- pund\n\n• Dnup: Duo\n',
-      },
-    }
-    parse.mockResolvedValue(response({ parsed_output: output }))
-
-    const { result: sheet } = await generator.generate(game, 'fr')
-
-    expect(sheet.game).toEqual({
-      localizedNames: { fr: 'Dnup', en: 'Dnup' },
-      alternativeNames: ['Pund', 'Dnup: Duo'],
-      edition: null,
-      publisher: null,
-      ruleBookUrl: dnupOutput.game.rule_book_url,
     })
   })
 

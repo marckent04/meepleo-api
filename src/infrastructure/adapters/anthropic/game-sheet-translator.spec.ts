@@ -25,7 +25,6 @@ const sheet = new GameSheet(
   'fr',
   {
     localizedName: 'Dnup',
-    alternativeNames: [],
     edition: null,
     publisher: null,
     ruleBookUrl: null,

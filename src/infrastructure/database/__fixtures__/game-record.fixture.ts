@@ -11,7 +11,6 @@ export function gameRecord(
     bggId: 123,
     name: 'Dnup',
     localizedNames: null,
-    alternativeNames: [],
     description: null,
     year: 2021,
     designers: [],

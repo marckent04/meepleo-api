@@ -24,8 +24,6 @@ export type GameSheetSource = { title: string; url: string }
 
 /** Game identification common to generated and stored sheets. */
 type BaseGameSheetGame = {
-  /** Other titles the game is published under, without language. */
-  alternativeNames: string[]
   edition: string | null
   publisher: string | null
   ruleBookUrl: string | null

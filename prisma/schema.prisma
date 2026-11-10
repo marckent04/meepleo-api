@@ -75,9 +75,6 @@ model Game {
   /// Canonical name (BGG)
   name               String
   localizedNames     Json?          @map("localized_names")
-  /// Other titles the game is published under (localized editions, BGG
-  /// alternate names), without language; filled by the sheet generation
-  alternativeNames   String[]       @default([]) @map("alternative_names")
   /// LocalizedText
   description        Json?
   year               Int?

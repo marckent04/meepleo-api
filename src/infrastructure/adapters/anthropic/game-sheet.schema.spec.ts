@@ -57,7 +57,7 @@ describe('GameSheetOutputSchema', () => {
 
     expect(unions).toBe(0)
     expect(ids).toBe(0)
-    // Adding a single array of strings (alternative_names) was enough to get
+    // Adding a single array of strings was enough to get
     // a 400 "compiled grammar is too large": keep lists as strings instead.
     expect(arrays).toBeLessThanOrEqual(10)
   })
