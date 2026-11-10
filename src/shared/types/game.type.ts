@@ -34,3 +34,12 @@ export type GameSearchResult = {
   /** Box cover image URL, null when unknown. */
   imageUrl: string | null
 }
+
+/** Game whose sheet exists but whose score sheet template was never derived. */
+export type GameWithoutScoringTemplate = {
+  id: string
+  name: string
+  bggId: number | null
+  /** Language the sheet was generated in (first supported language). */
+  language: string
+}

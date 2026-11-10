@@ -7,6 +7,7 @@ import { ZodResponse, ZodSerializerDto } from 'nestjs-zod'
 import {
   AGGREGATION_POLL_INTERVAL_SECONDS,
   FindGamesByBarcodeCommand,
+  GetGameScoringTemplateQuery,
   RequestGameSheetCommand,
   SearchGamesQuery,
 } from '@/domain/game'
@@ -20,6 +21,7 @@ import {
   GamePendingResponseDto,
   GameResponseDto,
   GameSearchResponseDto,
+  ScoringTemplateResponseDto,
   SearchGamesQueryDto,
 } from '../dto'
 import { ApiErrorResponses } from '../errors'
@@ -82,6 +84,24 @@ export class GameController {
       new FindGamesByBarcodeCommand({ code: params.code, language }),
     )
     return GameSearchResponseDto.fromDomain(results)
+  }
+
+  @Get(':id/scoring')
+  @ApiOperation({
+    summary: 'Get the score sheet template of a game',
+    description:
+      'Describes the score sheet to display for a play: its columns (`sides`), its lines (`rounds`, `rows`) and how the winner is designated (`outcome`). Texts are in the Accept-Language language. A game without a template gets the default one: a single score per player, highest wins.',
+  })
+  @ZodResponse({ status: 200, type: ScoringTemplateResponseDto })
+  @ApiErrorResponses(400, 404, 500)
+  async findScoringTemplate(
+    @Param() params: GameIdParamDto,
+    @Language() language: Locale,
+  ): Promise<ScoringTemplateResponseDto> {
+    const template = await this.queryBus.execute(
+      new GetGameScoringTemplateQuery({ gameId: params.id, language }),
+    )
+    return ScoringTemplateResponseDto.fromDomain(template)
   }
 
   @Get(':id')

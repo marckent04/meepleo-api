@@ -3,10 +3,23 @@ import { AiCallFailedError } from './ai-call-failed.error'
 import { AppError } from './app-error'
 import { ErrorCode } from './error-codes'
 
+/** Operations producing the rule sheet. */
 export type GameAggregationOperation = 'generation' | 'translation'
 
+/**
+ * Every operation traced in `game_aggregation_runs`: the sheet operations,
+ * and the generation of the score sheet template from the sheet.
+ */
+export type GameAggregationRunOperation = GameAggregationOperation | 'scoring'
+
+const DEFAULT_FAILURE_CODE: Record<GameAggregationRunOperation, ErrorCode> = {
+  generation: ErrorCode.GAME_SHEET_GENERATION_FAILED,
+  translation: ErrorCode.GAME_SHEET_TRANSLATION_FAILED,
+  scoring: ErrorCode.GAME_SCORING_TEMPLATE_GENERATION_FAILED,
+}
+
 export type GameAggregationFailedErrorParams = {
-  operation: GameAggregationOperation
+  operation: GameAggregationRunOperation
   /** AI model used for the attempt. */
   model: string
   /** Source language of a translation. */
@@ -17,14 +30,15 @@ export type GameAggregationFailedErrorParams = {
 }
 
 /**
- * Failure of a sheet aggregation (generation or translation). Takes over the code,
+ * Failure of an aggregation (sheet generation or translation, score sheet
+ * template generation). Takes over the code,
  * status and details of the cause when it is an AppError: the client
  * response is unchanged, but the operation, model, duration and AI trace
  * (if the failure occurred during the call) remain traceable.
  */
 export class GameAggregationFailedError extends AppError {
   readonly statusCode: number
-  readonly operation: GameAggregationOperation
+  readonly operation: GameAggregationRunOperation
   readonly model: string
   readonly sourceLanguage: string | null
   readonly durationMs: number
@@ -41,10 +55,7 @@ export class GameAggregationFailedError extends AppError {
     const causeMessage = cause instanceof Error ? cause.message : String(cause)
     super(
       `Game sheet ${operation} failed: ${causeMessage}`,
-      appCause?.code ??
-        (operation === 'generation'
-          ? ErrorCode.GAME_SHEET_GENERATION_FAILED
-          : ErrorCode.GAME_SHEET_TRANSLATION_FAILED),
+      appCause?.code ?? DEFAULT_FAILURE_CODE[operation],
       {
         details: { ...appCause?.details, operation, model, sourceLanguage },
         params: appCause?.params,

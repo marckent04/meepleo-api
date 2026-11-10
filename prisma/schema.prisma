@@ -57,6 +57,7 @@ enum SheetConfidence {
 enum GameAggregationOperation {
   GENERATION // full generation (web search + extraction)
   TRANSLATION // translation of an existing sheet
+  SCORING // score sheet template generated from the sheet (games.scoring_template)
 
   @@map("game_aggregation_operation")
 }
@@ -70,26 +71,26 @@ enum GameAggregationStatus {
 }
 
 model Game {
-  id                 String         @id @default(uuid(7)) @db.Uuid
-  bggId              Int?           @unique @map("bgg_id")
+  id             String         @id @default(uuid(7)) @db.Uuid
+  bggId          Int?           @unique @map("bgg_id")
   /// Canonical name (BGG)
-  name               String
-  localizedNames     Json?          @map("localized_names")
+  name           String
+  localizedNames Json?          @map("localized_names")
   /// LocalizedText
-  description        Json?
-  year               Int?
-  designers          String[]
-  publisher          String?
-  edition            String?
-  imageUrl           String?        @map("image_url")
+  description    Json?
+  year           Int?
+  designers      String[]
+  publisher      String?
+  edition        String?
+  imageUrl       String?        @map("image_url")
   /// URL of the official rulebook found during the generation
-  ruleBookUrl        String?        @map("rule_book_url")
-  categories         GameCategory[]
-  minPlayers         Int?           @map("min_players")
-  maxPlayers         Int?           @map("max_players")
-  minAge             Int?           @map("min_age")
-  minDuration        Int?           @map("min_duration_minutes")
-  maxDuration        Int?           @map("max_duration_minutes")
+  ruleBookUrl    String?        @map("rule_book_url")
+  categories     GameCategory[]
+  minPlayers     Int?           @map("min_players")
+  maxPlayers     Int?           @map("max_players")
+  minAge         Int?           @map("min_age")
+  minDuration    Int?           @map("min_duration_minutes")
+  maxDuration    Int?           @map("max_duration_minutes")
 
   // Rule sheet: null until it has been generated.
   /// ISO 639-1 codes of the available languages (e.g. ["fr", "en"]), validated in code
@@ -103,6 +104,8 @@ model Game {
   sheetSources       Json?            @map("sheet_sources")
   /// LocalizedText[]
   sheetWarnings      Json?            @map("sheet_warnings")
+  /// Score sheet template (ScoringTemplate with LocalizedText labels), null until generated
+  scoringTemplate    Json?            @map("scoring_template")
 
   barcodes        GameBarcode[]
   rules           GameRule[]
@@ -110,6 +113,7 @@ model Game {
   aggregationRuns GameAggregationRun[]
   catalogEntries  UserGame[]
   favoritedBy     UserFavorite[]
+  plays           Play[]
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -165,7 +169,8 @@ model GameRule {
   @@map("game_rules")
 }
 
-/// Sheet aggregation attempt (generation or translation), in progress, successful or not:
+/// Aggregation attempt (sheet generation or translation, score sheet template), in progress,
+/// successful or not:
 /// duration, model, usage and raw AI output, kept for analysis.
 /// Created RUNNING at launch (createdAt = start), then moved to SUCCESS or FAILURE.
 model GameAggregationRun {
@@ -236,6 +241,8 @@ model User {
   refreshTokens RefreshToken[]
   catalog       UserGame[]
   favorites     UserFavorite[]
+  plays         Play[]
+  playerOf      PlayPlayer[]
 
   @@map("users")
 }
@@ -291,4 +298,88 @@ model UserFavorite {
   @@unique([userId, gameId])
   @@index([userId])
   @@map("user_favorites")
+}
+
+// ---------------------------------------------------------------------------
+// Plays and score sheets
+//
+// A play keeps a copy of the score sheet template taken at its creation
+// (`scoring`, labels in the play language), so regenerating the game's
+// template never alters past plays. `side` is the column of the score sheet:
+// one player per side (individual), team mates sharing a side (teams), or
+// everyone on side 0 (cooperative).
+// ---------------------------------------------------------------------------
+
+enum PlayStatus {
+  IN_PROGRESS
+  COMPLETED
+
+  @@map("play_status")
+}
+
+/// Play recorded by a user
+model Play {
+  id          String       @id @default(uuid(7)) @db.Uuid
+  /// Owner: the user who records the play
+  userId      String       @map("user_id") @db.Uuid
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameId      String       @map("game_id") @db.Uuid
+  game        Game         @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  status      PlayStatus   @default(IN_PROGRESS)
+  playedAt    DateTime     @map("played_at") @db.Timestamptz(6)
+  completedAt DateTime?    @map("completed_at") @db.Timestamptz(6)
+  note        String?
+  /// ScoringTemplate (labels in the play language)
+  scoring     Json
+  players     PlayPlayer[]
+  scores      PlayScore[]
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt   DateTime?    @map("deleted_at") @db.Timestamptz(6)
+
+  @@index([userId, playedAt])
+  @@index([userId, gameId, playedAt])
+  @@map("plays")
+}
+
+/// Player of a play; totals and ranks are computed on every score save
+model PlayPlayer {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  playId    String   @map("play_id") @db.Uuid
+  play      Play     @relation(fields: [playId], references: [id], onDelete: Cascade)
+  /// Account of the player, null for a guest
+  userId    String?  @map("user_id") @db.Uuid
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name      String
+  /// Display order in the play
+  position  Int
+  /// Column of the score sheet (0-based)
+  side      Int
+  /// Total of the side, null for a manual outcome
+  total     Int?
+  /// Rank of the side (ties share it), null for a manual outcome
+  rank      Int?
+  isWinner  Boolean  @default(false) @map("is_winner")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@unique([playId, position])
+  @@index([userId])
+  @@map("play_players")
+}
+
+/// Score cell: value entered for a side, a row and a round
+model PlayScore {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  playId    String   @map("play_id") @db.Uuid
+  play      Play     @relation(fields: [playId], references: [id], onDelete: Cascade)
+  side      Int
+  /// Template row key, or "_round" / "_total"
+  rowKey    String   @map("row_key")
+  /// Round number (>= 1) of a round cell, 0 otherwise
+  round     Int
+  value     Int
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@unique([playId, side, rowKey, round])
+  @@map("play_scores")
 }

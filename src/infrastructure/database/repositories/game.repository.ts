@@ -8,9 +8,12 @@ import type {
   GameSheet,
   GameSheetStatus,
   GameSheetTranslation,
+  GameWithoutScoringTemplate,
   GeneratedGameSheet,
   IdentifiedGame,
+  ScoringTemplate,
 } from '@/shared/types'
+import { Prisma } from '../generated/prisma/client'
 import {
   GAME_SEARCH_RESULT_SELECT,
   type GameSearchRow,
@@ -25,7 +28,10 @@ import {
   toGameSheetTranslationData,
   toGeneratedGameSheetData,
   toIdentifiedGameCreateData,
+  toScoringTemplate,
+  toScoringTemplateJson,
   toStoredGameSheet,
+  toStoredScoringTemplate,
   withLanguage,
 } from '../mappers'
 import type { PrismaService } from '../prisma.service'
@@ -166,6 +172,74 @@ export class GameRepository {
     return isGameSheetAggregated(record, language)
       ? toStoredGameSheet(record, language)
       : null
+  }
+
+  /**
+   * Score sheet template of the game in `language`, or `null` if none was
+   * generated yet. Throws NotFoundError (GAME_NOT_FOUND) if the game does
+   * not exist.
+   */
+  async findScoringTemplate(
+    id: string,
+    language: string,
+  ): Promise<ScoringTemplate | null> {
+    const record = await this.txHost.tx.game.findFirst({
+      where: { id, deletedAt: null },
+      select: { scoringTemplate: true },
+    })
+    if (!record) throw gameNotFound(id)
+    return toScoringTemplate(record.scoringTemplate, language)
+  }
+
+  /**
+   * Replaces the score sheet template of the game, its texts in `language`.
+   * Throws NotFoundError (GAME_NOT_FOUND) if the game does not exist.
+   */
+  async saveScoringTemplate(
+    id: string,
+    language: string,
+    template: ScoringTemplate,
+  ): Promise<void> {
+    try {
+      await this.txHost.tx.game.update({
+        where: { id, deletedAt: null },
+        data: {
+          scoringTemplate: toScoringTemplateJson(
+            toStoredScoringTemplate(template, language),
+          ),
+        },
+      })
+    } catch (error) {
+      rethrowPrismaError(error, { notFound: ErrorCode.GAME_NOT_FOUND })
+    }
+  }
+
+  /**
+   * Non-deleted games with a sheet but no score sheet template, by name,
+   * optionally restricted to BGG identifiers (backfill).
+   */
+  async listWithoutScoringTemplate({
+    bggIds,
+    limit,
+  }: {
+    bggIds: number[]
+    limit?: number
+  }): Promise<GameWithoutScoringTemplate[]> {
+    const records = await this.txHost.tx.game.findMany({
+      where: {
+        deletedAt: null,
+        scoringTemplate: { equals: Prisma.DbNull },
+        supportedLanguages: { isEmpty: false },
+        ...(bggIds.length > 0 && { bggId: { in: bggIds } }),
+      },
+      select: { id: true, name: true, bggId: true, supportedLanguages: true },
+      orderBy: { name: 'asc' },
+      take: limit,
+    })
+    return records.map(({ supportedLanguages, ...game }) => ({
+      ...game,
+      language: supportedLanguages[0],
+    }))
   }
 
   /** Throws NotFoundError (GAME_NOT_FOUND) if the game does not exist. */

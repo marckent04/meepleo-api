@@ -1,10 +1,17 @@
 import { Injectable } from '@nestjs/common'
 import { type ICommand, type IEvent, ofType, Saga } from '@nestjs/cqrs'
-import { map, type Observable } from 'rxjs'
+import { filter, map, type Observable } from 'rxjs'
 import { GameAddedToCatalogEvent } from '../../catalog/events'
 import { GameAddedToWishlistEvent } from '../../wishlist/events'
-import { AggregateGameSheetCommand, RequestGameSheetCommand } from '../commands'
-import { GameSheetAggregationStartedEvent } from '../events'
+import {
+  AggregateGameSheetCommand,
+  GenerateGameScoringTemplateCommand,
+  RequestGameSheetCommand,
+} from '../commands'
+import {
+  GameSheetAggregatedEvent,
+  GameSheetAggregationStartedEvent,
+} from '../events'
 
 @Injectable()
 export class GameSheetSagas {
@@ -32,6 +39,25 @@ export class GameSheetSagas {
       map(
         ({ gameId, language }) =>
           new RequestGameSheetCommand({ gameId, language }),
+      ),
+    )
+
+  /**
+   * Derives the score sheet template from a newly generated sheet, in its
+   * language. Translations reuse it: a text missing in a language falls
+   * back to the generation language.
+   */
+  @Saga()
+  sheetGenerated = (events$: Observable<IEvent>): Observable<ICommand> =>
+    events$.pipe(
+      ofType(GameSheetAggregatedEvent),
+      filter(({ job }) => job.operation === 'generation'),
+      map(
+        ({ job }) =>
+          new GenerateGameScoringTemplateCommand({
+            gameId: job.gameId,
+            language: job.language,
+          }),
       ),
     )
 }

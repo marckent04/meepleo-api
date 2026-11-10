@@ -103,8 +103,34 @@ describe('GameAggregationRunRepository', () => {
     })
     expect(tx.gameAggregationRun.findFirst).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: { gameId: GAME_ID, language: 'fr' },
+        where: {
+          gameId: GAME_ID,
+          language: 'fr',
+          // Score sheet template runs never block the sheet.
+          OR: [
+            { operation: null },
+            { operation: { in: ['GENERATION', 'TRANSLATION'] } },
+          ],
+        },
         orderBy: { createdAt: 'desc' },
+      }),
+    )
+  })
+
+  it('starts a score sheet template run', async () => {
+    const { repository, tx } = setup()
+    tx.gameAggregationRun.create.mockResolvedValue({ id: RUN_ID })
+
+    await repository.start({
+      gameId: GAME_ID,
+      language: 'fr',
+      operation: 'scoring',
+      model: 'claude-haiku-5-5',
+    })
+
+    expect(tx.gameAggregationRun.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ operation: 'SCORING' }),
       }),
     )
   })

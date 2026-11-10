@@ -17,6 +17,118 @@ import { GameRepository } from './game.repository'
 const id = '0195d1a2-0000-7000-8000-000000000001'
 
 describe('GameRepository', () => {
+  it('reads the score sheet template of a non-deleted game', async () => {
+    const { host, tx } = createTransactionHostMock({
+      game: {
+        findFirst: vi.fn().mockResolvedValue({
+          scoringTemplate: {
+            sides: 'individual',
+            outcome: 'lowest',
+            rounds: { count: null },
+            targetScore: 66,
+            rows: [],
+            tieBreaker: null,
+          },
+        }),
+      },
+    })
+
+    const template = await new GameRepository(host).findScoringTemplate(
+      id,
+      'fr',
+    )
+
+    expect(tx.game.findFirst).toHaveBeenCalledWith({
+      where: { id, deletedAt: null },
+      select: { scoringTemplate: true },
+    })
+    expect(template).toMatchObject({ outcome: 'lowest', targetScore: 66 })
+  })
+
+  it('saves the score sheet template with texts in its language', async () => {
+    const { host, tx } = createTransactionHostMock({
+      game: { update: vi.fn() },
+    })
+
+    await new GameRepository(host).saveScoringTemplate(id, 'fr', {
+      sides: 'individual',
+      outcome: 'highest',
+      rounds: null,
+      targetScore: null,
+      rows: [
+        {
+          key: 'cities',
+          label: 'Villes',
+          hint: null,
+          input: 'count',
+          pointsEach: 2,
+          exclusive: false,
+        },
+      ],
+      tieBreaker: null,
+    })
+
+    expect(tx.game.update).toHaveBeenCalledWith({
+      where: { id, deletedAt: null },
+      data: {
+        scoringTemplate: expect.objectContaining({
+          rows: [expect.objectContaining({ label: { fr: 'Villes' } })],
+        }),
+      },
+    })
+  })
+
+  it('lists the games with a sheet but without a scoring template', async () => {
+    const { host, tx } = createTransactionHostMock({
+      game: {
+        findMany: vi
+          .fn()
+          .mockResolvedValue([
+            { id, name: 'Dnup', bggId: 123, supportedLanguages: ['fr', 'en'] },
+          ]),
+      },
+    })
+
+    const games = await new GameRepository(host).listWithoutScoringTemplate({
+      bggIds: [123],
+      limit: 5,
+    })
+
+    expect(games).toEqual([{ id, name: 'Dnup', bggId: 123, language: 'fr' }])
+    expect(tx.game.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          deletedAt: null,
+          supportedLanguages: { isEmpty: false },
+          bggId: { in: [123] },
+        }),
+        take: 5,
+      }),
+    )
+  })
+
+  it('has no score sheet template until one is generated', async () => {
+    const { host } = createTransactionHostMock({
+      game: {
+        findFirst: vi.fn().mockResolvedValue({ scoringTemplate: null }),
+      },
+    })
+
+    await expect(
+      new GameRepository(host).findScoringTemplate(id, 'fr'),
+    ).resolves.toBeNull()
+  })
+
+  it('throws GAME_NOT_FOUND when reading the template of an unknown game', async () => {
+    const { host } = createTransactionHostMock({
+      game: { findFirst: vi.fn().mockResolvedValue(null) },
+    })
+
+    await expect(
+      new GameRepository(host).findScoringTemplate(id, 'fr'),
+    ).rejects.toMatchObject({ code: ErrorCode.GAME_NOT_FOUND })
+  })
+
   it('finds a non-deleted game and maps it to the domain model', async () => {
     const { host, tx } = createTransactionHostMock({
       game: {

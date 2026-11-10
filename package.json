@@ -29,6 +29,7 @@
     "db:validate": "prisma validate && prisma format --check",
     "sheets:pregenerate": "ts-node -r tsconfig-paths/register src/scripts/pregenerate-game-sheets.ts",
     "games:backfill-covers": "ts-node -r tsconfig-paths/register src/scripts/backfill-game-covers.ts",
+    "games:backfill-scoring": "ts-node -r tsconfig-paths/register src/scripts/backfill-scoring-templates.ts",
     "semantic-release": "semantic-release"
   },
   "dependencies": {

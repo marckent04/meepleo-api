@@ -21,6 +21,7 @@ const config: AnthropicConfig = {
   sheetModel: 'claude-haiku-5-5',
   sheetEffort: 'medium',
   sheetTranslationModel: 'claude-haiku-5-5',
+  scoringModel: 'claude-haiku-5-5',
   barcodeModel: 'claude-haiku-5-5',
   barcodeEffort: 'low',
 }

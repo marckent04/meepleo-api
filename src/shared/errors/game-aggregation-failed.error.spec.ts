@@ -32,6 +32,7 @@ describe('GameAggregationFailedError', () => {
   it.each([
     ['generation', ErrorCode.GAME_SHEET_GENERATION_FAILED],
     ['translation', ErrorCode.GAME_SHEET_TRANSLATION_FAILED],
+    ['scoring', ErrorCode.GAME_SCORING_TEMPLATE_GENERATION_FAILED],
   ] as const)('defaults a %s failure to %s (500)', (operation, code) => {
     const error = new GameAggregationFailedError({
       operation,

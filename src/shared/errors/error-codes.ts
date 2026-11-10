@@ -25,6 +25,13 @@ export enum ErrorCode {
   DISPOSABLE_EMAIL_NOT_ALLOWED = 'DISPOSABLE_EMAIL_NOT_ALLOWED',
   INVALID_CREDENTIALS = 'INVALID_CREDENTIALS',
   INVALID_REFRESH_TOKEN = 'INVALID_REFRESH_TOKEN',
+  PLAY_NOT_FOUND = 'PLAY_NOT_FOUND',
+  PLAY_ALREADY_COMPLETED = 'PLAY_ALREADY_COMPLETED',
+  INVALID_SCORING_TEMPLATE = 'INVALID_SCORING_TEMPLATE',
+  INVALID_PLAY_PLAYERS = 'INVALID_PLAY_PLAYERS',
+  INVALID_PLAY_SCORES = 'INVALID_PLAY_SCORES',
+  INVALID_PLAY_WINNERS = 'INVALID_PLAY_WINNERS',
+  GAME_SCORING_TEMPLATE_GENERATION_FAILED = 'GAME_SCORING_TEMPLATE_GENERATION_FAILED',
 }
 
 export const ERROR_CODES: Record<
@@ -114,6 +121,34 @@ export const ERROR_CODES: Record<
   [ErrorCode.INVALID_REFRESH_TOKEN]: {
     expected: true,
     description: 'Invalid, expired or revoked refresh token',
+  },
+  [ErrorCode.PLAY_NOT_FOUND]: {
+    expected: true,
+    description: 'Play not found',
+  },
+  [ErrorCode.PLAY_ALREADY_COMPLETED]: {
+    expected: true,
+    description: 'The play is completed: reopen it to change its scores',
+  },
+  [ErrorCode.INVALID_SCORING_TEMPLATE]: {
+    expected: true,
+    description: 'Inconsistent score sheet template',
+  },
+  [ErrorCode.INVALID_PLAY_PLAYERS]: {
+    expected: true,
+    description: 'The players do not match the sides of the score sheet',
+  },
+  [ErrorCode.INVALID_PLAY_SCORES]: {
+    expected: true,
+    description: 'A score does not match the score sheet',
+  },
+  [ErrorCode.INVALID_PLAY_WINNERS]: {
+    expected: true,
+    description: 'Winners missing or not among the sides of the play',
+  },
+  [ErrorCode.GAME_SCORING_TEMPLATE_GENERATION_FAILED]: {
+    expected: false,
+    description: 'AI generation of the score sheet template failed',
   },
 }
 

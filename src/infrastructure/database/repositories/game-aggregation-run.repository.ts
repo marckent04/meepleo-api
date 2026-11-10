@@ -7,6 +7,7 @@ import {
   ErrorCode,
   GameAggregationFailedError,
   type GameAggregationOperation,
+  type GameAggregationRunOperation,
 } from '@/shared/errors'
 import type {
   AiTrace,
@@ -24,7 +25,7 @@ import { rethrowPrismaError } from '../prisma-errors'
 export type StartGameAggregationParams = {
   gameId: string
   language: string
-  operation: GameAggregationOperation
+  operation: GameAggregationRunOperation
   /** Source language of a translation. */
   sourceLanguage?: string | null
   /** AI model planned for the operation. */
@@ -44,20 +45,39 @@ export type RecordGameAggregationFailureParams = {
 }
 
 const OPERATION_TO_RECORD: Record<
-  GameAggregationOperation,
+  GameAggregationRunOperation,
   GameAggregationOperationRecord
 > = {
   generation: GameAggregationOperationRecord.GENERATION,
   translation: GameAggregationOperationRecord.TRANSLATION,
+  scoring: GameAggregationOperationRecord.SCORING,
 }
 
-const OPERATION_FROM_RECORD: Record<
-  GameAggregationOperationRecord,
-  GameAggregationOperation
+/** Sheet operations; a run without operation failed before the AI call. */
+const SHEET_OPERATION_FROM_RECORD: Partial<
+  Record<GameAggregationOperationRecord, GameAggregationOperation>
 > = {
   GENERATION: 'generation',
   TRANSLATION: 'translation',
 }
+
+/**
+ * Runs of the sheet lifecycle: score sheet template runs never make a sheet
+ * pending nor put it in failure cooldown.
+ */
+const SHEET_RUNS = {
+  OR: [
+    { operation: null },
+    {
+      operation: {
+        in: [
+          GameAggregationOperationRecord.GENERATION,
+          GameAggregationOperationRecord.TRANSLATION,
+        ],
+      },
+    },
+  ],
+} satisfies Prisma.GameAggregationRunWhereInput
 
 const STATUS_FROM_RECORD: Record<
   GameAggregationStatus,
@@ -94,7 +114,7 @@ function traceToColumns(trace: AiTrace) {
 }
 
 /**
- * Trace of each sheet aggregation attempt. A run is created RUNNING at
+ * Trace of each aggregation attempt (sheet, score sheet template). A run is created RUNNING at
  * launch, then moved to SUCCESS or FAILURE. The latest successful generation
  * run is authoritative: it is what marks the sheet as generated.
  */
@@ -133,13 +153,13 @@ export class GameAggregationRunRepository {
     }
   }
 
-  /** Most recent run of the game in `language`, whatever its status. */
+  /** Most recent sheet run of the game in `language`, whatever its status. */
   async findLatest(
     gameId: string,
     language: string,
   ): Promise<GameAggregationRunSummary | null> {
     const run = await this.txHost.tx.gameAggregationRun.findFirst({
-      where: { gameId, language },
+      where: { gameId, language, ...SHEET_RUNS },
       orderBy: { createdAt: 'desc' },
       select: {
         id: true,
@@ -153,7 +173,9 @@ export class GameAggregationRunRepository {
     return {
       id: run.id,
       status: STATUS_FROM_RECORD[run.status],
-      operation: run.operation ? OPERATION_FROM_RECORD[run.operation] : null,
+      operation: run.operation
+        ? (SHEET_OPERATION_FROM_RECORD[run.operation] ?? null)
+        : null,
       errorCode: run.errorCode,
       startedAt: run.createdAt,
     }

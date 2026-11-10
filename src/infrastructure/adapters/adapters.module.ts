@@ -10,6 +10,7 @@ import { GameBarcodeLookup } from '@/shared/types'
 import {
   AnthropicGameBarcodeLookup,
   anthropicClientProvider,
+  GameScoringTemplateGenerator,
   GameSheetGenerator,
   GameSheetTranslator,
 } from './anthropic'
@@ -32,6 +33,7 @@ import { DisposableEmailChecker, PasswordHasher, TokenService } from './auth'
     anthropicClientProvider,
     // Port bound to its current provider: switch adapters here only.
     { provide: GameBarcodeLookup, useClass: AnthropicGameBarcodeLookup },
+    GameScoringTemplateGenerator,
     GameSheetGenerator,
     GameSheetTranslator,
     DisposableEmailChecker,
@@ -40,6 +42,7 @@ import { DisposableEmailChecker, PasswordHasher, TokenService } from './auth'
   ],
   exports: [
     GameBarcodeLookup,
+    GameScoringTemplateGenerator,
     GameSheetGenerator,
     GameSheetTranslator,
     DisposableEmailChecker,

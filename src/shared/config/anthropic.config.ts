@@ -16,6 +16,7 @@ const AnthropicEnvSchema = z.object({
     .min(1)
     .default('claude-haiku-5-5'),
   ANTHROPIC_SHEET_EFFORT: z.enum(AI_EFFORTS).default('medium'),
+  ANTHROPIC_SCORING_MODEL: z.string().min(1).default('claude-haiku-5-5'),
   ANTHROPIC_BARCODE_MODEL: z.string().min(1).default('claude-haiku-5-5'),
   ANTHROPIC_BARCODE_EFFORT: z.enum(AI_EFFORTS).default('low'),
 })
@@ -31,6 +32,8 @@ export type AnthropicConfig = {
   sheetEffort: AiEffort
   /** Model that translates an existing sheet into another language. */
   sheetTranslationModel: string
+  /** Model that derives the score sheet template from a stored sheet. */
+  scoringModel: string
   /** Model that identifies the games sold under a barcode. */
   barcodeModel: string
   /** Effort of the barcode model: a simple lookup, low is usually enough. */
@@ -46,6 +49,7 @@ export const ANTHROPIC_CONFIG = registerAs(
       sheetModel: env.ANTHROPIC_SHEET_MODEL,
       sheetEffort: env.ANTHROPIC_SHEET_EFFORT,
       sheetTranslationModel: env.ANTHROPIC_SHEET_TRANSLATION_MODEL,
+      scoringModel: env.ANTHROPIC_SCORING_MODEL,
       barcodeModel: env.ANTHROPIC_BARCODE_MODEL,
       barcodeEffort: env.ANTHROPIC_BARCODE_EFFORT,
     }

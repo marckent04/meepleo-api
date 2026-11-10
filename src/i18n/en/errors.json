@@ -19,5 +19,12 @@
   "DISPOSABLE_EMAIL_NOT_ALLOWED": "Disposable email addresses are not accepted.",
   "USERNAME_ALREADY_USED": "This username is already taken.",
   "INVALID_CREDENTIALS": "Incorrect username or password.",
-  "INVALID_REFRESH_TOKEN": "Your session has expired. Please sign in again."
+  "INVALID_REFRESH_TOKEN": "Your session has expired. Please sign in again.",
+  "PLAY_NOT_FOUND": "This play could not be found.",
+  "PLAY_ALREADY_COMPLETED": "This play is finished. Reopen it to change the scores.",
+  "INVALID_SCORING_TEMPLATE": "This score sheet is not valid.",
+  "INVALID_PLAY_PLAYERS": "The players do not match the teams of the score sheet.",
+  "INVALID_PLAY_SCORES": "Some scores do not match the score sheet.",
+  "INVALID_PLAY_WINNERS": "Choose the winners among the players of this play.",
+  "GAME_SCORING_TEMPLATE_GENERATION_FAILED": "The score sheet could not be prepared. Please try again later."
 }

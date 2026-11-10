@@ -19,5 +19,12 @@
   "DISPOSABLE_EMAIL_NOT_ALLOWED": "Les adresses email jetables ne sont pas acceptées.",
   "USERNAME_ALREADY_USED": "Ce nom d'utilisateur est déjà pris.",
   "INVALID_CREDENTIALS": "Nom d'utilisateur ou mot de passe incorrect.",
-  "INVALID_REFRESH_TOKEN": "Votre session a expiré. Reconnectez-vous."
+  "INVALID_REFRESH_TOKEN": "Votre session a expiré. Reconnectez-vous.",
+  "PLAY_NOT_FOUND": "Cette partie est introuvable.",
+  "PLAY_ALREADY_COMPLETED": "Cette partie est terminée. Rouvrez-la pour modifier les scores.",
+  "INVALID_SCORING_TEMPLATE": "Cette feuille de score n'est pas valide.",
+  "INVALID_PLAY_PLAYERS": "Les joueurs ne correspondent pas aux équipes de la feuille de score.",
+  "INVALID_PLAY_SCORES": "Certains scores ne correspondent pas à la feuille de score.",
+  "INVALID_PLAY_WINNERS": "Choisissez les gagnants parmi les joueurs de cette partie.",
+  "GAME_SCORING_TEMPLATE_GENERATION_FAILED": "La feuille de score n'a pas pu être préparée. Réessayez plus tard."
 }

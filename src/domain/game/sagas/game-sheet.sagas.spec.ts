@@ -2,7 +2,11 @@ import { lastValueFrom, of, toArray } from 'rxjs'
 import type { GameSheetAggregationJob } from '@/shared/types'
 import { GameAddedToCatalogEvent } from '../../catalog/events'
 import { GameAddedToWishlistEvent } from '../../wishlist/events'
-import { AggregateGameSheetCommand, RequestGameSheetCommand } from '../commands'
+import {
+  AggregateGameSheetCommand,
+  GenerateGameScoringTemplateCommand,
+  RequestGameSheetCommand,
+} from '../commands'
 import {
   GameSheetAggregatedEvent,
   GameSheetAggregationStartedEvent,
@@ -54,6 +58,35 @@ describe('GameSheetSagas', () => {
     expect(commands).toEqual([
       new RequestGameSheetCommand({ gameId: job.gameId, language: 'fr' }),
       new RequestGameSheetCommand({ gameId: job.gameId, language: 'en' }),
+    ])
+  })
+
+  it('derives the scoring template of a generated sheet only', async () => {
+    const sagas = new GameSheetSagas()
+    const generation: GameSheetAggregationJob = {
+      ...job,
+      language: 'fr',
+      operation: 'generation',
+      sourceLanguage: null,
+    }
+
+    const commands = await lastValueFrom(
+      sagas
+        .sheetGenerated(
+          of(
+            new GameSheetAggregationStartedEvent(generation),
+            new GameSheetAggregatedEvent(job),
+            new GameSheetAggregatedEvent(generation),
+          ),
+        )
+        .pipe(toArray()),
+    )
+
+    expect(commands).toEqual([
+      new GenerateGameScoringTemplateCommand({
+        gameId: job.gameId,
+        language: 'fr',
+      }),
     ])
   })
 })
