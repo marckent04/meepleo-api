@@ -13,6 +13,7 @@ const results: GameSearchResult[] = [
     name: 'Catane',
     year: 1995,
     categories: ['strategy'],
+    imageUrl: null,
   },
 ]
 

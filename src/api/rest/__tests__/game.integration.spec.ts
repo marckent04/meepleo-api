@@ -26,6 +26,7 @@ const sheet = new GameSheet(
     edition: null,
     publisher: null,
     ruleBookUrl: null,
+    imageUrl: null,
   },
   { min: 2, max: 5 },
   8,

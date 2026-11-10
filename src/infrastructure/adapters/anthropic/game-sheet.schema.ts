@@ -32,6 +32,11 @@ export const GameSheetOutputSchema = z.object({
     edition: UnknownText,
     publisher: UnknownText,
     rule_book_url: UnknownText,
+    image_url: z
+      .string()
+      .describe(
+        'URL of the box cover image, copied from a page you saw; empty string when unknown',
+      ),
   }),
   players: z.object({
     min: UnknownInt,

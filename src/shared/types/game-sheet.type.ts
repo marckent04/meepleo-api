@@ -27,6 +27,8 @@ type BaseGameSheetGame = {
   edition: string | null
   publisher: string | null
   ruleBookUrl: string | null
+  /** Box cover image found during the generation. */
+  imageUrl: string | null
 }
 
 /** Game identification produced by the generation. */

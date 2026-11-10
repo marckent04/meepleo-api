@@ -160,6 +160,33 @@ describe('GameSheetGenerator', () => {
     })
   })
 
+  it('keeps the box cover image URL found', async () => {
+    parse.mockResolvedValue(response())
+
+    const { result: sheet } = await generator.generate(game, 'fr')
+
+    expect(sheet.game.imageUrl).toBe(
+      'https://cf.geekdo-images.com/dnup/pic123.jpg',
+    )
+  })
+
+  it.each([
+    ['empty', ''],
+    ['not a URL', 'the box cover'],
+    ['relative', '/images/dnup.jpg'],
+    ['not http(s)', 'data:image/png;base64,AAAA'],
+  ])('ignores a %s image URL', async (_, imageUrl) => {
+    const output = {
+      ...dnupOutput,
+      game: { ...dnupOutput.game, image_url: imageUrl },
+    }
+    parse.mockResolvedValue(response({ parsed_output: output }))
+
+    const { result: sheet } = await generator.generate(game, 'fr')
+
+    expect(sheet.game.imageUrl).toBeNull()
+  })
+
   it('gives the known rulebook URL and the configured effort', async () => {
     parse.mockResolvedValue(response())
     const known = new Game(

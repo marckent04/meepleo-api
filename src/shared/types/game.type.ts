@@ -31,4 +31,6 @@ export type GameSearchResult = {
   name: string
   year: number | null
   categories: GameCategory[]
+  /** Box cover image URL, null when unknown. */
+  imageUrl: string | null
 }

@@ -103,9 +103,22 @@ describe('game sheet mapper', () => {
       maxPlayers: generated.players.max,
       minAge: generated.minAge,
       ruleBookUrl: generated.game.ruleBookUrl,
+      imageUrl: generated.game.imageUrl,
       supportedLanguages: ['fr'],
       sheetConfidence: 'HIGH',
     })
+  })
+
+  it('keeps an existing image and reads it back', () => {
+    const data = toGeneratedGameSheetData(
+      generated,
+      gameRecord({ imageUrl: 'https://example.com/bgg.jpg' }),
+    )
+    expect(data.game.imageUrl).toBe('https://example.com/bgg.jpg')
+
+    expect(toStoredGameSheet(storeGenerated(), 'fr').game.imageUrl).toBe(
+      generated.game.imageUrl,
+    )
   })
 
   it('merges the localized names with the existing ones', () => {

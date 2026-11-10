@@ -47,12 +47,14 @@ const catanResult: GameSearchResult = {
   name: 'Catane',
   year: 1995,
   categories: ['strategy'],
+  imageUrl: null,
 }
 const ticketResult: GameSearchResult = {
   id: ticketId,
   name: 'Les Aventuriers du Rail',
   year: 2004,
   categories: ['family'],
+  imageUrl: null,
 }
 
 describe('FindGamesByBarcodeHandler', () => {

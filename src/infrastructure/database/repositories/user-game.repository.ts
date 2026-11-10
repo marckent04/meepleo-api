@@ -76,6 +76,7 @@ export class UserGameRepository {
             localizedNames: true,
             year: true,
             categories: true,
+            imageUrl: true,
           },
         },
       },
@@ -89,6 +90,7 @@ export class UserGameRepository {
         id: game.id,
         name: localizedNames?.[language] || game.name,
         year: game.year,
+        imageUrl: game.imageUrl,
         categories: game.categories.map(
           (category) => category.toLowerCase() as GameCategory,
         ),

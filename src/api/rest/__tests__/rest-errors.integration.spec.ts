@@ -161,6 +161,7 @@ describe('REST errors (integration)', () => {
         name: 'Catane',
         year: 1995,
         categories: ['strategy'],
+        imageUrl: null,
       },
     ])
 
@@ -177,6 +178,7 @@ describe('REST errors (integration)', () => {
         name: 'Catane',
         year: 1995,
         categories: ['strategy'],
+        imageUrl: null,
       },
     ])
     expect(gameRepository.search).toHaveBeenCalledWith('cat', 'fr', 10)

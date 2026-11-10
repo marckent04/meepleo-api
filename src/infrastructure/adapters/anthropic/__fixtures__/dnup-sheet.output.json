@@ -3,7 +3,8 @@
     "localized_names": "fr: Dnup\nen: Dnup",
     "edition": "",
     "publisher": "",
-    "rule_book_url": "https://www.regles-du-jeu.net/regles-de-dnup/"
+    "rule_book_url": "https://www.regles-du-jeu.net/regles-de-dnup/",
+    "image_url": "https://cf.geekdo-images.com/dnup/pic123.jpg"
   },
   "players": {
     "min": 2,

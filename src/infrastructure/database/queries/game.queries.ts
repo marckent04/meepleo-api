@@ -68,7 +68,8 @@ export function searchGamesSql({
            name,
            localized_names ->> ${language}::text AS localized_name,
            year,
-           categories::text[] AS categories
+           categories::text[] AS categories,
+           image_url
     FROM games
     WHERE deleted_at IS NULL
       AND (f_unaccent(lower(name)) LIKE f_unaccent(${contains}::text)

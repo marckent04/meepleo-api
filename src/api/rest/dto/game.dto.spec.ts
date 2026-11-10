@@ -18,6 +18,7 @@ const sheet = new GameSheet(
     edition: null,
     publisher: 'Gigamic',
     ruleBookUrl: null,
+    imageUrl: 'https://example.com/dnup.jpg',
   },
   { min: 2, max: 5 },
   8,
@@ -70,6 +71,7 @@ describe('GameResponseDto', () => {
       game: {
         localizedName: 'Dnup',
         publisher: 'Gigamic',
+        imageUrl: 'https://example.com/dnup.jpg',
       },
       generatedAt: '2026-01-01T12:00:00.000Z',
     })
@@ -123,8 +125,14 @@ describe('GameSearchResponseSchema', () => {
   it('accepts search results', () => {
     expect(
       GameSearchResponseSchema.safeParse([
-        { id: id(0), name: 'Catane', year: 1995, categories: ['strategy'] },
-        { id: id(1), name: 'Dnup', year: null, categories: [] },
+        {
+          id: id(0),
+          name: 'Catane',
+          year: 1995,
+          categories: ['strategy'],
+          imageUrl: 'https://example.com/catan.jpg',
+        },
+        { id: id(1), name: 'Dnup', year: null, categories: [], imageUrl: null },
       ]).success,
     ).toBe(true)
   })

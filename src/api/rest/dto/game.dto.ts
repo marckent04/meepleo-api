@@ -62,6 +62,7 @@ export const GameSearchResultSchema = z.object({
     .meta({ example: 'Catan' }),
   year: z.number().int().nullable().describe('Publication year'),
   categories: z.array(z.enum(GAME_CATEGORIES)).describe('Game categories'),
+  imageUrl: z.string().nullable().describe('URL of the box cover image'),
 })
 
 export const GameSearchResponseSchema = z
@@ -121,6 +122,7 @@ export const GameResponseSchema = z
           .string()
           .nullable()
           .describe('URL of the official rulebook used'),
+        imageUrl: z.string().nullable().describe('URL of the box cover image'),
       })
       .describe('Game identification'),
     players: z

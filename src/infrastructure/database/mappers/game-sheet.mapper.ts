@@ -126,6 +126,7 @@ export function toStoredGameSheet(
       edition: record.edition,
       publisher: record.publisher,
       ruleBookUrl: record.ruleBookUrl,
+      imageUrl: record.imageUrl,
     },
     {
       min: record.minPlayers,
@@ -216,6 +217,7 @@ export function toGeneratedGameSheetData(
       edition: current.edition ?? sheet.game.edition,
       publisher: current.publisher ?? sheet.game.publisher,
       ruleBookUrl: current.ruleBookUrl ?? sheet.game.ruleBookUrl,
+      imageUrl: current.imageUrl ?? sheet.game.imageUrl,
       minPlayers: current.minPlayers ?? sheet.players.min,
       maxPlayers: current.maxPlayers ?? sheet.players.max,
       minAge: current.minAge ?? sheet.minAge,

@@ -38,6 +38,7 @@ export type GameSearchRow = {
   localized_name: string | null
   year: number | null
   categories: GameCategoryRecord[]
+  image_url: string | null
 }
 
 export function toGameSearchResult(row: GameSearchRow): GameSearchResult {
@@ -46,6 +47,7 @@ export function toGameSearchResult(row: GameSearchRow): GameSearchResult {
     name: row.localized_name || row.name,
     year: row.year,
     categories: row.categories.map(toGameCategory),
+    imageUrl: row.image_url,
   }
 }
 
@@ -56,6 +58,7 @@ export const GAME_SEARCH_RESULT_SELECT = {
   localizedNames: true,
   year: true,
   categories: true,
+  imageUrl: true,
 } satisfies Prisma.GameSelect
 
 export type GameSearchResultRecord = Prisma.GameGetPayload<{
@@ -72,6 +75,7 @@ export function toGameSearchResultFromRecord(
     name: localized(record.localizedNames, language) || record.name,
     year: record.year,
     categories: record.categories.map(toGameCategory),
+    imageUrl: record.imageUrl,
   }
 }
 

@@ -12,6 +12,7 @@ export const FavoriteEntrySchema = z.object({
     .meta({ example: 'Catan' }),
   year: z.number().int().nullable().describe('Publication year'),
   categories: z.array(z.enum(GAME_CATEGORIES)).describe('Game categories'),
+  imageUrl: z.string().nullable().describe('URL of the box cover image'),
   addedAt: z.iso
     .datetime()
     .describe('Date added to favorites (ISO 8601, UTC)')

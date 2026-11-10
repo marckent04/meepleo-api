@@ -51,6 +51,7 @@ export class UserFavoriteRepository {
             localizedNames: true,
             year: true,
             categories: true,
+            imageUrl: true,
           },
         },
       },
@@ -64,6 +65,7 @@ export class UserFavoriteRepository {
         id: game.id,
         name: localizedNames?.[language] || game.name,
         year: game.year,
+        imageUrl: game.imageUrl,
         categories: game.categories.map(
           (category) => category.toLowerCase() as GameCategory,
         ),

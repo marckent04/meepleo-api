@@ -191,6 +191,14 @@ export class GameSheetGenerator {
 const textOrNull = (value: string): string | null => value.trim() || null
 const intOrNull = (value: number): number | null => (value > 0 ? value : null)
 
+/** Keeps an absolute http(s) URL only: anything else is treated as unknown. */
+export function httpUrlOrNull(value: string): string | null {
+  const text = value.trim()
+  if (!URL.canParse(text)) return null
+  const { protocol } = new URL(text)
+  return protocol === 'https:' || protocol === 'http:' ? text : null
+}
+
 /**
  * One "<language code>: <title>" line per language in the output; keeps the
  * supported languages only, the first title of each.
@@ -234,6 +242,7 @@ export function toGameSheet(
       edition: textOrNull(output.game.edition),
       publisher: textOrNull(output.game.publisher),
       ruleBookUrl: textOrNull(output.game.rule_book_url),
+      imageUrl: httpUrlOrNull(output.game.image_url),
     },
     {
       min: intOrNull(output.players.min),

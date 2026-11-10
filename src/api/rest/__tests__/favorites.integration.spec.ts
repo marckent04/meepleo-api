@@ -86,6 +86,7 @@ describe('/v1/favorites (integration)', () => {
         name: 'Catan',
         year: 1995,
         categories: ['strategy'],
+        imageUrl: null,
         addedAt: new Date('2026-11-06T12:00:00.000Z'),
       },
     ])
@@ -103,6 +104,7 @@ describe('/v1/favorites (integration)', () => {
         name: 'Catan',
         year: 1995,
         categories: ['strategy'],
+        imageUrl: null,
         addedAt: '2026-11-06T12:00:00.000Z',
       },
     ])
