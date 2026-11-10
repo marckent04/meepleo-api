@@ -122,7 +122,7 @@ describe('/v1/wishlist (integration)', () => {
 
     expect(response.statusCode).toBe(204)
     expect(commandExecute).toHaveBeenCalledWith(
-      new AddGameToWishlistCommand({ userId, gameId }),
+      new AddGameToWishlistCommand({ userId, gameId, language: 'fr' }),
     )
   })
 

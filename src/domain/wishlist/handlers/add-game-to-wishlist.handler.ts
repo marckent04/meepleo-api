@@ -1,4 +1,4 @@
-import { CommandHandler } from '@nestjs/cqrs'
+import { CommandHandler, EventBus } from '@nestjs/cqrs'
 import {
   GameRepository,
   UserGameRepository,
@@ -6,6 +6,7 @@ import {
 import { LoggerService } from '@/infrastructure/logger/logger.service'
 import { AppCommandHandler } from '@/utils/cqrs.utils'
 import { AddGameToWishlistCommand } from '../commands'
+import { GameAddedToWishlistEvent } from '../events'
 
 @CommandHandler(AddGameToWishlistCommand)
 export class AddGameToWishlistHandler extends AppCommandHandler<
@@ -13,6 +14,7 @@ export class AddGameToWishlistHandler extends AppCommandHandler<
   void
 > {
   constructor(
+    private readonly eventBus: EventBus,
     private readonly gameRepository: GameRepository,
     private readonly userGameRepository: UserGameRepository,
     logger: LoggerService,
@@ -21,9 +23,17 @@ export class AddGameToWishlistHandler extends AppCommandHandler<
     this.logger.setContext(AddGameToWishlistHandler.name)
   }
 
-  async handle({ userId, gameId }: AddGameToWishlistCommand): Promise<void> {
+  async handle({
+    userId,
+    gameId,
+    language,
+  }: AddGameToWishlistCommand): Promise<void> {
     // Throws GAME_NOT_FOUND (404) if the game does not exist or is deleted.
     await this.gameRepository.findById(gameId)
     await this.userGameRepository.add(userId, gameId, 'wishlist')
+    // Prepares the game sheet in the background to spare the wait on first play.
+    this.eventBus.publish(
+      new GameAddedToWishlistEvent(userId, gameId, language),
+    )
   }
 }

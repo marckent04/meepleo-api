@@ -52,16 +52,22 @@ export class CatalogController {
   @HttpCode(204)
   @ApiOperation({
     summary: 'Add a game to the catalog',
-    description: 'Idempotent: a game already in the catalog stays there.',
+    description:
+      'Idempotent: a game already in the catalog stays there. Also starts preparing the game sheet in the Accept-Language language in the background, so it is ready when the game is played.',
   })
   @ApiResponse({ status: 204, description: 'Game is in the catalog' })
   @ApiErrorResponses(400, 401, 404, 500)
   async add(
     @CurrentUserId() userId: string,
+    @Language() language: Locale,
     @Param() params: CatalogGameIdParamDto,
   ): Promise<void> {
     await this.commandBus.execute(
-      new AddGameToCatalogCommand({ userId, gameId: params.gameId }),
+      new AddGameToCatalogCommand({
+        userId,
+        gameId: params.gameId,
+        language,
+      }),
     )
   }
 

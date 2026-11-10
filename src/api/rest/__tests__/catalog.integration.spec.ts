@@ -122,7 +122,7 @@ describe('/v1/catalog (integration)', () => {
 
     expect(response.statusCode).toBe(204)
     expect(commandExecute).toHaveBeenCalledWith(
-      new AddGameToCatalogCommand({ userId, gameId }),
+      new AddGameToCatalogCommand({ userId, gameId, language: 'fr' }),
     )
   })
 

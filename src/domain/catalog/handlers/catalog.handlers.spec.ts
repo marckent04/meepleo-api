@@ -1,3 +1,4 @@
+import { EventBus } from '@nestjs/cqrs'
 import { Test } from '@nestjs/testing'
 import { mockLoggerService } from '@/__tests__/utils/logger-service.mock'
 import {
@@ -10,6 +11,7 @@ import {
   AddGameToCatalogCommand,
   RemoveGameFromCatalogCommand,
 } from '../commands'
+import { GameAddedToCatalogEvent } from '../events'
 import { ListCatalogQuery } from '../queries'
 import { AddGameToCatalogHandler } from './add-game-to-catalog.handler'
 import { ListCatalogHandler } from './list-catalog.handler'
@@ -17,8 +19,10 @@ import { RemoveGameFromCatalogHandler } from './remove-game-from-catalog.handler
 
 const userId = '0195d1a2-0000-7000-8000-000000000001'
 const gameId = '0195d1a2-0000-7000-8000-000000000002'
+const language = 'fr'
 
 describe('catalog handlers', () => {
+  const eventBus = { publish: vi.fn() }
   const gameRepository = { findById: vi.fn() }
   const userGameRepository = {
     add: vi.fn(),
@@ -35,6 +39,7 @@ describe('catalog handlers', () => {
         AddGameToCatalogHandler,
         RemoveGameFromCatalogHandler,
         ListCatalogHandler,
+        { provide: EventBus, useValue: eventBus },
         { provide: GameRepository, useValue: gameRepository },
         { provide: UserGameRepository, useValue: userGameRepository },
         { provide: LoggerService, useValue: mockLoggerService },
@@ -52,9 +57,12 @@ describe('catalog handlers', () => {
   it('adds an existing game to the catalog', async () => {
     gameRepository.findById.mockResolvedValue({ id: gameId })
 
-    await add.execute(new AddGameToCatalogCommand({ userId, gameId }))
+    await add.execute(new AddGameToCatalogCommand({ userId, gameId, language }))
 
     expect(userGameRepository.add).toHaveBeenCalledWith(userId, gameId, 'owned')
+    expect(eventBus.publish).toHaveBeenCalledWith(
+      new GameAddedToCatalogEvent(userId, gameId, language),
+    )
   })
 
   it('does not add an unknown game', async () => {
@@ -63,14 +71,21 @@ describe('catalog handlers', () => {
     )
 
     await expect(
-      add.execute(new AddGameToCatalogCommand({ userId, gameId })),
+      add.execute(new AddGameToCatalogCommand({ userId, gameId, language })),
     ).rejects.toBeInstanceOf(NotFoundError)
     expect(userGameRepository.add).not.toHaveBeenCalled()
+    expect(eventBus.publish).not.toHaveBeenCalled()
   })
 
   it('rejects an invalid game id', async () => {
     await expect(
-      add.execute(new AddGameToCatalogCommand({ userId, gameId: 'nope' })),
+      add.execute(
+        new AddGameToCatalogCommand({
+          userId,
+          gameId: 'nope',
+          language,
+        }),
+      ),
     ).rejects.toBeDefined()
     expect(userGameRepository.add).not.toHaveBeenCalled()
   })

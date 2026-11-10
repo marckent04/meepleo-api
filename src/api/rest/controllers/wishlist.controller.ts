@@ -53,7 +53,7 @@ export class WishlistController {
   @ApiOperation({
     summary: 'Add a game to the wishlist',
     description:
-      'Idempotent. A game cannot be both in the library and in the wishlist: 409 CONFLICT if it is already owned.',
+      'Idempotent. A game cannot be both in the library and in the wishlist: 409 CONFLICT if it is already owned. Also starts preparing the game sheet in the Accept-Language language in the background, so it is ready when the game is played.',
   })
   @ApiResponse({
     status: 204,
@@ -62,10 +62,15 @@ export class WishlistController {
   @ApiErrorResponses(400, 401, 404, 409, 500)
   async add(
     @CurrentUserId() userId: string,
+    @Language() language: Locale,
     @Param() params: WishlistGameIdParamDto,
   ): Promise<void> {
     await this.commandBus.execute(
-      new AddGameToWishlistCommand({ userId, gameId: params.gameId }),
+      new AddGameToWishlistCommand({
+        userId,
+        gameId: params.gameId,
+        language,
+      }),
     )
   }
 

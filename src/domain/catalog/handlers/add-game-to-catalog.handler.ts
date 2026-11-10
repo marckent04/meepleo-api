@@ -1,4 +1,4 @@
-import { CommandHandler } from '@nestjs/cqrs'
+import { CommandHandler, EventBus } from '@nestjs/cqrs'
 import {
   GameRepository,
   UserGameRepository,
@@ -6,6 +6,7 @@ import {
 import { LoggerService } from '@/infrastructure/logger/logger.service'
 import { AppCommandHandler } from '@/utils/cqrs.utils'
 import { AddGameToCatalogCommand } from '../commands'
+import { GameAddedToCatalogEvent } from '../events'
 
 @CommandHandler(AddGameToCatalogCommand)
 export class AddGameToCatalogHandler extends AppCommandHandler<
@@ -13,6 +14,7 @@ export class AddGameToCatalogHandler extends AppCommandHandler<
   void
 > {
   constructor(
+    private readonly eventBus: EventBus,
     private readonly gameRepository: GameRepository,
     private readonly userGameRepository: UserGameRepository,
     logger: LoggerService,
@@ -21,9 +23,15 @@ export class AddGameToCatalogHandler extends AppCommandHandler<
     this.logger.setContext(AddGameToCatalogHandler.name)
   }
 
-  async handle({ userId, gameId }: AddGameToCatalogCommand): Promise<void> {
+  async handle({
+    userId,
+    gameId,
+    language,
+  }: AddGameToCatalogCommand): Promise<void> {
     // Throws GAME_NOT_FOUND (404) if the game does not exist or is deleted.
     await this.gameRepository.findById(gameId)
     await this.userGameRepository.add(userId, gameId, 'owned')
+    // Prepares the game sheet in the background to spare the wait on first play.
+    this.eventBus.publish(new GameAddedToCatalogEvent(userId, gameId, language))
   }
 }

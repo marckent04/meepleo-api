@@ -1,3 +1,4 @@
+import { EventBus } from '@nestjs/cqrs'
 import { Test } from '@nestjs/testing'
 import { mockLoggerService } from '@/__tests__/utils/logger-service.mock'
 import {
@@ -5,11 +6,12 @@ import {
   UserGameRepository,
 } from '@/infrastructure/database/repositories'
 import { LoggerService } from '@/infrastructure/logger/logger.service'
-import { ErrorCode, NotFoundError } from '@/shared/errors'
+import { ConflictError, ErrorCode, NotFoundError } from '@/shared/errors'
 import {
   AddGameToWishlistCommand,
   RemoveGameFromWishlistCommand,
 } from '../commands'
+import { GameAddedToWishlistEvent } from '../events'
 import { ListWishlistQuery } from '../queries'
 import { AddGameToWishlistHandler } from './add-game-to-wishlist.handler'
 import { ListWishlistHandler } from './list-wishlist.handler'
@@ -17,8 +19,10 @@ import { RemoveGameFromWishlistHandler } from './remove-game-from-wishlist.handl
 
 const userId = '0195d1a2-0000-7000-8000-000000000001'
 const gameId = '0195d1a2-0000-7000-8000-000000000002'
+const language = 'fr'
 
 describe('wishlist handlers', () => {
+  const eventBus = { publish: vi.fn() }
   const gameRepository = { findById: vi.fn() }
   const userGameRepository = {
     add: vi.fn(),
@@ -35,6 +39,7 @@ describe('wishlist handlers', () => {
         AddGameToWishlistHandler,
         RemoveGameFromWishlistHandler,
         ListWishlistHandler,
+        { provide: EventBus, useValue: eventBus },
         { provide: GameRepository, useValue: gameRepository },
         { provide: UserGameRepository, useValue: userGameRepository },
         { provide: LoggerService, useValue: mockLoggerService },
@@ -52,12 +57,17 @@ describe('wishlist handlers', () => {
   it('adds an existing game to the wishlist', async () => {
     gameRepository.findById.mockResolvedValue({ id: gameId })
 
-    await add.execute(new AddGameToWishlistCommand({ userId, gameId }))
+    await add.execute(
+      new AddGameToWishlistCommand({ userId, gameId, language }),
+    )
 
     expect(userGameRepository.add).toHaveBeenCalledWith(
       userId,
       gameId,
       'wishlist',
+    )
+    expect(eventBus.publish).toHaveBeenCalledWith(
+      new GameAddedToWishlistEvent(userId, gameId, language),
     )
   })
 
@@ -67,14 +77,33 @@ describe('wishlist handlers', () => {
     )
 
     await expect(
-      add.execute(new AddGameToWishlistCommand({ userId, gameId })),
+      add.execute(new AddGameToWishlistCommand({ userId, gameId, language })),
     ).rejects.toBeInstanceOf(NotFoundError)
     expect(userGameRepository.add).not.toHaveBeenCalled()
+    expect(eventBus.publish).not.toHaveBeenCalled()
+  })
+
+  it('does not prepare the sheet of an owned game', async () => {
+    gameRepository.findById.mockResolvedValue({ id: gameId })
+    userGameRepository.add.mockRejectedValue(
+      new ConflictError('Game is already in the library'),
+    )
+
+    await expect(
+      add.execute(new AddGameToWishlistCommand({ userId, gameId, language })),
+    ).rejects.toBeInstanceOf(ConflictError)
+    expect(eventBus.publish).not.toHaveBeenCalled()
   })
 
   it('rejects an invalid game id', async () => {
     await expect(
-      add.execute(new AddGameToWishlistCommand({ userId, gameId: 'nope' })),
+      add.execute(
+        new AddGameToWishlistCommand({
+          userId,
+          gameId: 'nope',
+          language,
+        }),
+      ),
     ).rejects.toBeDefined()
     expect(userGameRepository.add).not.toHaveBeenCalled()
   })

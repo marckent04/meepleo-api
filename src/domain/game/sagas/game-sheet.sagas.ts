@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { type ICommand, type IEvent, ofType, Saga } from '@nestjs/cqrs'
 import { map, type Observable } from 'rxjs'
-import { AggregateGameSheetCommand } from '../commands'
+import { GameAddedToCatalogEvent } from '../../catalog/events'
+import { GameAddedToWishlistEvent } from '../../wishlist/events'
+import { AggregateGameSheetCommand, RequestGameSheetCommand } from '../commands'
 import { GameSheetAggregationStartedEvent } from '../events'
 
 @Injectable()
@@ -16,5 +18,20 @@ export class GameSheetSagas {
     events$.pipe(
       ofType(GameSheetAggregationStartedEvent),
       map((event) => new AggregateGameSheetCommand(event.job)),
+    )
+
+  /**
+   * Prepares the sheet of a game added to the catalog or the wishlist, in the
+   * user's language, so it is ready when the user plays it. A no-op if the
+   * sheet exists or is being aggregated; a recent failure is only logged.
+   */
+  @Saga()
+  gameAddedToUserList = (events$: Observable<IEvent>): Observable<ICommand> =>
+    events$.pipe(
+      ofType(GameAddedToCatalogEvent, GameAddedToWishlistEvent),
+      map(
+        ({ gameId, language }) =>
+          new RequestGameSheetCommand({ gameId, language }),
+      ),
     )
 }
