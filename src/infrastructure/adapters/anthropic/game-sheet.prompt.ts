@@ -1,5 +1,5 @@
 import { SUPPORTED_LOCALES } from '@/shared/i18n/locale'
-import type { Game } from '@/shared/types'
+import type { Game, GameKnownDetails } from '@/shared/types'
 
 /**
  * Frozen system prompt (no variable data) so it stays cacheable.
@@ -24,18 +24,46 @@ Writing:
 - player_counts is an empty list when an entry applies to every player count; otherwise list the player counts it applies to. Variants that depend on the player count share the same order (e.g. removing cards at 2, 3 and 4 players).
 - setup: setup steps in order. turn.steps: how a turn unfolds; set optional: true on actions the player chooses among. special_rules: every rule that does not fit in the turn, each with a kind. Use kind "special" for exceptions and rules that always apply. Use kind "variant" for alternative modes or optional rules that players choose to enable (solo mode, expert mode, shorter game, optional rules); only add variants the source describes, never invent one. end_of_game: triggers, the exact moment play stops (timing), scoring and the win condition. Include tie-breaking in scoring or winner when the rules define it.
 - players, min_age and duration_minutes come from the box or the rulebook; use 0 if they are not stated.
+- Known data: the message can list data our catalog already has (players, minimum age, duration, box cover image). Never search for it: use 0 for each known number and an empty string for image_url when the box cover is known. Only look for the data that is not listed.
 
 Metadata:
 - sources: every page you actually read to write the sheet (title and URL).
 - confidence: high if you read the complete official rules, medium for a faithful reproduction or partial rules, low if you only found summaries or the edition is uncertain.
 - If you find no reliable rules, return a minimal sheet with confidence low and explain why in warnings.`
 
+/** `2-4`, `min 2`, `max 4`, or null when both bounds are unknown. */
+function formatRange(min: number | null, max: number | null): string | null {
+  if (min !== null && max !== null) {
+    return min === max ? `${min}` : `${min}-${max}`
+  }
+  if (min !== null) return `min ${min}`
+  if (max !== null) return `max ${max}`
+  return null
+}
+
+/** "Known data" line listing only the known items, or null when none is known. */
+function formatKnownData(known: GameKnownDetails): string | null {
+  const players = formatRange(known.minPlayers, known.maxPlayers)
+  const duration = formatRange(known.minDuration, known.maxDuration)
+  const items = [
+    ...(players ? [`Players: ${players}`] : []),
+    ...(known.minAge !== null ? [`Minimum age: ${known.minAge}`] : []),
+    ...(duration ? [`Duration: ${duration} min`] : []),
+    ...(known.hasImage ? ['Box cover image: known'] : []),
+  ]
+  return items.length > 0
+    ? `Known data (do not look for it): ${items.join(' — ')}`
+    : null
+}
+
 export function buildGameSheetUserPrompt(game: Game, language: string): string {
   const year = game.year === null ? '' : ` (${game.year})`
+  const knownData = formatKnownData(game.known)
   return [
     `Game: ${game.name}${year}`,
     `Publisher: ${game.publisher ?? 'unknown'} — Edition: ${game.edition ?? 'unknown'} — BGG id: ${game.bggId ?? 'unknown'}`,
     ...(game.ruleBookUrl ? [`Known rulebook URL: ${game.ruleBookUrl}`] : []),
+    ...(knownData ? [knownData] : []),
     `Sheet language: ${language}`,
     `Title languages: ${SUPPORTED_LOCALES.join(', ')}`,
   ].join('\n')

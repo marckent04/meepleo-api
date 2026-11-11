@@ -1,3 +1,23 @@
+/** Catalog data already known (BGG seed, previous generation): not looked for again. */
+export type GameKnownDetails = {
+  minPlayers: number | null
+  maxPlayers: number | null
+  minAge: number | null
+  minDuration: number | null
+  maxDuration: number | null
+  /** A box cover image URL is stored. */
+  hasImage: boolean
+}
+
+export const EMPTY_KNOWN_DETAILS: GameKnownDetails = {
+  minPlayers: null,
+  maxPlayers: null,
+  minAge: null,
+  minDuration: null,
+  maxDuration: null,
+  hasImage: false,
+}
+
 /** Catalog game (data useful for identification). */
 export class Game {
   constructor(
@@ -9,6 +29,7 @@ export class Game {
     readonly bggId: number | null,
     /** Official rulebook found during a previous generation. */
     readonly ruleBookUrl: string | null = null,
+    readonly known: GameKnownDetails = EMPTY_KNOWN_DETAILS,
   ) {}
 }
 

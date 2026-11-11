@@ -1,4 +1,6 @@
+import { gameRecord } from '../__fixtures__/game-record.fixture'
 import {
+  toGame,
   toGameSearchResult,
   toGameSearchResultFromRecord,
   toIdentifiedGameCreateData,
@@ -7,6 +9,32 @@ import {
 const id = '0195d1a2-0000-7000-8000-000000000001'
 
 describe('game mapper', () => {
+  it('maps a record to a game with its known catalog data', () => {
+    const game = toGame(
+      gameRecord({
+        minPlayers: 2,
+        maxPlayers: 4,
+        minAge: null,
+        minDuration: 30,
+        maxDuration: 60,
+        imageUrl: 'https://example.com/dnup.jpg',
+      }),
+    )
+
+    expect(game.known).toEqual({
+      minPlayers: 2,
+      maxPlayers: 4,
+      minAge: null,
+      minDuration: 30,
+      maxDuration: 60,
+      hasImage: true,
+    })
+  })
+
+  it('maps a record without catalog data to empty known data', () => {
+    expect(toGame(gameRecord()).known.hasImage).toBe(false)
+  })
+
   it('maps a search row, preferring the localized name', () => {
     expect(
       toGameSearchResult({

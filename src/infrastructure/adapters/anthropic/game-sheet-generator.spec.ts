@@ -226,6 +226,52 @@ describe('GameSheetGenerator', () => {
     )
   })
 
+  it('lists only the known catalog data in the user prompt', async () => {
+    parse.mockResolvedValue(response())
+    const known = new Game(game.id, 'Dnup', 2021, null, null, 123, null, {
+      minPlayers: 2,
+      maxPlayers: 4,
+      minAge: null,
+      minDuration: 30,
+      maxDuration: 30,
+      hasImage: true,
+    })
+
+    await generator.generate(known, 'fr')
+
+    expect(parse.mock.calls[0][0].messages[0].content).toContain(
+      'Known data (do not look for it): Players: 2-4 — Duration: 30 min — Box cover image: known',
+    )
+  })
+
+  it('gives a single known bound of a range', async () => {
+    parse.mockResolvedValue(response())
+    const known = new Game(game.id, 'Dnup', 2021, null, null, 123, null, {
+      minPlayers: null,
+      maxPlayers: 6,
+      minAge: 10,
+      minDuration: null,
+      maxDuration: null,
+      hasImage: false,
+    })
+
+    await generator.generate(known, 'fr')
+
+    expect(parse.mock.calls[0][0].messages[0].content).toContain(
+      'Known data (do not look for it): Players: max 6 — Minimum age: 10',
+    )
+  })
+
+  it('does not mention known data when nothing is known', async () => {
+    parse.mockResolvedValue(response())
+
+    await generator.generate(game, 'fr')
+
+    expect(parse.mock.calls[0][0].messages[0].content).not.toContain(
+      'Known data',
+    )
+  })
+
   it('keeps the same prompt version between calls', async () => {
     parse.mockResolvedValue(response())
 

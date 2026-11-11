@@ -20,6 +20,14 @@ export function toGame(record: GameRecord): Game {
     record.edition,
     record.bggId,
     record.ruleBookUrl,
+    {
+      minPlayers: record.minPlayers,
+      maxPlayers: record.maxPlayers,
+      minAge: record.minAge,
+      minDuration: record.minDuration,
+      maxDuration: record.maxDuration,
+      hasImage: record.imageUrl !== null,
+    },
   )
 }
 

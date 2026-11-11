@@ -140,6 +140,12 @@ describe('GameRepository', () => {
           edition: null,
           bggId: 123,
           ruleBookUrl: 'https://example.com/dnup.pdf',
+          minPlayers: 2,
+          maxPlayers: 4,
+          minAge: 8,
+          minDuration: null,
+          maxDuration: null,
+          imageUrl: null,
         }),
       },
     })
@@ -158,6 +164,14 @@ describe('GameRepository', () => {
         null,
         123,
         'https://example.com/dnup.pdf',
+        {
+          minPlayers: 2,
+          maxPlayers: 4,
+          minAge: 8,
+          minDuration: null,
+          maxDuration: null,
+          hasImage: false,
+        },
       ),
     )
   })
