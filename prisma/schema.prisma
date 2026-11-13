@@ -243,6 +243,8 @@ model User {
   favorites     UserFavorite[]
   plays         Play[]
   playerOf      PlayPlayer[]
+  players       Player[]
+  groups        Group[]
 
   @@map("users")
 }
@@ -280,23 +282,37 @@ model UserGame {
   game      Game           @relation(fields: [gameId], references: [id], onDelete: Cascade)
   status    UserGameStatus @default(OWNED)
   createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  /// Last modification date, set by the client (last write wins)
+  updatedAt DateTime       @default(now()) @map("updated_at") @db.Timestamptz(6)
+  /// Tombstone: the game was removed from the list
+  deletedAt DateTime?      @map("deleted_at") @db.Timestamptz(6)
+  /// Server-side change counter (set by a trigger from `sync_revision_seq`), cursor of `sync/pull`
+  revision  BigInt         @default(0)
 
   @@unique([userId, gameId])
   @@index([userId, status])
+  @@index([userId, revision])
   @@map("user_games")
 }
 
 /// Game favorited by a user
 model UserFavorite {
-  id        String   @id @default(uuid(7)) @db.Uuid
-  userId    String   @map("user_id") @db.Uuid
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  gameId    String   @map("game_id") @db.Uuid
-  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  id        String    @id @default(uuid(7)) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameId    String    @map("game_id") @db.Uuid
+  game      Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  /// Last modification date, set by the client (last write wins)
+  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  /// Tombstone: the game was removed from the favorites
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  /// Server-side change counter (set by a trigger from `sync_revision_seq`), cursor of `sync/pull`
+  revision  BigInt    @default(0)
 
   @@unique([userId, gameId])
   @@index([userId])
+  @@index([userId, revision])
   @@map("user_favorites")
 }
 
@@ -319,38 +335,55 @@ enum PlayStatus {
 
 /// Play recorded by a user
 model Play {
-  id          String       @id @default(uuid(7)) @db.Uuid
+  id              String       @id @default(uuid(7)) @db.Uuid
   /// Owner: the user who records the play
-  userId      String       @map("user_id") @db.Uuid
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  gameId      String       @map("game_id") @db.Uuid
-  game        Game         @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  status      PlayStatus   @default(IN_PROGRESS)
-  playedAt    DateTime     @map("played_at") @db.Timestamptz(6)
-  completedAt DateTime?    @map("completed_at") @db.Timestamptz(6)
-  note        String?
+  userId          String       @map("user_id") @db.Uuid
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameId          String       @map("game_id") @db.Uuid
+  game            Game         @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  status          PlayStatus   @default(IN_PROGRESS)
+  playedAt        DateTime     @map("played_at") @db.Timestamptz(6)
+  completedAt     DateTime?    @map("completed_at") @db.Timestamptz(6)
+  /// Start of the timer, entered by the client
+  startedAt       DateTime?    @map("started_at") @db.Timestamptz(6)
+  /// End of the timer, entered by the client
+  endedAt         DateTime?    @map("ended_at") @db.Timestamptz(6)
+  durationSeconds Int?         @map("duration_seconds")
+  /// Player drawn to start (`Player.id`, kept even if the player is deleted)
+  firstPlayerId   String?      @map("first_player_id") @db.Uuid
+  note            String?
   /// ScoringTemplate (labels in the play language)
-  scoring     Json
-  players     PlayPlayer[]
-  scores      PlayScore[]
-  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
-  deletedAt   DateTime?    @map("deleted_at") @db.Timestamptz(6)
+  scoring         Json
+  players         PlayPlayer[]
+  scores          PlayScore[]
+  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  /// Last modification date, set by the client (last write wins)
+  updatedAt       DateTime     @default(now()) @map("updated_at") @db.Timestamptz(6)
+  deletedAt       DateTime?    @map("deleted_at") @db.Timestamptz(6)
+  /// Server-side change counter (set by a trigger from `sync_revision_seq`), cursor of `sync/pull`
+  revision        BigInt       @default(0)
 
   @@index([userId, playedAt])
+  @@index([userId, revision])
   @@index([userId, gameId, playedAt])
   @@map("plays")
 }
 
 /// Player of a play; totals and ranks are computed on every score save
 model PlayPlayer {
-  id        String   @id @default(uuid(7)) @db.Uuid
-  playId    String   @map("play_id") @db.Uuid
-  play      Play     @relation(fields: [playId], references: [id], onDelete: Cascade)
+  id        String       @id @default(uuid(7)) @db.Uuid
+  playId    String       @map("play_id") @db.Uuid
+  play      Play         @relation(fields: [playId], references: [id], onDelete: Cascade)
   /// Account of the player, null for a guest
-  userId    String?  @map("user_id") @db.Uuid
-  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId    String?      @map("user_id") @db.Uuid
+  user      User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  /// Player of the user this entry refers to, null for legacy rows
+  playerId  String?      @map("player_id") @db.Uuid
+  player    Player?      @relation(fields: [playerId], references: [id], onDelete: SetNull)
   name      String
+  /// Style snapshot (#RRGGBB), kept if the player changes or is deleted
+  color     String?
+  shape     PlayerShape?
   /// Display order in the play
   position  Int
   /// Column of the score sheet (0-based)
@@ -359,8 +392,8 @@ model PlayPlayer {
   total     Int?
   /// Rank of the side (ties share it), null for a manual outcome
   rank      Int?
-  isWinner  Boolean  @default(false) @map("is_winner")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  isWinner  Boolean      @default(false) @map("is_winner")
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
 
   @@unique([playId, position])
   @@index([userId])
@@ -382,4 +415,72 @@ model PlayScore {
 
   @@unique([playId, side, rowKey, round])
   @@map("play_scores")
+}
+
+// ---------------------------------------------------------------------------
+// Players and groups (offline-first)
+//
+// Ids are generated by the client (UUID v7) and kept as is. `updatedAt` is the
+// client's last modification date and arbitrates conflicts (last write wins);
+// `revision` is set by the server and is the cursor of `sync/pull`.
+// ---------------------------------------------------------------------------
+
+enum PlayerShape {
+  CIRCLE
+  ROUNDED_SQUARE
+  TRIANGLE
+  DIAMOND
+
+  @@map("player_shape")
+}
+
+/// Person who plays, with a visual style; may exist without a Meepleo account
+model Player {
+  id            String        @id @db.Uuid
+  userId        String        @map("user_id") @db.Uuid
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  /// #RRGGBB
+  color         String
+  shape         PlayerShape
+  /// Handle of the linked Meepleo account, if any
+  handle        String?
+  /// "It's me": at most one live player per user (partial unique index in the migration)
+  isCurrentUser Boolean       @default(false) @map("is_current_user")
+  playEntries   PlayPlayer[]
+  groupEntries  GroupMember[]
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime      @default(now()) @map("updated_at") @db.Timestamptz(6)
+  deletedAt     DateTime?     @map("deleted_at") @db.Timestamptz(6)
+  revision      BigInt        @default(0)
+
+  @@index([userId, revision])
+  @@map("players")
+}
+
+/// Named set of players; the owner is implicitly a member
+model Group {
+  id        String        @id @db.Uuid
+  userId    String        @map("user_id") @db.Uuid
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  members   GroupMember[]
+  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime      @default(now()) @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime?     @map("deleted_at") @db.Timestamptz(6)
+  revision  BigInt        @default(0)
+
+  @@index([userId, revision])
+  @@map("groups")
+}
+
+model GroupMember {
+  groupId  String @map("group_id") @db.Uuid
+  group    Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  playerId String @map("player_id") @db.Uuid
+  player   Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  position Int
+
+  @@id([groupId, playerId])
+  @@map("group_members")
 }
