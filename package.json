@@ -67,6 +67,7 @@
     "@nestjs/cli": "^12",
     "@nestjs/schematics": "^12",
     "@nestjs/testing": "^12",
+    "@swc/cli": "^0.8.2",
     "@swc/core": "^1.16.21",
     "@types/node": "^24",
     "@types/pg": "^8.23.1",
