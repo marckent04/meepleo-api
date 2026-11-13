@@ -1,4 +1,12 @@
-import { Controller, Delete, Get, HttpCode, Param, Put } from '@nestjs/common'
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Put,
+  Query,
+} from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import {
   ApiBearerAuth,
@@ -15,7 +23,11 @@ import {
 } from '@/domain/catalog'
 import { type Locale, SUPPORTED_LOCALES } from '@/shared/i18n/locale'
 import { CurrentUserId, Language } from '../../common/decorators'
-import { CatalogGameIdParamDto, CatalogResponseDto } from '../dto'
+import {
+  CatalogGameIdParamDto,
+  CatalogResponseDto,
+  UpdatedSinceQueryDto,
+} from '../dto'
 import { ApiErrorResponses } from '../errors'
 
 @ApiTags('catalog')
@@ -41,9 +53,14 @@ export class CatalogController {
   async list(
     @CurrentUserId() userId: string,
     @Language() language: Locale,
+    @Query() query: UpdatedSinceQueryDto,
   ): Promise<CatalogResponseDto> {
     const entries = await this.queryBus.execute(
-      new ListCatalogQuery({ userId, language }),
+      new ListCatalogQuery({
+        userId,
+        language,
+        updatedSince: query.updatedSince ? new Date(query.updatedSince) : null,
+      }),
     )
     return CatalogResponseDto.fromDomain(entries)
   }

@@ -26,5 +26,12 @@
   "INVALID_PLAY_PLAYERS": "The players do not match the teams of the score sheet.",
   "INVALID_PLAY_SCORES": "Some scores do not match the score sheet.",
   "INVALID_PLAY_WINNERS": "Choose the winners among the players of this play.",
-  "GAME_SCORING_TEMPLATE_GENERATION_FAILED": "The score sheet could not be prepared. Please try again later."
+  "GAME_SCORING_TEMPLATE_GENERATION_FAILED": "The score sheet could not be prepared. Please try again later.",
+  "PLAYER_NOT_FOUND": "This player could not be found.",
+  "GROUP_NOT_FOUND": "This group could not be found.",
+  "CURRENT_PLAYER_ALREADY_EXISTS": "You already have a player marked as yourself.",
+  "INVALID_GROUP_MEMBERS": "Some group members are not among your players.",
+  "DEPENDENCY_FAILED": "This item depends on another item that could not be saved.",
+  "SYNC_CONFLICT": "A more recent version of this item exists on the server.",
+  "PAYLOAD_TOO_LARGE": "This batch is too large. Please send fewer changes at once."
 }

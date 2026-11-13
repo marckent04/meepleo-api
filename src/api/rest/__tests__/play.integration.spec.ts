@@ -42,11 +42,22 @@ const play: Play = {
   status: 'in_progress',
   playedAt: new Date('2026-11-10T20:00:00.000Z'),
   completedAt: null,
+  createdAt: new Date('2026-11-10T20:00:00.000Z'),
+  updatedAt: new Date('2026-11-10T20:00:00.000Z'),
+  deletedAt: null,
+  revision: 1,
+  startedAt: null,
+  endedAt: null,
+  durationSeconds: null,
+  firstPlayerId: null,
   note: null,
   players: [
     {
       id: playerId,
       userId,
+      playerId: null,
+      color: null,
+      shape: null,
       name: 'Marc',
       side: 0,
       total: 12,
@@ -142,7 +153,7 @@ describe('/v1/plays (integration)', () => {
       headers,
       payload: {
         gameId,
-        playedAt: '2026-11-10T21:00:00+01:00',
+        playedAt: '2026-11-10T20:00:00Z',
         note: '  ',
         players: [
           { name: ' Marc ', side: 0, isCurrentUser: true },
@@ -176,6 +187,22 @@ describe('/v1/plays (integration)', () => {
         sides: 'individual',
       }),
     )
+  })
+
+  it('POST returns 400 for a date that is not in UTC', async () => {
+    const response = await app.inject({
+      method: 'POST',
+      url: '/v1/plays',
+      headers,
+      payload: {
+        gameId,
+        playedAt: '2026-11-10T21:00:00+01:00',
+        players: [{ name: 'Marc', side: 0 }],
+      },
+    })
+
+    expect(response.statusCode).toBe(400)
+    expect(response.json().code).toBe('VALIDATION_FAILED')
   })
 
   it('POST returns 400 without players', async () => {

@@ -1,7 +1,12 @@
-import type { GameSearchResult } from './game.type'
+import type { CatalogEntry } from './catalog-entry.type'
 
 /** Game favorited by a user. */
-export type FavoriteEntry = GameSearchResult & {
-  /** Date added to favorites. */
-  addedAt: Date
+export type FavoriteEntry = CatalogEntry
+
+/** Write of a game in a list (library, wishlist or favorites) coming from a client. */
+export type GameListWrite = {
+  gameId: string
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date | null
 }

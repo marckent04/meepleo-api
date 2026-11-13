@@ -1,5 +1,5 @@
 import { Query } from '@nestjs/cqrs'
-import { IsISO6391, IsUUID } from 'class-validator'
+import { IsDate, IsISO6391, IsOptional, IsUUID } from 'class-validator'
 import type { FavoriteEntry } from '@/shared/types'
 
 /** User's favorites, most recently added first. */
@@ -11,9 +11,23 @@ export class ListFavoritesQuery extends Query<FavoriteEntry[]> {
   @IsISO6391()
   readonly language: string
 
-  constructor({ userId, language }: { userId: string; language: string }) {
+  /** Includes tombstones of games modified after this date. */
+  @IsOptional()
+  @IsDate()
+  readonly updatedSince: Date | null
+
+  constructor({
+    userId,
+    language,
+    updatedSince,
+  }: {
+    userId: string
+    language: string
+    updatedSince?: Date | null
+  }) {
     super()
     this.userId = userId
     this.language = language
+    this.updatedSince = updatedSince ?? null
   }
 }

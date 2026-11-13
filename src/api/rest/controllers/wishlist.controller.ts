@@ -1,4 +1,12 @@
-import { Controller, Delete, Get, HttpCode, Param, Put } from '@nestjs/common'
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Put,
+  Query,
+} from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import {
   ApiBearerAuth,
@@ -15,7 +23,11 @@ import {
 } from '@/domain/wishlist'
 import { type Locale, SUPPORTED_LOCALES } from '@/shared/i18n/locale'
 import { CurrentUserId, Language } from '../../common/decorators'
-import { WishlistGameIdParamDto, WishlistResponseDto } from '../dto'
+import {
+  UpdatedSinceQueryDto,
+  WishlistGameIdParamDto,
+  WishlistResponseDto,
+} from '../dto'
 import { ApiErrorResponses } from '../errors'
 
 @ApiTags('wishlist')
@@ -41,9 +53,14 @@ export class WishlistController {
   async list(
     @CurrentUserId() userId: string,
     @Language() language: Locale,
+    @Query() query: UpdatedSinceQueryDto,
   ): Promise<WishlistResponseDto> {
     const entries = await this.queryBus.execute(
-      new ListWishlistQuery({ userId, language }),
+      new ListWishlistQuery({
+        userId,
+        language,
+        updatedSince: query.updatedSince ? new Date(query.updatedSince) : null,
+      }),
     )
     return WishlistResponseDto.fromDomain(entries)
   }

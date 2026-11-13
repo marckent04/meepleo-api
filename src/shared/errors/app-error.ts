@@ -110,6 +110,14 @@ export class BusinessRuleError extends AppError {
   }
 }
 
+export class PayloadTooLargeError extends AppError {
+  readonly statusCode = 413
+
+  constructor(message = 'Payload too large', options?: AppErrorOptions) {
+    super(message, ErrorCode.PAYLOAD_TOO_LARGE, options)
+  }
+}
+
 export class TooManyRequestsError extends AppError {
   readonly statusCode = 429
 

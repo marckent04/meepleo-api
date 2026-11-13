@@ -5,6 +5,7 @@ import {
   IsDate,
   IsIn,
   IsISO6391,
+  IsOptional,
   IsString,
   IsUUID,
   MaxLength,
@@ -25,6 +26,8 @@ import {
 } from './play-inputs'
 
 export type CreatePlayCommandParams = {
+  /** Client-generated id (UUID v7) for offline creation. */
+  id?: string | null
   userId: string
   gameId: string
   /** ISO 639-1 code of the texts' language (e.g. `fr`). */
@@ -44,6 +47,10 @@ export type CreatePlayCommandParams = {
  * template (the game's, the default one, or the one sent).
  */
 export class CreatePlayCommand extends Command<Play> {
+  @IsOptional()
+  @IsUUID()
+  readonly id: string | null
+
   @IsUUID()
   readonly userId: string
 
@@ -77,6 +84,7 @@ export class CreatePlayCommand extends Command<Play> {
 
   constructor(params: CreatePlayCommandParams) {
     super()
+    this.id = params.id ?? null
     this.userId = params.userId
     this.gameId = params.gameId
     this.language = params.language

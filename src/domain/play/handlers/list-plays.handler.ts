@@ -23,7 +23,16 @@ export class ListPlaysHandler extends AppQueryHandler<
     language,
     gameId,
     limit,
+    page,
+    status,
+    updatedSince,
   }: ListPlaysQuery): Promise<PlaySummary[]> {
-    return this.playRepository.listByUser(userId, language, { gameId, limit })
+    return this.playRepository.listByUser(userId, language, {
+      gameId,
+      status,
+      updatedSince,
+      limit,
+      offset: (page - 1) * limit,
+    })
   }
 }

@@ -84,6 +84,9 @@ describe('/v1/favorites (integration)', () => {
         categories: ['strategy'],
         imageUrl: null,
         addedAt: new Date('2026-11-06T12:00:00.000Z'),
+        updatedAt: new Date('2026-11-06T12:00:00.000Z'),
+        deletedAt: null,
+        revision: 1,
       },
     ])
 
@@ -102,6 +105,8 @@ describe('/v1/favorites (integration)', () => {
         categories: ['strategy'],
         imageUrl: null,
         addedAt: '2026-11-06T12:00:00.000Z',
+        updatedAt: '2026-11-06T12:00:00.000Z',
+        revision: 1,
       },
     ])
     expect(queryExecute).toHaveBeenCalledWith(

@@ -54,6 +54,9 @@ describe('PlayRepository', () => {
         players: [
           {
             userId: 'user-1',
+            playerId: null,
+            color: null,
+            shape: null,
             name: 'Marc',
             side: 0,
             total: 0,
@@ -62,6 +65,9 @@ describe('PlayRepository', () => {
           },
           {
             userId: null,
+            playerId: null,
+            color: null,
+            shape: null,
             name: 'Léa',
             side: 1,
             total: 0,
@@ -119,7 +125,13 @@ describe('PlayRepository', () => {
   it('lists the plays of a game, most recent first', async () => {
     const { repository, tx } = setup()
 
-    await repository.listByUser('user-1', 'fr', { gameId: 'game-1', limit: 5 })
+    await repository.listByUser('user-1', 'fr', {
+      gameId: 'game-1',
+      status: null,
+      updatedSince: null,
+      limit: 5,
+      offset: 0,
+    })
 
     expect(tx.play.findMany).toHaveBeenCalledWith({
       where: {
@@ -130,6 +142,7 @@ describe('PlayRepository', () => {
       },
       orderBy: [{ playedAt: 'desc' }, { id: 'desc' }],
       take: 5,
+      skip: 0,
       include: PLAY_SUMMARY_INCLUDE,
     })
   })
@@ -162,7 +175,11 @@ describe('PlayRepository', () => {
 
     expect(tx.play.update).toHaveBeenCalledWith({
       where: { id: 'play-1' },
-      data: { status: 'COMPLETED', completedAt: date },
+      data: {
+        status: 'COMPLETED',
+        completedAt: date,
+        updatedAt: expect.any(Date),
+      },
     })
     expect(tx.playPlayer.updateMany).toHaveBeenCalledWith({
       where: { playId: 'play-1', side: { notIn: [1] } },
@@ -181,7 +198,11 @@ describe('PlayRepository', () => {
 
     expect(tx.play.update).toHaveBeenCalledWith({
       where: { id: 'play-1' },
-      data: { status: 'IN_PROGRESS', completedAt: null },
+      data: {
+        status: 'IN_PROGRESS',
+        completedAt: null,
+        updatedAt: expect.any(Date),
+      },
     })
     expect(tx.playPlayer.updateMany).toHaveBeenCalledTimes(1)
   })
@@ -193,7 +214,7 @@ describe('PlayRepository', () => {
 
     expect(tx.play.updateMany).toHaveBeenCalledWith({
       where: { id: 'play-1', userId: 'user-1', deletedAt: null },
-      data: { deletedAt: expect.any(Date) },
+      data: { deletedAt: expect.any(Date), updatedAt: expect.any(Date) },
     })
   })
 })

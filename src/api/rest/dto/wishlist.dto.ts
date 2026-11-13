@@ -1,7 +1,7 @@
 import { createZodDto } from 'nestjs-zod'
 import { z } from 'zod'
 import type { CatalogEntry } from '@/shared/types'
-import { CatalogEntrySchema } from './catalog.dto'
+import { CatalogEntrySchema, CatalogResponseDto } from './catalog.dto'
 
 export const WishlistResponseSchema = z
   .array(CatalogEntrySchema)
@@ -11,11 +11,7 @@ export class WishlistResponseDto extends createZodDto(WishlistResponseSchema, {
   codec: true,
 }) {
   static fromDomain(entries: CatalogEntry[]): WishlistResponseDto {
-    return entries.map((entry) => ({
-      ...entry,
-      categories: [...entry.categories],
-      addedAt: entry.addedAt.toISOString(),
-    }))
+    return CatalogResponseDto.fromDomain(entries)
   }
 }
 

@@ -18,7 +18,15 @@ export class ListFavoritesHandler extends AppQueryHandler<
     this.logger.setContext(ListFavoritesHandler.name)
   }
 
-  handle({ userId, language }: ListFavoritesQuery): Promise<FavoriteEntry[]> {
-    return this.userFavoriteRepository.listByUser(userId, language)
+  handle({
+    userId,
+    language,
+    updatedSince,
+  }: ListFavoritesQuery): Promise<FavoriteEntry[]> {
+    return this.userFavoriteRepository.listByUser(
+      userId,
+      language,
+      updatedSince ?? undefined,
+    )
   }
 }

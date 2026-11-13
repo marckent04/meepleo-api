@@ -1,4 +1,12 @@
-import { Controller, Delete, Get, HttpCode, Param, Put } from '@nestjs/common'
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Put,
+  Query,
+} from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import {
   ApiBearerAuth,
@@ -15,7 +23,11 @@ import {
 } from '@/domain/favorites'
 import { type Locale, SUPPORTED_LOCALES } from '@/shared/i18n/locale'
 import { CurrentUserId, Language } from '../../common/decorators'
-import { FavoriteGameIdParamDto, FavoritesResponseDto } from '../dto'
+import {
+  FavoriteGameIdParamDto,
+  FavoritesResponseDto,
+  UpdatedSinceQueryDto,
+} from '../dto'
 import { ApiErrorResponses } from '../errors'
 
 @ApiTags('favorites')
@@ -41,9 +53,14 @@ export class FavoritesController {
   async list(
     @CurrentUserId() userId: string,
     @Language() language: Locale,
+    @Query() query: UpdatedSinceQueryDto,
   ): Promise<FavoritesResponseDto> {
     const entries = await this.queryBus.execute(
-      new ListFavoritesQuery({ userId, language }),
+      new ListFavoritesQuery({
+        userId,
+        language,
+        updatedSince: query.updatedSince ? new Date(query.updatedSince) : null,
+      }),
     )
     return FavoritesResponseDto.fromDomain(entries)
   }

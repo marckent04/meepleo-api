@@ -1,9 +1,11 @@
 import {
   ArrayMaxSize,
   IsBoolean,
+  IsHexColor,
   IsIn,
   IsInt,
   IsString,
+  IsUUID,
   Length,
   Matches,
   Max,
@@ -12,6 +14,8 @@ import {
   ValidateNested,
 } from 'class-validator'
 import {
+  PLAYER_SHAPES,
+  type PlayerShape,
   type PlayScore,
   SCORING_HINT_MAX_LENGTH,
   SCORING_LABEL_MAX_LENGTH,
@@ -65,6 +69,46 @@ export class PlayerInput {
     this.name = name
     this.side = side
     this.isCurrentUser = isCurrentUser
+  }
+}
+
+/** Player of an offline-first play: reference to a `Player` plus its snapshot. */
+export class PlayEntryInput {
+  @IsUUID()
+  readonly playerId: string
+
+  @IsString()
+  @Length(1, PLAY_PLAYER_NAME_MAX_LENGTH)
+  readonly name: string
+
+  @IsHexColor()
+  readonly color: string
+
+  @IsIn(PLAYER_SHAPES)
+  readonly shape: PlayerShape
+
+  @IsInt()
+  @Min(0)
+  @Max(PLAY_MAX_PLAYERS - 1)
+  readonly side: number
+
+  @IsBoolean()
+  readonly isCurrentUser: boolean
+
+  constructor(entry: {
+    playerId: string
+    name: string
+    color: string
+    shape: PlayerShape
+    side: number
+    isCurrentUser: boolean
+  }) {
+    this.playerId = entry.playerId
+    this.name = entry.name
+    this.color = entry.color
+    this.shape = entry.shape
+    this.side = entry.side
+    this.isCurrentUser = entry.isCurrentUser
   }
 }
 

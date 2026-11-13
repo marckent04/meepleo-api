@@ -18,7 +18,16 @@ export class ListWishlistHandler extends AppQueryHandler<
     this.logger.setContext(ListWishlistHandler.name)
   }
 
-  handle({ userId, language }: ListWishlistQuery): Promise<CatalogEntry[]> {
-    return this.userGameRepository.listByUser(userId, language, 'wishlist')
+  handle({
+    userId,
+    language,
+    updatedSince,
+  }: ListWishlistQuery): Promise<CatalogEntry[]> {
+    return this.userGameRepository.listByUser(
+      userId,
+      language,
+      'wishlist',
+      updatedSince ?? undefined,
+    )
   }
 }

@@ -32,6 +32,13 @@ export enum ErrorCode {
   INVALID_PLAY_SCORES = 'INVALID_PLAY_SCORES',
   INVALID_PLAY_WINNERS = 'INVALID_PLAY_WINNERS',
   GAME_SCORING_TEMPLATE_GENERATION_FAILED = 'GAME_SCORING_TEMPLATE_GENERATION_FAILED',
+  PLAYER_NOT_FOUND = 'PLAYER_NOT_FOUND',
+  GROUP_NOT_FOUND = 'GROUP_NOT_FOUND',
+  CURRENT_PLAYER_ALREADY_EXISTS = 'CURRENT_PLAYER_ALREADY_EXISTS',
+  INVALID_GROUP_MEMBERS = 'INVALID_GROUP_MEMBERS',
+  DEPENDENCY_FAILED = 'DEPENDENCY_FAILED',
+  SYNC_CONFLICT = 'SYNC_CONFLICT',
+  PAYLOAD_TOO_LARGE = 'PAYLOAD_TOO_LARGE',
 }
 
 export const ERROR_CODES: Record<
@@ -150,6 +157,34 @@ export const ERROR_CODES: Record<
     expected: false,
     description: 'AI generation of the score sheet template failed',
   },
+  [ErrorCode.PLAYER_NOT_FOUND]: {
+    expected: true,
+    description: 'Player not found',
+  },
+  [ErrorCode.GROUP_NOT_FOUND]: {
+    expected: true,
+    description: 'Group not found',
+  },
+  [ErrorCode.CURRENT_PLAYER_ALREADY_EXISTS]: {
+    expected: true,
+    description: 'The user already has a "me" player',
+  },
+  [ErrorCode.INVALID_GROUP_MEMBERS]: {
+    expected: true,
+    description: 'A group member is not a player of the user',
+  },
+  [ErrorCode.DEPENDENCY_FAILED]: {
+    expected: true,
+    description: 'A sync item depends on another item that was rejected',
+  },
+  [ErrorCode.SYNC_CONFLICT]: {
+    expected: true,
+    description: 'A newer version exists on the server',
+  },
+  [ErrorCode.PAYLOAD_TOO_LARGE]: {
+    expected: true,
+    description: 'The sync batch exceeds the maximum size',
+  },
 }
 
 export function isErrorCode(code: unknown): code is ErrorCode {
@@ -169,6 +204,8 @@ export function genericErrorCodeForStatus(statusCode: number): ErrorCode {
       return ErrorCode.NOT_FOUND
     case 409:
       return ErrorCode.CONFLICT
+    case 413:
+      return ErrorCode.PAYLOAD_TOO_LARGE
     case 422:
       return ErrorCode.UNPROCESSABLE_ENTITY
     case 429:

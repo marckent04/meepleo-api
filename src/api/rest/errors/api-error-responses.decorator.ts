@@ -8,6 +8,7 @@ const DESCRIPTIONS: Record<number, string> = {
   403: 'Action not allowed',
   404: 'Resource not found',
   409: 'Conflict with an existing resource',
+  413: 'Payload too large (PAYLOAD_TOO_LARGE)',
   422: 'Business rule violated',
   429: 'Too many requests',
   500: 'Internal error',

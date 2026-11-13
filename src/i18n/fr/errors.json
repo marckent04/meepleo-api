@@ -26,5 +26,12 @@
   "INVALID_PLAY_PLAYERS": "Les joueurs ne correspondent pas aux équipes de la feuille de score.",
   "INVALID_PLAY_SCORES": "Certains scores ne correspondent pas à la feuille de score.",
   "INVALID_PLAY_WINNERS": "Choisissez les gagnants parmi les joueurs de cette partie.",
-  "GAME_SCORING_TEMPLATE_GENERATION_FAILED": "La feuille de score n'a pas pu être préparée. Réessayez plus tard."
+  "GAME_SCORING_TEMPLATE_GENERATION_FAILED": "La feuille de score n'a pas pu être préparée. Réessayez plus tard.",
+  "PLAYER_NOT_FOUND": "Ce joueur est introuvable.",
+  "GROUP_NOT_FOUND": "Ce groupe est introuvable.",
+  "CURRENT_PLAYER_ALREADY_EXISTS": "Vous avez déjà un joueur marqué comme vous-même.",
+  "INVALID_GROUP_MEMBERS": "Certains membres du groupe ne font pas partie de vos joueurs.",
+  "DEPENDENCY_FAILED": "Cet élément dépend d'un autre élément qui n'a pas pu être enregistré.",
+  "SYNC_CONFLICT": "Une version plus récente de cet élément existe sur le serveur.",
+  "PAYLOAD_TOO_LARGE": "Ce lot est trop volumineux. Envoyez moins de modifications à la fois."
 }

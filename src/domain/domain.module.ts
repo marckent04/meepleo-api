@@ -6,8 +6,11 @@ import * as favoritesHandlers from './favorites/handlers'
 import * as gameHandlers from './game/handlers'
 import * as gameSagas from './game/sagas'
 import * as gameSheetHandlers from './game-sheet/handlers'
+import * as groupHandlers from './group/handlers'
 import * as healthHandlers from './health/handlers'
 import * as playHandlers from './play/handlers'
+import * as playerHandlers from './player/handlers'
+import * as syncHandlers from './sync/handlers'
 import * as wishlistHandlers from './wishlist/handlers'
 
 /**
@@ -23,6 +26,9 @@ import * as wishlistHandlers from './wishlist/handlers'
     ...Object.values(favoritesHandlers),
     ...Object.values(wishlistHandlers),
     ...Object.values(playHandlers),
+    ...Object.values(playerHandlers),
+    ...Object.values(groupHandlers),
+    ...Object.values(syncHandlers),
     ...Object.values(gameSheetHandlers),
     ...Object.values(gameHandlers),
     ...Object.values(gameSagas),

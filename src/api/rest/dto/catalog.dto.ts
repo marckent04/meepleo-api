@@ -1,6 +1,7 @@
 import { createZodDto } from 'nestjs-zod'
 import { z } from 'zod'
 import { type CatalogEntry, GAME_CATEGORIES } from '@/shared/types'
+import { SyncResponseFields, toSyncResponse } from './sync-fields.dto'
 
 export const CatalogEntrySchema = z.object({
   id: z.uuid().describe('Game identifier'),
@@ -17,6 +18,9 @@ export const CatalogEntrySchema = z.object({
     .datetime()
     .describe('Date added to the catalog (ISO 8601, UTC)')
     .meta({ example: '2026-01-01T12:00:00.000Z' }),
+  updatedAt: SyncResponseFields.updatedAt,
+  revision: SyncResponseFields.revision,
+  deletedAt: SyncResponseFields.deletedAt,
 })
 
 export const CatalogResponseSchema = z
@@ -27,11 +31,19 @@ export class CatalogResponseDto extends createZodDto(CatalogResponseSchema, {
   codec: true,
 }) {
   static fromDomain(entries: CatalogEntry[]): CatalogResponseDto {
-    return entries.map((entry) => ({
-      ...entry,
-      categories: [...entry.categories],
-      addedAt: entry.addedAt.toISOString(),
-    }))
+    return entries.map(
+      ({ addedAt, updatedAt, deletedAt, revision, ...entry }) => ({
+        ...entry,
+        categories: [...entry.categories],
+        addedAt: addedAt.toISOString(),
+        ...toSyncResponse({
+          createdAt: addedAt,
+          updatedAt,
+          deletedAt,
+          revision,
+        }),
+      }),
+    )
   }
 }
 

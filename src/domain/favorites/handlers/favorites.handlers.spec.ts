@@ -90,6 +90,10 @@ describe('favorites handlers', () => {
     )
 
     expect(result).toBe(entries)
-    expect(userFavoriteRepository.listByUser).toHaveBeenCalledWith(userId, 'fr')
+    expect(userFavoriteRepository.listByUser).toHaveBeenCalledWith(
+      userId,
+      'fr',
+      undefined,
+    )
   })
 })

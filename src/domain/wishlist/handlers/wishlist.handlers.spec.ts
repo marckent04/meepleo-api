@@ -131,6 +131,7 @@ describe('wishlist handlers', () => {
       userId,
       'fr',
       'wishlist',
+      undefined,
     )
   })
 })

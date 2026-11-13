@@ -54,6 +54,7 @@ export class CreatePlayHandler extends AppCommandHandler<
     const results = computeSideResults(scoring, sideCount, [])
     return this.playRepository.create(
       {
+        ...(command.id ? { id: command.id } : {}),
         userId,
         gameId,
         playedAt: command.playedAt ?? new Date(),
@@ -61,6 +62,9 @@ export class CreatePlayHandler extends AppCommandHandler<
         scoring,
         players: players.map(({ name, side, isCurrentUser }) => ({
           userId: isCurrentUser ? userId : null,
+          playerId: null,
+          color: null,
+          shape: null,
           name,
           side,
           total: results[side].total,

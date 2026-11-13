@@ -113,6 +113,7 @@ describe('catalog handlers', () => {
       userId,
       'fr',
       'owned',
+      undefined,
     )
   })
 })

@@ -5,6 +5,7 @@ import type {
   Prisma,
 } from '../generated/prisma/client'
 import { localized } from './localized-text.mapper'
+import { toPlayerShape } from './player.mapper'
 import { toPlayScoringTemplate } from './scoring-template.mapper'
 
 const PLAY_GAME_SELECT = {
@@ -47,7 +48,10 @@ function toPlayPlayer(record: PlayPlayerRecord): PlayPlayer {
   return {
     id: record.id,
     userId: record.userId,
+    playerId: record.playerId,
     name: record.name,
+    color: record.color,
+    shape: record.shape ? toPlayerShape(record.shape) : null,
     side: record.side,
     total: record.total,
     rank: record.rank,
@@ -70,8 +74,16 @@ export function toPlaySummary(
     status: toPlayStatus(record.status),
     playedAt: record.playedAt,
     completedAt: record.completedAt,
+    startedAt: record.startedAt,
+    endedAt: record.endedAt,
+    durationSeconds: record.durationSeconds,
+    firstPlayerId: record.firstPlayerId,
     note: record.note,
     players: record.players.map(toPlayPlayer),
+    createdAt: record.createdAt,
+    updatedAt: record.updatedAt,
+    deletedAt: record.deletedAt,
+    revision: Number(record.revision),
   }
 }
 

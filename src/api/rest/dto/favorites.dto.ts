@@ -1,6 +1,7 @@
 import { createZodDto } from 'nestjs-zod'
 import { z } from 'zod'
 import { type FavoriteEntry, GAME_CATEGORIES } from '@/shared/types'
+import { SyncResponseFields, toSyncResponse } from './sync-fields.dto'
 
 export const FavoriteEntrySchema = z.object({
   id: z.uuid().describe('Game identifier'),
@@ -17,6 +18,9 @@ export const FavoriteEntrySchema = z.object({
     .datetime()
     .describe('Date added to favorites (ISO 8601, UTC)')
     .meta({ example: '2026-01-01T12:00:00.000Z' }),
+  updatedAt: SyncResponseFields.updatedAt,
+  revision: SyncResponseFields.revision,
+  deletedAt: SyncResponseFields.deletedAt,
 })
 
 export const FavoritesResponseSchema = z
@@ -30,11 +34,19 @@ export class FavoritesResponseDto extends createZodDto(
   },
 ) {
   static fromDomain(entries: FavoriteEntry[]): FavoritesResponseDto {
-    return entries.map((entry) => ({
-      ...entry,
-      categories: [...entry.categories],
-      addedAt: entry.addedAt.toISOString(),
-    }))
+    return entries.map(
+      ({ addedAt, updatedAt, deletedAt, revision, ...entry }) => ({
+        ...entry,
+        categories: [...entry.categories],
+        addedAt: addedAt.toISOString(),
+        ...toSyncResponse({
+          createdAt: addedAt,
+          updatedAt,
+          deletedAt,
+          revision,
+        }),
+      }),
+    )
   }
 }
 

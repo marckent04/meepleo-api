@@ -64,6 +64,9 @@ function player(side: number, overrides: Partial<PlayPlayer> = {}): PlayPlayer {
   return {
     id: `0195d1a2-0000-7000-8000-00000000010${side}`,
     userId: null,
+    playerId: null,
+    color: null,
+    shape: null,
     name: `Player ${side}`,
     side,
     total: 0,
@@ -80,6 +83,14 @@ function play(overrides: Partial<Play> = {}): Play {
     status: 'in_progress',
     playedAt: new Date('2026-11-10T20:00:00.000Z'),
     completedAt: null,
+    createdAt: new Date('2026-11-10T20:00:00.000Z'),
+    updatedAt: new Date('2026-11-10T20:00:00.000Z'),
+    deletedAt: null,
+    revision: 1,
+    startedAt: null,
+    endedAt: null,
+    durationSeconds: null,
+    firstPlayerId: null,
     note: null,
     players: [player(0), player(1)],
     scoring: lowestRounds,
@@ -555,7 +566,10 @@ describe('play handlers', () => {
 
     expect(playRepository.listByUser).toHaveBeenCalledWith(userId, 'fr', {
       gameId,
+      status: null,
+      updatedSince: null,
       limit: 20,
+      offset: 0,
     })
   })
 })
