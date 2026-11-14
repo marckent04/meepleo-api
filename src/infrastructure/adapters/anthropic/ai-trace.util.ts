@@ -40,6 +40,21 @@ type TracedResponse = Pick<
 > & { parsed_output?: unknown }
 
 /**
+ * The response arrived (and was billed) but its structured output could not
+ * be parsed, e.g. a JSON truncated at `max_tokens`. Carries the last stream
+ * snapshot so the trace keeps its usage and stop reason.
+ */
+export class UnparsedResponseError extends Error {
+  constructor(
+    readonly response: TracedResponse,
+    cause: unknown,
+  ) {
+    super('Structured output could not be parsed', { cause })
+    this.name = UnparsedResponseError.name
+  }
+}
+
+/**
  * Accumulates the trace of an AI operation over one or more API calls:
  * duration, number of calls, tokens, and output of the last response.
  */
@@ -75,6 +90,9 @@ export class AiTraceRecorder {
       const response = await request()
       this.record(response)
       return response
+    } catch (error) {
+      if (error instanceof UnparsedResponseError) this.record(error.response)
+      throw error
     } finally {
       this.durationMs += performance.now() - start
     }

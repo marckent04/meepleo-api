@@ -40,8 +40,24 @@ function response(overrides: Record<string, unknown> = {}) {
 
 describe('GameSheetGenerator', () => {
   const sheetConfig = { failureCooldownSeconds: 120 }
+  /** Final message of each streamed request (receives the request params). */
   const parse = vi.fn()
-  const client = { messages: { parse } } as unknown as Anthropic
+  /** Last snapshot emitted by the stream before its final message, if any. */
+  const snapshot = vi.fn()
+  const stream = vi.fn((params: unknown) => {
+    let onEvent: ((event: unknown, message: unknown) => void) | undefined
+    return {
+      on: (_name: string, listener: typeof onEvent) => {
+        onEvent = listener
+      },
+      finalMessage: async () => {
+        const last = snapshot()
+        if (last) onEvent?.({ type: 'message_delta' }, last)
+        return parse(params)
+      },
+    }
+  })
+  const client = { messages: { stream } } as unknown as Anthropic
   const generator = new GameSheetGenerator(
     client,
     config,
@@ -121,7 +137,7 @@ describe('GameSheetGenerator', () => {
       promptVersion: expect.stringMatching(/^[0-9a-f]{12}$/),
       settings: {
         effort: 'medium',
-        maxTokens: 16_000,
+        maxTokens: 32_000,
         tools: [
           { name: 'web_search', maxUses: 5 },
           { name: 'web_fetch', maxUses: 3 },
@@ -363,6 +379,38 @@ describe('GameSheetGenerator', () => {
       requestCount: 1,
       stopReason: null,
       usage: { inputTokens: 0, outputTokens: 0 },
+    })
+  })
+
+  it('streams with a 32K output budget', async () => {
+    parse.mockResolvedValue(response())
+
+    await generator.generate(game, 'fr')
+
+    expect(stream).toHaveBeenCalledTimes(1)
+    expect(parse.mock.calls[0][0]).toMatchObject({ max_tokens: 32_000 })
+  })
+
+  it('traces the usage of an output truncated mid-JSON', async () => {
+    snapshot.mockReturnValue(
+      response({
+        stop_reason: 'max_tokens',
+        parsed_output: undefined,
+        content: [{ type: 'text', text: '{"game": {"edition": "' }],
+        usage: { input_tokens: 10, output_tokens: 32_000 },
+      }),
+    )
+    parse.mockRejectedValue(new Error('Failed to parse structured output'))
+
+    const error = await generator.generate(game, 'fr').catch((e) => e)
+
+    expect(error).toBeInstanceOf(AiCallFailedError)
+    expect(error.code).toBe(ErrorCode.GAME_SHEET_GENERATION_FAILED)
+    expect(error.trace).toMatchObject({
+      requestCount: 1,
+      stopReason: 'max_tokens',
+      usage: { inputTokens: 10, outputTokens: 32_000 },
+      rawText: '{"game": {"edition": "',
     })
   })
 

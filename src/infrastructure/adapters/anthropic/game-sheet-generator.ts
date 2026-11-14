@@ -17,6 +17,7 @@ import {
   AiTraceRecorder,
   promptVersion,
   toAiCallSettings,
+  UnparsedResponseError,
 } from './ai-trace.util'
 import { ANTHROPIC_CLIENT, cachedSystemPrompt } from './anthropic.client'
 import {
@@ -30,7 +31,11 @@ import {
 
 /** Maximum retries when the server tool loop is interrupted (`pause_turn`). */
 const MAX_CONTINUATIONS = 5
-const MAX_TOKENS = 16_000
+/**
+ * Thinking and the sheet share this budget: sheets reach ~16K output tokens,
+ * and at 16K about 5% of generations were cut mid-JSON (sheet eval baseline).
+ */
+const MAX_TOKENS = 32_000
 
 /**
  * Base variants: the `_20260209` variants (dynamic filtering) do not
@@ -146,9 +151,14 @@ export class GameSheetGenerator {
     this.logger.info({ gameId: game.id, language, ...summary })
   }
 
+  /**
+   * Streamed: required by the SDK above ~21K max tokens. The last snapshot
+   * (usage, stop reason) is kept for an output that cannot be parsed.
+   */
   private async request(model: string, messages: Anthropic.MessageParam[]) {
+    let snapshot: Anthropic.Message | undefined
     try {
-      return await this.client.messages.parse({
+      const stream = this.client.messages.stream({
         model,
         max_tokens: MAX_TOKENS,
         system: cachedSystemPrompt(GAME_SHEET_SYSTEM_PROMPT),
@@ -159,7 +169,14 @@ export class GameSheetGenerator {
           format: OUTPUT_FORMAT,
         },
       })
+      stream.on('streamEvent', (_event, message) => {
+        snapshot = message
+      })
+      return await stream.finalMessage()
     } catch (error) {
+      if (!(error instanceof Anthropic.APIError) && snapshot) {
+        throw new UnparsedResponseError(snapshot, error)
+      }
       if (error instanceof Anthropic.APIError) {
         throw new InternalError('Anthropic API call failed', {
           code: ErrorCode.GAME_SHEET_GENERATION_FAILED,
