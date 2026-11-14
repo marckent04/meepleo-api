@@ -1,0 +1,187 @@
+{
+  "game_title": "Deluxe Tri-Ominos",
+  "edition_notes": "Pressman Toy Corporation, ©2009, code 4418/0710; 2 to 4 players, ages 8 to adult",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Place all Tri-Omino tiles face down and mix them; they form the pool, and the tiles left after dealing form the 'well'.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "A scorekeeper writes down each player's name on paper and adds or subtracts points in each player's column as plays are made.",
+      "critical": false
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "In a 2-player game each player takes 9 tiles.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "In a 3- or 4-player game each player takes 7 tiles.",
+      "critical": true
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "Players place their tiles on their rack with the numbers facing themselves and must hide them from the other players.",
+      "critical": false
+    },
+    {
+      "id": "k6",
+      "section": "turn",
+      "rule": "The round starts with the player holding the triple tile (three identical numbers) of the highest value (5-5-5 is highest, then 4-4-4, etc.), who places it face up on the table.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "turn",
+      "rule": "The starting player scores the sum of the three numbers on the starting tile plus a 10 point bonus.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "special",
+      "rule": "If the three 0s tile starts the round, the player gets a 30 point bonus in addition to the normal 10 point bonus (plus the tile sum of 0).",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "special",
+      "rule": "A player holding both the highest triple and the three 0s may start with either; to start with the three 0s for the bonus, they must show the other players the tile with the highest same-number triple.",
+      "critical": false
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "If no player has a triple tile, the player with the highest total on one tile starts and scores that total with no bonus points.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "Play proceeds clockwise; on a turn the player must try to match two numbers (a side) of a tile already on the table with one of their tiles, and scores the sum of the three numbers on the tile placed.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "turn",
+      "rule": "A player who cannot match draws tiles from the well, keeping them separate from the hand until a matching tile is picked.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "turn",
+      "rule": "For each tile drawn from the well, 5 points are deducted from the player's score; after the deduction, the points of the matching tile played are added.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "special",
+      "rule": "If a player cannot match and the well is empty, 10 points are deducted from their score and play continues.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "scoring",
+      "rule": "Closed hexagon bonus: matching all three numbers of a tile and forming a closed hexagon scores the sum of the three numbers plus 50 points.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "scoring",
+      "rule": "Bridge bonus: matching a tile by one side and the point opposite forms a bridge and scores the sum of the three numbers plus 40 points.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "scoring",
+      "rule": "After a bridge has been formed, a player who matches two sides of a tile (completing it) receives the sum of the three numbers plus a 40 point bonus.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "end_trigger",
+      "rule": "A round ends when a player plays all their tiles, or when all players have passed and the game is blocked.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "scoring",
+      "rule": "The player who plays all their tiles first wins the round and gets a 25 point bonus plus the total points of all tiles left in the other players' hands; the others do not deduct those points.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "scoring",
+      "rule": "If the game is blocked, the player with the fewest tiles wins the round and adds all points from the other players' hands, with no bonus points.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "scoring",
+      "rule": "In a blocked round, the winning player must also deduct the total points left in their own hand from their score.",
+      "critical": true
+    },
+    {
+      "id": "k22",
+      "section": "turn",
+      "rule": "For a new round, turn all tiles face down, mix them, and each player picks new tiles; the round starts as the first, with the player who now holds the highest triple.",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "end_trigger",
+      "rule": "The game ends when a player reaches 400 points; if this happens mid-round, play continues until the round is over.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "winner",
+      "rule": "The first player to reach 400 points wins the game.",
+      "critical": true
+    },
+    {
+      "id": "k25",
+      "section": "tie_break",
+      "rule": "If more than one player passes 400 points during the round, the winner of that round wins the game.",
+      "critical": true
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 4445,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 4445,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 1669,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 4445,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 4445,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 1669,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

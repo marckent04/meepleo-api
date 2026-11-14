@@ -1,0 +1,259 @@
+{
+  "game_title": "Carcassonne – Édition Hiver (Winter Edition)",
+  "edition_notes": "Klaus-Jürgen Wrede; © 2012, 2022 Hans im Glück / Z-Man Games; French adaptation by Edge Studio (Asmodee). The rulebook includes the Farmers, River and Abbot as add-ons.",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Place the starting tile (the one with the dark back) face up in the center of the table.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Shuffle the remaining land tiles and set them face down in several piles within easy reach of all players.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "For the first game, put the 12 River tiles (dark back) back in the box and do not use them.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "Place the scoreboard at the edge of the table.",
+      "critical": false
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "Each player takes 7 meeples of one color as their personal supply and places their 8th meeple on space 0 of the score track as their score marker.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "setup",
+      "rule": "Meeples of unused colors and the 5 abbots are put back in the box.",
+      "critical": false
+    },
+    {
+      "id": "k7",
+      "section": "setup",
+      "rule": "The youngest player goes first; play proceeds clockwise (to the left).",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "A turn has three actions in order: 1) place a tile, 2) place a meeple, 3) score areas.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "Action 1 (mandatory): draw one new land tile and place it face up so that it extends existing areas (cities, roads, fields) of a tile already on the table. Touching edges must match, so a city section can only be placed next to a city section.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "If a drawn tile cannot be placed anywhere, put it back in the box and draw a new one.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "Action 2 (optional): you may place 1 meeple from your supply on the tile you just placed, and only on that tile.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "turn",
+      "rule": "A meeple may only be placed in an unoccupied area: no meeple may already be in that connected road, city or abbey, even if the area is connected through other tiles.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "turn",
+      "rule": "A meeple is called a thief on a road, a knight in a city, and a monk on an abbey. The abbey is always in the center of its tile.",
+      "critical": false
+    },
+    {
+      "id": "k14",
+      "section": "turn",
+      "rule": "Action 3 (mandatory): score all areas completed by the tile you just placed. Scoring happens at the end of the turn, and every player with meeples in a completed area scores, even if an opponent placed the completing tile.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "special",
+      "rule": "A road is complete when both ends lead to a village, city, abbey or other illustrated obstacle, or when it forms a closed loop.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "special",
+      "rule": "A city is complete when it is fully enclosed by walls with no gaps inside.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "special",
+      "rule": "An abbey is complete when it is surrounded by 8 tiles.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "special",
+      "rule": "After an area is scored, each player with meeples in it returns them to their personal supply. Meeples in areas that are not scored stay in place.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "special",
+      "rule": "If several players have meeples in an area being scored, the player with the most meeples scores all the points. If there is a tie for most meeples, each tied player scores the full points.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "special",
+      "rule": "Record points by moving your score marker along the track. When it passes 50 and returns to 0, lay the marker down to show you have scored 50 points.",
+      "critical": false
+    },
+    {
+      "id": "k21",
+      "section": "special",
+      "rule": "Players can occupy the same area by placing meeples on separate sections that are not yet connected, then merging them later by placing tiles. This is how a player can take over a city or road from a rival with more meeples.",
+      "critical": false
+    },
+    {
+      "id": "k22",
+      "section": "scoring",
+      "rule": "Completed road: 1 point per tile in the road.",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "scoring",
+      "rule": "Completed city: 2 points per tile, plus 2 additional points per shield (coat of arms) in the city.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "scoring",
+      "rule": "Completed abbey: 9 points (1 for the abbey tile plus 1 for each of the 8 surrounding tiles).",
+      "critical": true
+    },
+    {
+      "id": "k25",
+      "section": "end_trigger",
+      "rule": "The game ends as soon as a player can neither draw nor place a tile; final scoring then takes place.",
+      "critical": true
+    },
+    {
+      "id": "k26",
+      "section": "scoring",
+      "rule": "Final scoring for incomplete roads: 1 point per tile.",
+      "critical": true
+    },
+    {
+      "id": "k27",
+      "section": "scoring",
+      "rule": "Final scoring for incomplete cities: 1 point per tile plus 1 point per shield (half the value of a complete city).",
+      "critical": true
+    },
+    {
+      "id": "k28",
+      "section": "scoring",
+      "rule": "Final scoring for incomplete abbeys: 1 point for the abbey plus 1 point per tile surrounding it.",
+      "critical": true
+    },
+    {
+      "id": "k29",
+      "section": "scoring",
+      "rule": "During final scoring, remove meeples from areas as they are scored. The majority rule applies as during the game.",
+      "critical": false
+    },
+    {
+      "id": "k30",
+      "section": "winner",
+      "rule": "After final scoring, the player with the most points wins.",
+      "critical": true
+    },
+    {
+      "id": "k31",
+      "section": "tie_break",
+      "rule": "In case of a tie, all tied players are winners; there is no tie-break.",
+      "critical": true
+    },
+    {
+      "id": "k32",
+      "section": "variant",
+      "rule": "Farmers (expert variant): a farmer is a meeple placed lying down in a field (the snowy white areas) instead of the usual upright placement. Only one farmer per connected field is allowed at the time of placement. Fields are separated by roads, cities, rivers or other clear boundaries.",
+      "critical": false
+    },
+    {
+      "id": "k33",
+      "section": "variant",
+      "rule": "Farmers stay on the table until final scoring, score nothing during the game, and are never returned to the supply during play.",
+      "critical": false
+    },
+    {
+      "id": "k34",
+      "section": "variant",
+      "rule": "Farmers scoring: in final scoring each completed city that touches the field is worth 3 points. Incomplete cities do not count. The player with the most farmers in a field scores all the points, and ties each score full.",
+      "critical": false
+    },
+    {
+      "id": "k35",
+      "section": "variant",
+      "rule": "River (mini-expansion): the 12 River tiles replace the starting tile. The Spring tile is placed as the start tile, the Lake tile goes at the bottom of the shuffled face-down River pile, and all River tiles are placed before any other tiles. Each River section must extend another River section, and the river must not turn twice in a row in the same direction or turn toward existing River tiles.",
+      "critical": false
+    },
+    {
+      "id": "k36",
+      "section": "variant",
+      "rule": "Abbot (mini-expansion): each player adds the abbot of their color to their supply. On action 2 the abbot may be placed only on an abbey or a fir grove (sapinière), while normal meeples cannot be placed on a grove.",
+      "critical": false
+    },
+    {
+      "id": "k37",
+      "section": "variant",
+      "rule": "Abbot scoring: a grove is scored like an abbey (9 points when surrounded by 8 tiles). If you place no meeple in action 2, you may return your abbot to your supply and immediately score the area it left as in final scoring (1 point plus 1 per surrounding tile). At final scoring the abbot counts as an ordinary monk.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 23955,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 23955,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 3451,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 23955,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 23955,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 3451,
+    "output_tokens_details": {
+      "thinking_tokens": 815
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

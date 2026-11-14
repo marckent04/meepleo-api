@@ -1,0 +1,211 @@
+{
+  "game_title": "Exploding Kittens",
+  "edition_notes": "Original Edition; copyright Exploding Kittens 2022; 56 cards, 2-5 players",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Remove all 4 Exploding Kitten cards from the deck and set them aside.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Remove all 6 Defuse cards from the deck and deal 1 Defuse to each player.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "Put the extra Defuse cards back into the deck (in a 2 or 3 player game, put back only 2 extra Defuse cards and remove the rest from the game).",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "Shuffle the deck and deal 7 cards face down to each player, so each player has 8 cards (7 + 1 Defuse); hands are kept secret.",
+      "critical": true
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "Insert Exploding Kittens into the deck so there is 1 fewer than the number of players (e.g. 3 kittens for 4 players, 2 for 3 players); remove extra kittens from the game.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "setup",
+      "rule": "Shuffle the deck and place it face down in the middle as the Draw Pile, leaving space for a Discard Pile.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "setup",
+      "rule": "Choose any player to go first.",
+      "critical": false
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "On your turn, either Play cards or Pass (play no cards); play continues clockwise.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "Playing a card: place it face up on the Discard Pile and follow its instructions; you may then play as many further cards as you like.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "You end your turn by drawing the top card of the Draw Pile into your hand (unless a card says you end the turn without drawing).",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "special",
+      "rule": "If you draw an Exploding Kitten, you explode and are out of the game unless you play a Defuse card; you discard your whole hand including the kitten.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "special",
+      "rule": "Defuse: play it when you draw an Exploding Kitten, placing it in the Discard Pile; then secretly reinsert the kitten into the Draw Pile anywhere you like, without reordering or viewing other cards.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "special",
+      "rule": "A Defused kitten can be placed on top of the deck to hurt the next player; the deck may be held under the table to hide the placement.",
+      "critical": false
+    },
+    {
+      "id": "k14",
+      "section": "special",
+      "rule": "There is no maximum or minimum hand size; if your hand is empty just keep playing and draw on your turn.",
+      "critical": false
+    },
+    {
+      "id": "k15",
+      "section": "special",
+      "rule": "Attack: do not draw; end your turn and force the next player to take 2 turns in a row.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "special",
+      "rule": "If the victim of an Attack plays an Attack, the new target must take any remaining turns plus 2 more (e.g. 4 turns, then 6).",
+      "critical": false
+    },
+    {
+      "id": "k17",
+      "section": "special",
+      "rule": "Skip: immediately end your turn without drawing; against an Attack it ends only 1 of the 2 turns (two Skips end both).",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "special",
+      "rule": "Favor: force another player to give you 1 card of their choice from their hand.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "special",
+      "rule": "Shuffle: shuffle the Draw Pile thoroughly.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "special",
+      "rule": "See the Future: privately look at the top 3 cards of the Draw Pile and return them in the same order, without showing others.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "special",
+      "rule": "Nope: can be played at any time before an action begins, even out of turn, to stop any action except an Exploding Kitten or Defuse; the Noped card is treated as never played and is lost in the Discard Pile.",
+      "critical": true
+    },
+    {
+      "id": "k22",
+      "section": "special",
+      "rule": "A Nope can be Noped to negate it (a Yup), and so on; a Nope can also be played on a combo.",
+      "critical": false
+    },
+    {
+      "id": "k23",
+      "section": "special",
+      "rule": "Cat cards have no power alone; playing 2 matching Cat cards as a Pair lets you steal a random card from any player.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "special",
+      "rule": "Two of a kind (special combos): a pair of any cards with the same title (not just Cat cards) steals a random card from another player; ignore the cards' own instructions.",
+      "critical": false
+    },
+    {
+      "id": "k25",
+      "section": "special",
+      "rule": "Three of a kind: playing 3 cards with the same title lets you pick a player and name a card; if they have it they must give you one, otherwise you get nothing; ignore the cards' instructions.",
+      "critical": false
+    },
+    {
+      "id": "k26",
+      "section": "end_trigger",
+      "rule": "The game ends when only 1 player remains, as all others have exploded.",
+      "critical": true
+    },
+    {
+      "id": "k27",
+      "section": "scoring",
+      "rule": "There are no points; the game is won by survival.",
+      "critical": true
+    },
+    {
+      "id": "k28",
+      "section": "winner",
+      "rule": "The last player who has not exploded wins the game.",
+      "critical": true
+    },
+    {
+      "id": "k29",
+      "section": "tie_break",
+      "rule": "No tie-break is needed, since exactly one player is left standing.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 7550,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 7550,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 1856,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 7550,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 7550,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 1856,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

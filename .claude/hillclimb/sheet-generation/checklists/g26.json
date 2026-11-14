@@ -1,0 +1,253 @@
+{
+  "game_title": "THE GANG",
+  "edition_notes": "German edition by KOSMOS (Franckh-Kosmos Verlags-GmbH & Co. KG), © 2024, Art.-Nr. 683887; authors John Cooper & Kory Heath; 3–6 players, ages 10+",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "The game is cooperative for 3–6 players: all players win together or lose together.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "The base game does not use the Challenge cards or Specialist cards; they go back in the box.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "Place the 3 Alarm cards and the 3 Vault (Tresor) cards grey side up at the edge of the play area.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "Each player receives one 'Spielablauf' (game flow) overview card and one 'Hand ranks' overview card.",
+      "critical": false
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "Remove all chips showing more stars than the number of players (e.g. with 4 players, put the 5- and 6-star chips of every colour back in the box).",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "setup",
+      "rule": "Sort the remaining chips by colour (white, yellow, orange, red) and place them light side up at the edge of the play area; the dark side is not used in the base game.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "turn",
+      "rule": "A game consists of 3 to 5 heists (Überfälle); each heist consists of 4 rounds followed by a showdown.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "Round 1 (Pre-Flop): shuffle the 52 playing cards and deal each player 2 cards face down as hand cards; players may look at their own hand cards at any time. Put the rest as a face-down draw pile in the table centre with space for 5 cards next to it.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "Each round uses one colour of chips placed in the table centre: white in round 1, yellow in round 2, orange in round 3, red in round 4.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "Round 2 (Flop): one player draws 3 cards from the pile and lays them face up in the table centre as community cards; then the yellow chips are taken.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "Round 3 (Turn): reveal 1 more community card (the 4th); then the orange chips are taken.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "turn",
+      "rule": "Round 4 (River): reveal 1 more community card (the 5th); then the red chips are taken.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "turn",
+      "rule": "The chip stars show strength: taking the chip with the most stars signals you think you currently have the strongest hand (hand + community cards); the 1-star chip signals the weakest.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "turn",
+      "rule": "There are no turns: all players act simultaneously and at any time may take any chip of the current round, either from the table centre or from in front of another player.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "turn",
+      "rule": "A player may never have more than one chip of the same colour in front of them.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "turn",
+      "rule": "A player may push their own chip of the current round back to the table centre, but may never place a chip in front of another player.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "turn",
+      "rule": "A round ends immediately as soon as every player has exactly one chip of that round in front of them.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "turn",
+      "rule": "Chips from previous rounds stay in a neat row in front of each player (in round order) so others can see how the player's assessment changed, but they are not part of the current round.",
+      "critical": false
+    },
+    {
+      "id": "k19",
+      "section": "special",
+      "rule": "Players may not show, say or hint which cards they hold; they also may not talk about information about others' hands that they only know because of their own hand cards. The only communication is via the chips (who takes which chip, how chips move).",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "special",
+      "rule": "Unlike normal poker, players must not bluff; they cooperate.",
+      "critical": false
+    },
+    {
+      "id": "k21",
+      "section": "special",
+      "rule": "Each player's hand is the best 5-card combination out of 7 cards (2 hand cards + 5 community cards); exactly 5 cards count.",
+      "critical": true
+    },
+    {
+      "id": "k22",
+      "section": "special",
+      "rule": "Hand ranks from weakest to strongest: High card, One pair, Two pairs, Three of a kind, Straight, Flush, Full house, Four of a kind, Straight flush, Royal flush.",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "special",
+      "rule": "Card values from high to low: A, K, Q, J, 10, 9, 8, 7, 6, 5, 4, 3, 2; the four suits are equal in value. The ace may be low (A-2-3-4-5) or high (10-J-Q-K-A) in a straight.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "special",
+      "rule": "Ties within the same rank are broken as in Texas Hold'em: higher cards of the combination first, then kickers (e.g. pair vs pair: higher pair, then highest kicker; full house: three-of-a-kind first, then pair; flush: highest card, then next highest; straight: highest card).",
+      "critical": true
+    },
+    {
+      "id": "k25",
+      "section": "special",
+      "rule": "A 'true tie' (exactly equal combinations, e.g. when the best hand is the 5 community cards) means the chip order among the tied players does not matter, but their placement relative to all other players must still be correct.",
+      "critical": true
+    },
+    {
+      "id": "k26",
+      "section": "turn",
+      "rule": "Showdown: only the chips taken in round 4 (red) count. Starting with the player holding the red 1-star chip and going upward (2-star, 3-star...), each player reveals their hand cards and names their best 5-card combination.",
+      "critical": true
+    },
+    {
+      "id": "k27",
+      "section": "end_trigger",
+      "rule": "A heist ends with the showdown; the next heist then starts again with round 1.",
+      "critical": true
+    },
+    {
+      "id": "k28",
+      "section": "scoring",
+      "rule": "Heist succeeds if the revealed combinations are equal or increasing in strength in order of the red chips with no mistake: flip one Vault card to its gold side.",
+      "critical": true
+    },
+    {
+      "id": "k29",
+      "section": "scoring",
+      "rule": "Heist fails as soon as a player reveals a combination weaker than one already revealed (a mistake in chip order): flip one Alarm card to its red side.",
+      "critical": true
+    },
+    {
+      "id": "k30",
+      "section": "end_trigger",
+      "rule": "The game ends as soon as either 3 Vaults have been flipped to gold or 3 Alarms have been flipped to red, whichever happens first.",
+      "critical": true
+    },
+    {
+      "id": "k31",
+      "section": "winner",
+      "rule": "The players win together if they flip 3 Vaults to gold before the third Alarm; they lose together if they have to flip 3 Alarms to red.",
+      "critical": true
+    },
+    {
+      "id": "k32",
+      "section": "tie_break",
+      "rule": "There is no tie-break between players or outcomes; equal hands are handled by the 'true tie' rule (chip order among them is irrelevant).",
+      "critical": false
+    },
+    {
+      "id": "k33",
+      "section": "variant",
+      "rule": "Advanced mode: shuffle nothing at first, set Challenge and Specialist cards as two face-down stacks in order 1–10; the first heist is played normally. After a successful heist, the top Challenge card is active for the next heist only; after a failed heist, the top Specialist card is active for the next heist only; the used card goes under its stack.",
+      "critical": false
+    },
+    {
+      "id": "k34",
+      "section": "variant",
+      "rule": "Specialist cards either help everyone at the start of round 1 or can be used if one player proposes it before the showdown and the others agree; they are active for one heist whether used or not.",
+      "critical": false
+    },
+    {
+      "id": "k35",
+      "section": "variant",
+      "rule": "Pro mode: like advanced mode, but remove Challenge card 1 (Schnelleinstieg) and reveal a random Challenge card at the start that stays active for all heists.",
+      "critical": false
+    },
+    {
+      "id": "k36",
+      "section": "variant",
+      "rule": "Master Thief mode: like advanced mode, but remove Challenge card 1, remove one Alarm card (2 Alarms lose the game), use no Specialist cards, and always have exactly 2 Challenges active (start with 2 random ones; before each next heist discard the one with the lower number and reveal a new one).",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 53172,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 53172,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 2835,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 53172,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 53172,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 2835,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

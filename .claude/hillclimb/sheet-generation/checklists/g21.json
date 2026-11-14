@@ -1,0 +1,247 @@
+{
+  "game_title": "Skull King",
+  "edition_notes": "Grandpa Beck's Games, copyright 2012, 2021; rulebook includes advanced rules (Kraken, White Whale, Loot, pirate abilities) and Rascal scoring",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Before the base game, remove the Blank cards, the 2 Loot cards, the Kraken and the White Whale from the deck (they are for the advanced rules).",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Give each player a player aid card and a set of the 2 bid reminder cards; shuffle the remaining deck.",
+      "critical": false
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "The game is played over 10 rounds; round N deals N cards to each player (1 card in round 1, up to 10 cards in round 10).",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "With more than 6 players (e.g. 8), repeat the number of cards dealt in the final rounds so each player has an equal number of cards.",
+      "critical": false
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "At the start of every round the entire deck, including all cards played in the previous round, is reshuffled and dealt.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "turn",
+      "rule": "After dealing, each player bids the exact number of tricks they predict they will win that round, simultaneously: pound fists three times with 'Yo-ho-ho' and on the third pound extend fingers equal to the bid (closed fist = 0).",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "turn",
+      "rule": "Bids are shown with the 2 bid reminder cards and each player's bid is recorded on the scorepad.",
+      "critical": false
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "The player to the dealer's left leads the first trick; each player in clockwise order plays 1 card face up. The highest-ranking card wins the trick, and the winner takes the cards as a stack and leads the next trick.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "A round ends when all dealt cards have been played (one trick per card dealt). Then scores are tallied; the player to the previous dealer's left becomes the new dealer and deals one more card per player than the last round.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "special",
+      "rule": "Follow suit: if a suit card is led, other players who play a numbered card must play the same suit if they have it; if they have none, they may play any card.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "special",
+      "rule": "Four suits numbered 1-14 (Parrot green, Treasure Chest yellow, Treasure Map purple, Jolly Roger black); black Jolly Roger is trump and beats any other suit, even higher numbers.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "special",
+      "rule": "If no trump is played, the highest card of the led suit wins; a card of a different non-trump suit loses even if its number is higher.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "special",
+      "rule": "Special (non-numbered) cards can be played at any time, even when you could follow suit.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "special",
+      "rule": "Escape cards (5) lose to all other cards; if every card in the trick is an Escape (or Tigress as escape), the first card played wins.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "special",
+      "rule": "Pirates (5) beat all numbered cards; if several Pirates are played, the first Pirate played wins.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "special",
+      "rule": "The Tigress (1) is declared as either a Pirate or an Escape when played and takes on all characteristics of the chosen card.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "special",
+      "rule": "The Skull King (1) beats all numbered cards and all Pirates (including the Tigress as a Pirate); only Mermaids can beat him.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "special",
+      "rule": "Mermaids (2) beat numbered cards but lose to all Pirates except the Skull King, whom they beat; if both Mermaids are in a trick the first played wins.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "special",
+      "rule": "If a Pirate, the Skull King and a Mermaid are all in the same trick, the Mermaid wins regardless of order, and only the Mermaid-captures-Skull-King bonus is earned.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "special",
+      "rule": "If an Escape or Tigress as an escape is led, the next player sets the suit to follow (if they also play an Escape, the suit-setting passes to the next player).",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "special",
+      "rule": "If a Mermaid, Pirate, Skull King or Tigress as a Pirate is led, there is no suit to follow and others may play any card.",
+      "critical": true
+    },
+    {
+      "id": "k22",
+      "section": "end_trigger",
+      "rule": "The game ends after the tenth round is completed and final scores are tallied.",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "scoring",
+      "rule": "Skull King's scoring (classic): if you win exactly the number of tricks bid (1 or more), you score 20 points per trick taken.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "scoring",
+      "rule": "If you win more or fewer tricks than you bid (bid of 1 or more), you lose 10 points per trick you were off and score nothing for tricks taken.",
+      "critical": true
+    },
+    {
+      "id": "k25",
+      "section": "scoring",
+      "rule": "Bid zero and take zero tricks: score 10 points times the number of cards dealt that round.",
+      "critical": true
+    },
+    {
+      "id": "k26",
+      "section": "scoring",
+      "rule": "Bid zero but take 1 or more tricks: lose 10 points times the number of cards dealt that round.",
+      "critical": true
+    },
+    {
+      "id": "k27",
+      "section": "scoring",
+      "rule": "Bonus points are scored only if your bid was exactly correct; if your bid is wrong you score no bonus.",
+      "critical": true
+    },
+    {
+      "id": "k28",
+      "section": "scoring",
+      "rule": "Number 14 bonus: 10 points for each standard-suit (green, yellow, purple) 14 and 20 points for the black Jolly Roger 14 that is in your captured tricks at the end of the round, whether played by you or an opponent.",
+      "critical": true
+    },
+    {
+      "id": "k29",
+      "section": "scoring",
+      "rule": "Character bonuses: 20 points per Mermaid captured by a Pirate, 30 points per Pirate captured by the Skull King, 40 points for capturing the Skull King with a Mermaid.",
+      "critical": true
+    },
+    {
+      "id": "k30",
+      "section": "winner",
+      "rule": "After round 10, the player with the highest total score wins and is Captain of the Seven Seas.",
+      "critical": true
+    },
+    {
+      "id": "k31",
+      "section": "variant",
+      "rule": "Rascal's scoring: every player's potential is 10 points per card dealt regardless of bid; exact bid earns all, off by 1 earns half, off by 2 or more earns none; bonus points follow the same all/half/none rule.",
+      "critical": false
+    },
+    {
+      "id": "k32",
+      "section": "variant",
+      "rule": "Optional Rascal rule: after bidding each player simultaneously chooses Grapeshot (open hand, standard Rascal scoring) or Cannonball (closed fist: 15 points per card dealt if exact bid, 0 if off even by 1, and bonus only if exact).",
+      "critical": false
+    },
+    {
+      "id": "k33",
+      "section": "variant",
+      "rule": "Two-player game: deal 3 hands; the third is Graybeard's ghost who does not bid or score, plays his top card face-up second each trick (no need to follow suit, Tigress as escape), leads when he wins, and the two players alternate leading.",
+      "critical": false
+    },
+    {
+      "id": "k34",
+      "section": "variant",
+      "rule": "Advanced cards: Kraken destroys the trick (no winner, next lead by who would have won), White Whale makes highest number win and specials lose, Loot cards form an alliance for 20 bonus points each, plus unlockable Pirate abilities.",
+      "critical": false
+    },
+    {
+      "id": "k35",
+      "section": "variant",
+      "rule": "Variable card counts: rounds and cards per hand can be changed, e.g. Even Keeled (two rounds each of 2, 4, 6, 8, 10 cards), Skip to the Brawl (one round each of 6-10 cards), Swift-n-Salty Skirmish (five rounds of 5 cards).",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 53191,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 53191,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 2771,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 53191,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 53191,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 2771,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

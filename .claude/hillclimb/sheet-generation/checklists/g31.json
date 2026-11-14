@@ -1,0 +1,247 @@
+{
+  "game_title": "UNO (30th Anniversary Special Edition)",
+  "edition_notes": "Mattel, Inc., ©2001; Year Anniversary Edition with 4 extra Anniversary cards (112 cards total); 2 to 10 players, ages 7+. | Hand-edited: Anniversary-card rules removed (not in standard UNO).",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "To pick the dealer, each player draws a card; the player with the highest point value is the dealer.",
+      "critical": false
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "The dealer shuffles the deck and deals 7 cards to each player.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "The remaining cards are placed facedown as the DRAW pile, and the top card is turned over to start the DISCARD pile.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "If the starting card is a Wild or Wild Draw 4, return it to the deck and turn up another card.",
+      "critical": true
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "If the starting card is a Draw 2, the first player must draw 2 cards (and forfeit the turn).",
+      "critical": false
+    },
+    {
+      "id": "k6",
+      "section": "setup",
+      "rule": "If the starting card is a Reverse, the dealer plays first and play goes to the right instead of left.",
+      "critical": false
+    },
+    {
+      "id": "k7",
+      "section": "setup",
+      "rule": "If the starting card is a Skip, the first player (left of the dealer) is skipped.",
+      "critical": false
+    },
+    {
+      "id": "k8",
+      "section": "setup",
+      "rule": "If the starting card is a Wild (not Draw 4), the player to the left of the dealer chooses the starting color and plays first.",
+      "critical": false
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "The player to the left of the dealer plays first, and play initially passes to the left.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "On your turn you must match the top discard card by color, number or word/symbol (e.g. on a Green 7, play any Green card or any 7), or play a Wild or Wild Draw 4.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "If you have no matching card, you must draw one card from the DRAW pile; if it is playable you may play it, otherwise play passes to the next player.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "turn",
+      "rule": "You may choose not to play a playable card (reneging); you must then draw a card, and if it is playable you may play it, but you may not play a card from your hand after the draw.",
+      "critical": false
+    },
+    {
+      "id": "k13",
+      "section": "special",
+      "rule": "Draw 2: the next player draws 2 cards and forfeits their turn; it may only be played on a matching color or another Draw 2.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "special",
+      "rule": "Reverse: reverses the direction of play; it may only be played on a matching color or another Reverse.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "special",
+      "rule": "Skip: the next player loses their turn; it may only be played on a matching color or another Skip.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "special",
+      "rule": "Wild: the player names any color (including the current color) to continue play; it may be played even if you have another playable card.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "special",
+      "rule": "Wild Draw 4: the player calls the next color and the next player draws 4 cards and forfeits their turn; it may only be played when you hold no card matching the color of the previously played card.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "special",
+      "rule": "A player may challenge a Wild Draw 4 only if they are the one required to draw the 4 cards; the challenged player shows their hand to the challenger.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "special",
+      "rule": "If a challenged Wild Draw 4 player is guilty, they draw the 4 cards; if not guilty, the challenger draws 4 plus 2 additional cards (6 total).",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "special",
+      "rule": "You may risk playing Wild Draw 4 even if you hold a matching number or word card of a different color (only color matters when it is illegal).",
+      "critical": false
+    },
+    {
+      "id": "k22",
+      "section": "special",
+      "rule": "Before playing your next-to-last card you must say \"UNO\"; if another player catches you with one card before the next player begins their turn, you draw 4 cards.",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "special",
+      "rule": "A player cannot be caught until their second-to-last card touches the discard pile, nor after the next player begins a turn (drawing from the draw pile or playing a card from hand); if you catch yourself before being caught, you avoid the penalty.",
+      "critical": false
+    },
+    {
+      "id": "k24",
+      "section": "special",
+      "rule": "If the draw pile runs out before anyone is out of cards, reshuffle the discard pile and continue play.",
+      "critical": true
+    },
+    {
+      "id": "k25",
+      "section": "special",
+      "rule": "Two-player game: Reverse acts like Skip, and playing Skip or Reverse lets you immediately play another card.",
+      "critical": false
+    },
+    {
+      "id": "k26",
+      "section": "special",
+      "rule": "Two-player game: after a Draw 2 or Wild Draw 4, the opponent draws the cards and play comes back to you.",
+      "critical": false
+    },
+    {
+      "id": "k27",
+      "section": "end_trigger",
+      "rule": "A hand ends when a player plays their last card; points are tallied and a new hand begins.",
+      "critical": true
+    },
+    {
+      "id": "k28",
+      "section": "end_trigger",
+      "rule": "If the last card played is a Draw 2 or Wild Draw 4, the next player must still draw 2 or 4 cards, and those cards count in the point total.",
+      "critical": true
+    },
+    {
+      "id": "k29",
+      "section": "scoring",
+      "rule": "The player who goes out scores points for the cards left in opponents' hands, recorded on the score pad after each hand.",
+      "critical": true
+    },
+    {
+      "id": "k30",
+      "section": "scoring",
+      "rule": "Number cards 0-9 are worth face value; Draw 2, Reverse and Skip are worth 20 points each.",
+      "critical": true
+    },
+    {
+      "id": "k31",
+      "section": "scoring",
+      "rule": "Wild and Wild Draw 4 cards are worth 50 points each.",
+      "critical": true
+    },
+    {
+      "id": "k32",
+      "section": "winner",
+      "rule": "The first player to reach 500 points wins the game.",
+      "critical": true
+    },
+    {
+      "id": "k33",
+      "section": "winner",
+      "rule": "Alternative scoring: keep a running total of points each player is caught holding; when one player reaches 500, the player with the lowest points wins.",
+      "critical": false
+    },
+    {
+      "id": "k34",
+      "section": "variant",
+      "rule": "Partners (four players): sit across from your partner; when either partner goes out, the hand ends and the points from both opposing hands are scored for the winning team.",
+      "critical": false
+    },
+    {
+      "id": "k35",
+      "section": "variant",
+      "rule": "Partner variation with four players: play 12 hands (four hands with each other player as partner), each tracking points per partnership; the highest scorer wins. With eight players, two tables of four with 28 hands.",
+      "critical": false
+    },
+    {
+      "id": "k36",
+      "section": "variant",
+      "rule": "Challenge UNO: keep a running total of points caught holding; a player reaching the designated amount (500 suggested) is eliminated; when two players remain they play head to head with two-player rules, and the winner of the final hand wins.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 7131,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 7131,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 2477,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 7131,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 7131,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 2477,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

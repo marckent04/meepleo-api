@@ -1,0 +1,253 @@
+{
+  "game_title": "Azul",
+  "edition_notes": "French-language rulebook, © 2023 Plan B Games Inc.; game by Michael Kiesling; Next Move development credit.",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Each player takes a player board and places it with the colored wall side face up; all players must use the same side.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Each player places a score marker on space 0 of their score track.",
+      "critical": false
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "Place Factory circles in the middle of the table: 5 for 2 players, 7 for 3 players, 9 for 4 players.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "Put all 100 tiles (20 of each of 5 colors) in the bag.",
+      "critical": false
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "The player who most recently visited Portugal takes the first player marker.",
+      "critical": false
+    },
+    {
+      "id": "k6",
+      "section": "setup",
+      "rule": "Fill each Factory circle with exactly 4 tiles drawn randomly from the bag.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "turn",
+      "rule": "A game is played over multiple rounds, each with 3 phases: A) Factory offer, B) Wall tiling, C) Preparing the next round.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "The first player starts the Factory offer phase; play proceeds clockwise.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "On your turn, either take all tiles of one color from one Factory and move the remaining tiles from that Factory to the center of the table.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "Or take all tiles of one color from the center of the table.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "The first player in the round to take tiles from the center also takes the first player marker and places it on the leftmost free space of their floor line.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "turn",
+      "rule": "Place the taken tiles on one of your 5 pattern lines (line 1 holds 1 tile, up to line 5 holding 5), filling spaces one by one from right to left.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "turn",
+      "rule": "A pattern line that already contains tiles can only receive tiles of that same color.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "turn",
+      "rule": "A pattern line is complete when all its spaces are filled.",
+      "critical": false
+    },
+    {
+      "id": "k15",
+      "section": "turn",
+      "rule": "You may not place a color on a pattern line if the corresponding wall row already contains a tile of that color.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "turn",
+      "rule": "Tiles that exceed the pattern line's capacity, or that you cannot or choose not to place, go on the floor line, filled from left to right.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "special",
+      "rule": "If the floor line is full, extra tiles go back to the box lid.",
+      "critical": false
+    },
+    {
+      "id": "k18",
+      "section": "turn",
+      "rule": "The Factory offer phase ends when the center of the table and all Factories are empty.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "turn",
+      "rule": "In the Wall tiling phase (all players can act simultaneously), go through pattern lines from top to bottom; for each complete line, move its rightmost tile to the same-colored space in the corresponding wall row and score it immediately.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "turn",
+      "rule": "After tiling, remaining tiles of completed pattern lines go to the box lid; incomplete pattern lines keep their tiles for the next round.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "scoring",
+      "rule": "A tile placed on the wall with no adjacent tile (orthogonally) scores 1 point.",
+      "critical": true
+    },
+    {
+      "id": "k22",
+      "section": "scoring",
+      "rule": "If the new tile has adjacent tiles, score the number of tiles in the connected horizontal group (including the new tile), plus the number in the connected vertical group (including the new tile), if each group has adjacent tiles.",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "scoring",
+      "rule": "After wall tiling, each tile on the floor line loses points as printed above its space (-1, -1, -2, -2, -2, -3, -3); the first player marker counts as a tile.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "scoring",
+      "rule": "Score cannot drop below 0.",
+      "critical": true
+    },
+    {
+      "id": "k25",
+      "section": "special",
+      "rule": "After scoring floor penalties, floor line tiles go to the box lid; the first player marker is placed in front of its owner, who will be the first player next round.",
+      "critical": true
+    },
+    {
+      "id": "k26",
+      "section": "special",
+      "rule": "When preparing the next round, the first player refills each Factory with 4 tiles from the bag; if the bag runs empty, refill it with tiles from the box lid and continue.",
+      "critical": true
+    },
+    {
+      "id": "k27",
+      "section": "special",
+      "rule": "If there are still not enough tiles to fill all Factories, the new round starts with Factories not fully filled.",
+      "critical": false
+    },
+    {
+      "id": "k28",
+      "section": "end_trigger",
+      "rule": "The game ends after the Wall tiling phase of the round in which at least one player has completed at least one horizontal row of 5 consecutive tiles on their wall.",
+      "critical": true
+    },
+    {
+      "id": "k29",
+      "section": "scoring",
+      "rule": "End-game bonus: +2 points for each complete horizontal row of 5 tiles on your wall.",
+      "critical": true
+    },
+    {
+      "id": "k30",
+      "section": "scoring",
+      "rule": "End-game bonus: +7 points for each complete vertical column of 5 tiles on your wall.",
+      "critical": true
+    },
+    {
+      "id": "k31",
+      "section": "scoring",
+      "rule": "End-game bonus: +10 points for each color of which all 5 tiles have been placed on your wall.",
+      "critical": true
+    },
+    {
+      "id": "k32",
+      "section": "winner",
+      "rule": "The player with the most points on their score track wins.",
+      "critical": true
+    },
+    {
+      "id": "k33",
+      "section": "tie_break",
+      "rule": "In case of a tie, the tied player with the most completed horizontal rows on their wall wins.",
+      "critical": true
+    },
+    {
+      "id": "k34",
+      "section": "tie_break",
+      "rule": "If still tied, the victory is shared.",
+      "critical": true
+    },
+    {
+      "id": "k35",
+      "section": "variant",
+      "rule": "Variant: use the gray side of the player boards; when moving a tile from a pattern line to the wall, you may place it on any space of the corresponding wall row.",
+      "critical": false
+    },
+    {
+      "id": "k36",
+      "section": "variant",
+      "rule": "In the gray-side variant, each color may appear only once per column and only once per row on the wall.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 15479,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 15479,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 2192,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 15479,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 15479,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 2192,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

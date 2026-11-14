@@ -1,0 +1,175 @@
+{
+  "game_title": "Quarto",
+  "edition_notes": "Gigamic, © 1991, from a concept of Blaise Muller; rulebook ref. QUARTO 11-2016 (multilingual; English rules on page 4). Two-player game.",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "The game uses one board with 16 squares and 16 different pieces.",
+      "critical": false
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Each piece has 4 characteristics, each with two options: light or dark, round or square, tall or short, solid or hollow; all 16 pieces are different.",
+      "critical": false
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "At the start, the 16 pieces are arranged at the side of the board (the board is empty).",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "The players throw dice (or draw lots) to decide who starts.",
+      "critical": true
+    },
+    {
+      "id": "k5",
+      "section": "turn",
+      "rule": "The first player selects one of the 16 pieces and gives it to the opponent (the starting player does not place a piece on the first turn).",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "turn",
+      "rule": "The player who receives a piece must place it on an empty square of the board (any square on the first placement).",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "turn",
+      "rule": "After placing, that player chooses one of the remaining unplaced pieces (15 after the first placement) and gives it to the opponent.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "Play alternates this way: each turn is place the piece you were given, then choose and hand over a piece for the opponent; the player never chooses the piece they place themselves.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "Objective: create a line of four pieces on the board sharing at least one common characteristic.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "The line of four may be horizontal (across), vertical (up and down) or along a diagonal.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "special",
+      "rule": "The player who places a piece completing a line must declare it by calling \"QUARTO!\" (and pointing out the line); without the call the win is not claimed.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "special",
+      "rule": "A winning line is 4 light, or 4 dark, or 4 round, or 4 square, or 4 tall, or 4 short, or 4 solid, or 4 hollow pieces; several shared characteristics can accumulate in the same line.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "special",
+      "rule": "The player calling QUARTO does not need to have placed the other 3 pieces of the line himself.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "special",
+      "rule": "If the player who completed a line does not notice it and passes a piece to the opponent, the opponent may call \"QUARTO!\" at that moment, indicate the alignment, and wins the game.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "special",
+      "rule": "If neither player notices the alignment during the move in which it is created, it loses all value and the game continues.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "end_trigger",
+      "rule": "The game ends when a player calls \"QUARTO!\" and points out a valid alignment.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "end_trigger",
+      "rule": "The game also ends when all pieces have been placed and no winner has been declared.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "scoring",
+      "rule": "There is no point scoring; the game is decided by a single win condition (a called QUARTO).",
+      "critical": false
+    },
+    {
+      "id": "k19",
+      "section": "winner",
+      "rule": "The game is won by the first player to call \"QUARTO!\" on a valid line (including the opponent who calls it on a line the placer missed).",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "tie_break",
+      "rule": "If all pieces are placed and no one has declared a winner, the game is a draw (even); there is no further tie-break.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "special",
+      "rule": "A game lasts about 10 to 20 minutes; in a tournament each player may be given a time limit of 1 minute per move.",
+      "critical": false
+    },
+    {
+      "id": "k22",
+      "section": "variant",
+      "rule": "Beginner variation: play with only 1, 2 or 3 features as line criteria (e.g., a line of 4 pieces of the same colour only, one feature chosen).",
+      "critical": false
+    },
+    {
+      "id": "k23",
+      "section": "variant",
+      "rule": "Advanced variation: besides a line, a square of 4 pieces having at least one common feature also counts, giving 9 additional ways of calling \"QUARTO!\".",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 82149,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 82149,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 1531,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 82149,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 82149,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 1531,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

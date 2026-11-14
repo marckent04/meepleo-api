@@ -1,0 +1,193 @@
+{
+  "game_title": "Trio",
+  "edition_notes": "French-language rulebook; the title is not visible in the excerpt. Game by Kaya Miyano, illustrated by Laura Michaud. 36 cards, 3 to 6 players, ages 7+. Includes team rules for 4 or 6 players.",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Goal: be the first to win trios (a trio is 3 identical cards) before your opponents.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Shuffle the cards and deal face down to each player by player count: 3 players get 9 cards each, 4 get 7, 5 get 6, 6 get 5.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "Place the remaining cards face down, side by side, in the centre of the table: 9 cards with 3 players, 8 with 4, 6 with 5, 6 with 6.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "Each player picks up their cards without showing them and sorts them from lowest to highest number.",
+      "critical": true
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "Before starting, choose Simple mode or Spicy mode (Picante).",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "setup",
+      "rule": "The player who most recently ate avocado starts.",
+      "critical": false
+    },
+    {
+      "id": "k7",
+      "section": "turn",
+      "rule": "Players take turns clockwise. On your turn you reveal numbers one at a time and must stop as soon as two revealed numbers differ; otherwise you keep going until you have revealed 3 identical numbers.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "For each number, option A: flip face up any one card of your choice from the centre of the table.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "For each number, option B: reveal the lowest or highest number in a player's hand (yours included). To use an opponent's hand, ask them for their lowest or highest number. The card is placed face up on the table.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "When revealing from your own hand, it must be your lowest or highest card, never a middle one.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "You may perform the same action several times in a row, e.g. ask the same opponent for their lowest number and then for their new lowest, or their highest number.",
+      "critical": false
+    },
+    {
+      "id": "k12",
+      "section": "turn",
+      "rule": "The turn ends in one of two ways. If you complete a trio, you win it permanently by taking the 3 face-up cards in front of you.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "turn",
+      "rule": "If a revealed number differs from the previous one, all revealed cards go back: face down to the centre and/or returned to their owners' hands. Play then passes to the next player.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "special",
+      "rule": "If a player has no cards left in hand on their turn, they play using only the centre cards and the opponents' cards.",
+      "critical": false
+    },
+    {
+      "id": "k15",
+      "section": "special",
+      "rule": "Each card has numbers in its lower corners that link trios, which matters only in Spicy mode.",
+      "critical": false
+    },
+    {
+      "id": "k16",
+      "section": "end_trigger",
+      "rule": "The game ends immediately when a player achieves the winning condition for the chosen mode.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "scoring",
+      "rule": "There are no points. Trios won are collected and count towards the victory condition.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "winner",
+      "rule": "Simple mode: the first player to win any 3 trios (the numbers do not matter) wins.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "winner",
+      "rule": "Spicy mode: the first player to win 2 linked trios among their won trios wins. The links are shown in the lower corners of the cards, e.g. trios 2 and 5 plus trios 2 and 9 give the win.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "winner",
+      "rule": "In both modes, winning the trio of 7 always gives immediate victory.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "variant",
+      "rule": "Team rules (4 or 6 players only): form teams of 2, giving 2 teams with 4 players or 3 teams with 6. Partners sit opposite each other at the table, not side by side.",
+      "critical": false
+    },
+    {
+      "id": "k22",
+      "section": "variant",
+      "rule": "Team rules: shuffle and deal all the cards face down, with none in the centre of the table.",
+      "critical": false
+    },
+    {
+      "id": "k23",
+      "section": "variant",
+      "rule": "Team rules: after sorting their cards, partners may make an exchange. Each secretly chooses one of their cards, and they swap simultaneously face down and put the received card in the right place in their hand. All teams can do this at the same time.",
+      "critical": false
+    },
+    {
+      "id": "k24",
+      "section": "variant",
+      "rule": "Team rules: exchanges are the only permitted way to communicate with your partner. Any other communication is forbidden, including winks, taps on the table, or showing where you put a received card.",
+      "critical": false
+    },
+    {
+      "id": "k25",
+      "section": "variant",
+      "rule": "Team rules: each time a team wins a trio, the opposing teams may make a new exchange.",
+      "critical": false
+    },
+    {
+      "id": "k26",
+      "section": "variant",
+      "rule": "Team rules: partners pool the trios they win, and it is advised to group them in front of one of the two partners. A team wins with 3 trios or 2 linked trios (depending on mode) or with the trio of 7.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 2544,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 2544,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 2786,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 2544,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 2544,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 2786,
+    "output_tokens_details": {
+      "thinking_tokens": 974
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "game_title": "Toy Battle",
+  "edition_notes": "Repos Production, 2025; game by Paolo Mori and Alessandro Zucchini; French-language rulebook (2-player game)",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Choose one of the 8 Terrains (the plaine des châteaux is recommended for a first game) and place it between the two players so that each player has their own Médailles objective symbol (blue or red) in front of them; this determines the Médailles objective and each player's troop color.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Place one Médaille token on each Médaille spot of the board; any leftover Médaille tokens go back in the box.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "Each player places a support in front of them.",
+      "critical": false
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "Each player shuffles all Troop tiles of their color face down to form their reserve.",
+      "critical": true
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "Each player removes 4 Troops from their reserve without looking at them and returns them to the box; they are not used in this game.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "setup",
+      "rule": "Randomly determine the starting player. The starting player takes 3 Troops from their reserve onto their support; the opponent takes 4 Troops.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "setup",
+      "rule": "Leave an empty space next to the board for the discard pile.",
+      "critical": false
+    },
+    {
+      "id": "k8",
+      "section": "setup",
+      "rule": "For first games it is recommended to play without special base effects, treating all special bases as bases without effect.",
+      "critical": false
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "Players alternate turns starting with the randomly chosen player; on a turn a player performs exactly one of two actions: draw 2 Troops or place 1 Troop on the board.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "Action DRAW 2 TROOPS: draw 2 Troops from your reserve and put them on your support.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "A support holds at most 8 Troops; you cannot take the draw action if you already have 8 Troops on your support.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "turn",
+      "rule": "If only 1 Troop remains in your reserve, or only one free slot on your support, you may still take the draw action to draw just 1 Troop.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "turn",
+      "rule": "Action PLACE 1 TROOP: choose 1 Troop from your support and place it on a location following the placement rules; you then occupy that location.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "turn",
+      "rule": "After placing, apply the Troop's effect (if any), then the effect of its base if it is a special base (see player aid).",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "special",
+      "rule": "Placement: you may place a Troop on an empty base, on a base occupied by any of your own Troops, on a base occupied by an opponent's Troop of strictly lower strength than yours, or on the opponent's HQ (never on your own HQ).",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "special",
+      "rule": "When placing on an occupied base, put the Troop on top of the existing Troop(s); a base has no limit to the number of Troops, but only the visible top Troop occupies the base. Players may look through stacks but never change their order.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "special",
+      "rule": "Connection: the Troop must be placed on a location connected to your HQ, i.e. via a continuous path from your HQ passing only through bases you occupy; an empty base or a base occupied by an opponent interrupts the connection.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "special",
+      "rule": "Each Troop has a strength from 1 to 7 or a joker (duck), and most also have an effect; each Troop exists in 3 copies. A 'base' includes special bases but the HQ is not a base.",
+      "critical": false
+    },
+    {
+      "id": "k19",
+      "section": "special",
+      "rule": "Controlling a region: at any time, as soon as you occupy all the bases surrounding a region, you take control and take all Médailles in the center of that region, placing them beside your support visible to the opponent.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "special",
+      "rule": "Médailles you took are kept until the end of the game, even if you later lose control of the region.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "special",
+      "rule": "You can take control of several regions in the same turn; controlling a region whose Médailles were already taken gains nothing.",
+      "critical": false
+    },
+    {
+      "id": "k22",
+      "section": "end_trigger",
+      "rule": "The game ends immediately when a player places one of their Troops on the opponent's HQ (if there are several enemy HQs, capturing one suffices).",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "end_trigger",
+      "rule": "The game ends immediately when a player reaches the number of Médailles shown on the Terrain's Médailles objective (e.g. 7).",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "end_trigger",
+      "rule": "The game also ends if a player can no longer either draw or place a Troop.",
+      "critical": true
+    },
+    {
+      "id": "k25",
+      "section": "scoring",
+      "rule": "The only points are Médailles, gained by controlling regions; there is no other scoring unless the game ends by lack of actions, in which case Médaille counts are compared.",
+      "critical": true
+    },
+    {
+      "id": "k26",
+      "section": "winner",
+      "rule": "Capturing the enemy HQ gives an immediate win to the capturing player.",
+      "critical": true
+    },
+    {
+      "id": "k27",
+      "section": "winner",
+      "rule": "Reaching the Médaille objective number gives an immediate win to that player.",
+      "critical": true
+    },
+    {
+      "id": "k28",
+      "section": "winner",
+      "rule": "If the game ends because a player cannot draw or place a Troop, the player with more Médailles than the opponent wins.",
+      "critical": true
+    },
+    {
+      "id": "k29",
+      "section": "tie_break",
+      "rule": "If Médailles are tied when a player cannot act, the player who ended the game (the one unable to act) loses and the opponent wins.",
+      "critical": true
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 13977,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 13977,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 2013,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 13977,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 13977,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 2013,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

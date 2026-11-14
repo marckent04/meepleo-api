@@ -1,0 +1,229 @@
+{
+  "game_title": "Smile Life",
+  "edition_notes": "Rulebook in French (Règles du jeu), © 2018 SMILE LIFE, author and illustrator Alexandre Seba; 200-card deck.",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Shuffle all cards and deal 5 cards to each player; players keep their hands secret until the end of the game.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "The remaining cards form a face-down draw pile.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "The player with the most smiles in their starting hand begins.",
+      "critical": false
+    },
+    {
+      "id": "k4",
+      "section": "turn",
+      "rule": "On your turn, draw one card and then play one card of your choice from your hand, so you always keep 5 cards in hand.",
+      "critical": true
+    },
+    {
+      "id": "k5",
+      "section": "turn",
+      "rule": "Cards are always played face up: in front of yourself (to build your life and score smiles), in front of another player (to penalize them with a malus), or onto the discard pile.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "turn",
+      "rule": "Instead of drawing from the pile, you may take the last card of the discard pile, but you must play it immediately.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "turn",
+      "rule": "You may not take back a card you discarded yourself (voluntarily or because of a malus), unless another player has taken it and discarded it in the meantime.",
+      "critical": false
+    },
+    {
+      "id": "k8",
+      "section": "special",
+      "rule": "Studies: you may accumulate up to 6 study cards (single or double; a double counts as two levels). You can no longer study while you have a job.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "special",
+      "rule": "Jobs: you may only play a job if you have at least the number of study levels shown on it (top left, between the laurels). You can hold only one job at a time.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "special",
+      "rule": "Salaries: you need a job to play salaries. Number of banknote bundles on the job (1-4) = highest salary level allowed; salaries of levels up to that can be played one at a time in any order.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "special",
+      "rule": "Flirts: you can play flirts while not married, up to 5 flirts. At least one flirt is required before you can marry.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "special",
+      "rule": "If you play a flirt in the same place as another player's top uncovered flirt, you immediately take that flirt and place it on top of yours (this can give you a 6th flirt if you already have 5).",
+      "critical": false
+    },
+    {
+      "id": "k13",
+      "section": "special",
+      "rule": "A flirt at the hotel or camping lets you play one child (no more) while that flirt is uncovered by another flirt or a marriage.",
+      "critical": false
+    },
+    {
+      "id": "k14",
+      "section": "special",
+      "rule": "Marriage can be played only after flirting at least once; you cannot have two marriages at the same time, and you cannot flirt while married. Children can be played one by one only once married (or via hotel/camping flirt).",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "special",
+      "rule": "Adultery can only be played when married and lets you keep flirting without limit alongside your marriage; flirts made during adultery are kept (smiles count) even if adultery stops. You can stop it by discarding it on your turn, before or after drawing, then playing.",
+      "critical": false
+    },
+    {
+      "id": "k16",
+      "section": "special",
+      "rule": "Resignation: instead of drawing, discard your job and skip your turn; you can then study again or take a new job, resuming studies where you left off.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "special",
+      "rule": "Voluntary divorce: instead of drawing, discard your marriage and skip your turn; you can then flirt again and possibly remarry. Under adultery, the adultery goes to the discard with the marriage on top; you keep your children and adultery flirts.",
+      "critical": false
+    },
+    {
+      "id": "k18",
+      "section": "special",
+      "rule": "Animals are free and can be played directly; all acquisitions (animals, trips, houses) can be accumulated one by one.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "special",
+      "rule": "Trips and houses must be paid with salaries in front of you (house needs a minimum down payment, halved if you are married). Paid salaries are turned face down as invested: they cannot be reused or taken back but keep their smiles. There is no change given on overpayment.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "special",
+      "rule": "Légion d'honneur can be played directly unless you are or have been a bandit or have committed an attentat. Grand prix d'excellence can only be played by a writer, researcher or journalist and raises salary to level 4 for that job; only one per job; distinctions cannot be taken back.",
+      "critical": false
+    },
+    {
+      "id": "k21",
+      "section": "special",
+      "rule": "Grand prof can only be played if you are already a teacher; the teacher card is then discarded.",
+      "critical": false
+    },
+    {
+      "id": "k22",
+      "section": "special",
+      "rule": "Malus cards are played on another player on your turn; they score no smiles, and the victim suffers the effect then keeps the malus turned face down. Malus cards cannot be played on yourself.",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "special",
+      "rule": "Malus effects: accident/maladie make the victim skip a turn; burn out (workers only) skips a turn; divorce (married only) loses the marriage; impôt (workers only) discards last salary; licenciement (workers only) discards the job; redoublement (students only) discards last study card; prison (bandit only) skips 3 turns and discards the bandit; attentat removes all children of all players from the game.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "special",
+      "rule": "Professional advantages and statuses: fonctionnaire (teachers, police, military) cannot be fired; intérimaire (gardener, waiter, barman, plumber, stripper) can resign without skipping a turn; other jobs have specific advantages listed on the card, such as bandit immune to firing and tax.",
+      "critical": false
+    },
+    {
+      "id": "k25",
+      "section": "special",
+      "rule": "Special cards are played directly on your turn for their action and score no smiles; once used they are turned face down and cannot be retrieved. Examples: étoile filante (take any card from the discard and play it), piston (play any job then draw back to 5), arc-en-ciel (play up to 3 cards in a row then redraw to 5), troc (swap a random card with a player), tsunami (all hands are shuffled and redealt).",
+      "critical": false
+    },
+    {
+      "id": "k26",
+      "section": "special",
+      "rule": "Other special cards: anniversaire (each player gives you one salary of their choice), chance (look at the next 3 cards of the pile and play one, discard the others), héritage (counts as 3 salaries for purchases), vengeance (pass one of your received malus to any other player), casino (bet face-down salaries; the second bettor wins all if the two salaries are identical, otherwise the first player wins all).",
+      "critical": false
+    },
+    {
+      "id": "k27",
+      "section": "end_trigger",
+      "rule": "The game ends when the draw pile is empty.",
+      "critical": true
+    },
+    {
+      "id": "k28",
+      "section": "end_trigger",
+      "rule": "When the game ends, every player discards the cards still in their hand.",
+      "critical": true
+    },
+    {
+      "id": "k29",
+      "section": "scoring",
+      "rule": "Each player counts the smiles printed in the top left of the cards played face to them (including invested salaries turned face down, kept adultery flirts and used grand prix); malus and special cards give no smiles.",
+      "critical": true
+    },
+    {
+      "id": "k30",
+      "section": "scoring",
+      "rule": "An unchallenged casino bet is recovered at the end of the game and counts as a salary, worth one smile.",
+      "critical": false
+    },
+    {
+      "id": "k31",
+      "section": "winner",
+      "rule": "The player with the most smiles wins.",
+      "critical": true
+    },
+    {
+      "id": "k32",
+      "section": "variant",
+      "rule": "To change game length, play with the whole draw pile or with only a portion of it.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 48349,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 48349,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 2588,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 48349,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 48349,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 2588,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

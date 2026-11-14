@@ -1,0 +1,157 @@
+{
+  "game_title": "2 Pommes 3 Pains",
+  "edition_notes": "",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Shuffle all cards (goods cards and action cards together) to form a single common draw pile in the center of the table.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Deal 5 cards to each player, kept secret in hand.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "Leave free space in front of each player where their sale piles will accumulate.",
+      "critical": false
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "The youngest player starts.",
+      "critical": false
+    },
+    {
+      "id": "k5",
+      "section": "turn",
+      "rule": "On your turn you chain two or three simple actions chosen among: draw, lay down, sell.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "turn",
+      "rule": "Draw: take one card from the central draw pile to add to your hand.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "turn",
+      "rule": "Lay down: place one or more cards of the same type in front of you to start or add to a pile.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "Sell: choose one of your piles, turn it face down into your score area, and gain the points corresponding to it.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "special",
+      "rule": "Action cards can be drawn during the game and let a player steal a card from a neighbor, force someone to sell immediately, or swap hands with another player.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "special",
+      "rule": "An opponent playing an action card against you can make you lose a pile, so waiting to sell is risky.",
+      "critical": false
+    },
+    {
+      "id": "k11",
+      "section": "end_trigger",
+      "rule": "The game ends as soon as the draw pile is empty and nobody can draw any more.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "scoring",
+      "rule": "Points come only from sold piles; each pile is worth points according to the number of identical cards in it at the time of sale.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "scoring",
+      "rule": "A pile of 1 card is worth 1 point.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "scoring",
+      "rule": "A pile of 2 cards is worth 3 points.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "scoring",
+      "rule": "A pile of 3 cards is worth 6 points.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "scoring",
+      "rule": "A pile of 4 cards is worth 10 points.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "scoring",
+      "rule": "A pile of 5 or more cards is worth 15 points.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "scoring",
+      "rule": "Cards remaining in hand at the end of the game (and unsold piles) score nothing.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "winner",
+      "rule": "The player with the highest total of points from sold piles wins.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "tie_break",
+      "rule": "In case of a tie, the tied player with the fewest cards left in hand wins.",
+      "critical": true
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 8993,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 8993,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 1016,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 8993,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 8993,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 1016,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

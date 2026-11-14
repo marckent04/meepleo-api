@@ -24,3 +24,12 @@
 .vscode/*
 !.vscode/settings.json
 !.vscode/extensions.json
+
+# Evals (.claude/hillclimb): bulk output and copyrighted rulebook PDFs stay local
+.claude/hillclimb/**/rulebooks/*.pdf
+.claude/hillclimb/**/traces/
+.claude/hillclimb/**/verdicts/
+.claude/hillclimb/**/report.html
+.claude/hillclimb/**/state.json
+.claude/hillclimb/**/trajectory/
+.claude/hillclimb/**/progress.txt

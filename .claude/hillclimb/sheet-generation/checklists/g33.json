@@ -1,0 +1,217 @@
+{
+  "game_title": "Wazabi",
+  "edition_notes": "Gigamic; rulebook dated 02-2013, © Gigamic 2007; game concept by Guilhem Debricon; French-language rulebook",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Goal of the game: be the first player to have no dice left.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Each player receives 4 dice and 3 cards at the start.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "The undealt cards are placed face down in the centre of the table to form the draw pile.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "Each player rolls their dice; the player who gets the most Wazabi (W) figures starts.",
+      "critical": true
+    },
+    {
+      "id": "k5",
+      "section": "turn",
+      "rule": "On their turn, a player rolls all of their dice, then draws cards, gives dice away, and may play one card.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "turn",
+      "rule": "Draw as many cards as the number of card-draw figures obtained on the dice.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "turn",
+      "rule": "Give each die showing the give-die figure to the player of your choice.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "A player may play only one card per turn, and playing a card is optional.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "To play a card, the player must have rolled at least as many W figures as shown at the top left of the card (minimum figures); 'Aucune' means the card can be played even with no W figure.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "A played card's effect applies immediately.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "Played or discarded cards are placed face up next to the draw pile.",
+      "critical": false
+    },
+    {
+      "id": "k12",
+      "section": "special",
+      "rule": "When the draw pile is empty, the face-up played cards are shuffled and turned over to form a new draw pile.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "special",
+      "rule": "If there are no cards in the draw pile, a player who must draw takes a card from the hand of an opponent of their choice, who presents their cards fanned out face down.",
+      "critical": false
+    },
+    {
+      "id": "k14",
+      "section": "special",
+      "rule": "Card (cost 1 W): remove 1 of your dice from the game; cannot be played if you rolled 2 or more give-die figures that turn.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "special",
+      "rule": "Card (cost 2 W): all players, including the player of the card, give all their dice to their left or right neighbour, direction chosen by the player who plays the card.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "special",
+      "rule": "Card (cost 3 W): remove 2 of your dice from the game.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "special",
+      "rule": "Card (cost 3 W): give 1 of your dice to the player of your choice, independent of any dice already given through rolled figures.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "special",
+      "rule": "Card (cost 1 W): take 1 card of your choice from the face-down fanned hand of a player of your choice; if no player has cards, take one from the draw pile.",
+      "critical": false
+    },
+    {
+      "id": "k19",
+      "section": "special",
+      "rule": "Card (cost 1 W): the player of your choice keeps only 1 card; the chosen player must have at least 2 cards, picks the one to keep and discards the others.",
+      "critical": false
+    },
+    {
+      "id": "k20",
+      "section": "special",
+      "rule": "Card (cost 1 W): draw 3 cards from the draw pile, independent of cards drawn through rolled figures.",
+      "critical": false
+    },
+    {
+      "id": "k21",
+      "section": "special",
+      "rule": "Card (cost 2 W): all players except you keep only 2 cards; players with more choose which to keep and discard the rest.",
+      "critical": false
+    },
+    {
+      "id": "k22",
+      "section": "special",
+      "rule": "Card (no cost): the player of your choice skips their turn; place it face up in front of the chosen player, who keeps it until they have skipped a turn then discards it; several such cards can stack in front of the same player.",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "special",
+      "rule": "Card (no cost): play again and reverse the direction of play.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "end_trigger",
+      "rule": "The game ends as soon as a player has no dice left.",
+      "critical": true
+    },
+    {
+      "id": "k25",
+      "section": "winner",
+      "rule": "The first player with no dice left wins the game.",
+      "critical": true
+    },
+    {
+      "id": "k26",
+      "section": "winner",
+      "rule": "Optionally, play can continue until only one loser remains.",
+      "critical": false
+    },
+    {
+      "id": "k27",
+      "section": "scoring",
+      "rule": "The base game has no point scoring; victory is determined only by getting rid of all dice.",
+      "critical": false
+    },
+    {
+      "id": "k28",
+      "section": "variant",
+      "rule": "Team variant for 4 or 6 players: play in teams of 2; the first player with no dice left makes their team win.",
+      "critical": false
+    },
+    {
+      "id": "k29",
+      "section": "variant",
+      "rule": "Game length variant: lengthen or shorten the game by increasing or decreasing the number of dice dealt at the start.",
+      "critical": false
+    },
+    {
+      "id": "k30",
+      "section": "variant",
+      "rule": "Tournament variant: fix a number of games; the winner of each game scores 1 point per die remaining among all opponents; after the planned games, the player or team with the most points wins.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 21817,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 21817,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 1783,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 21817,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 21817,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 1783,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

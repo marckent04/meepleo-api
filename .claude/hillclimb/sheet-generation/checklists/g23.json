@@ -1,0 +1,175 @@
+{
+  "game_title": "Dékal",
+  "edition_notes": "Gigamic, 2024 (09-2024); authors Claude Clément (design), Joey (illustration); French rulebook; 2-6 players, age 7+, 15 min",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Shuffle the cards and deal 16 cards face down to each player.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Each player arranges their 16 cards face down in a 4x4 square in front of them; this is their game grid.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "The remaining undealt cards are set aside out of the game (this matters with fewer than 6 players, since the deck has 100 cards).",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "The player who is the most 'décalé' (quirky/off-beat) receives the First Player token.",
+      "critical": false
+    },
+    {
+      "id": "k5",
+      "section": "turn",
+      "rule": "The game lasts 16 rounds and ends when all cards in the grids have been revealed and played.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "turn",
+      "rule": "At the start of each round, every player chooses any face-down card from their own grid and, simultaneously with the others, plays it face up in the centre of the table.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "turn",
+      "rule": "Starting with the First Player token holder and going clockwise, each player takes one of the revealed cards from the centre (not necessarily their own) and inserts it into their grid from the outside.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "Inserting a card means pushing (shifting) a row or a column so that the empty space is filled and the 4x4 square is restored.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "You cannot push a diagonal; only rows or columns can be shifted.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "special",
+      "rule": "It is forbidden to place the card directly into the empty space left by the played card.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "The last player to choose has no choice and must take the last remaining card in the centre.",
+      "critical": false
+    },
+    {
+      "id": "k12",
+      "section": "turn",
+      "rule": "After each round the First Player token passes to the left neighbour, and a new round begins.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "end_trigger",
+      "rule": "When all 16 rounds are done and all cards are revealed and played, proceed to scoring.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "scoring",
+      "rule": "First, all orthogonally adjacent cards of the same value cancel each other and are removed from the game (diagonals do not count).",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "scoring",
+      "rule": "Cancelling applies to groups of adjacent same-value cards (e.g., in the example three 10s, two 8s, three 1s and two 4s that touch are removed).",
+      "critical": false
+    },
+    {
+      "id": "k16",
+      "section": "scoring",
+      "rule": "Each player then adds up the total value of all cards remaining in their grid; this total is their score (penalty points).",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "scoring",
+      "rule": "Example: remaining cards 5, 5, 3, 4, 7 give 24 points.",
+      "critical": false
+    },
+    {
+      "id": "k18",
+      "section": "winner",
+      "rule": "The player with the lowest score wins the game.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "tie_break",
+      "rule": "In case of a tie, the tied players count the number of cards remaining in their grid; the one with the fewest cards wins.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "tie_break",
+      "rule": "If still tied, the victory is shared.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "variant",
+      "rule": "Multi-round variant: play several games (rounds) and accumulate scores; as soon as a player reaches or exceeds a total of 100 points, the match ends.",
+      "critical": false
+    },
+    {
+      "id": "k22",
+      "section": "variant",
+      "rule": "In the multi-round variant, the player with the fewest cumulated points wins.",
+      "critical": false
+    },
+    {
+      "id": "k23",
+      "section": "variant",
+      "rule": "In the multi-round variant, the First Player changes at the start of each game.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 4555,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 4555,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 1386,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 4555,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 4555,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 1386,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

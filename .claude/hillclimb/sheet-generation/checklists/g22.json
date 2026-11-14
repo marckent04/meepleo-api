@@ -1,0 +1,253 @@
+{
+  "game_title": "Skyjo Action",
+  "edition_notes": "French-language rulebook, © 2019 Alexander Bernhardt, Magilano; French distribution by Blackrock Games. 2-8 players, 8+, 30 min.",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Form two separate decks: the game deck (Number cards and Star cards) and the Action card deck.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Draw 4 Action cards and place them face up in a row; the remaining Action cards form the Action draw pile.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "When an Action card is taken from the 4 face-up Action cards, it is immediately replaced with a new card from the Action draw pile.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "Played or discarded Action cards go face up on an Action discard pile next to the Action draw pile.",
+      "critical": false
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "Each player is dealt 12 cards from the game deck; one more card is placed face up in the middle of the table to start the game-deck discard pile, and the rest form the draw pile.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "setup",
+      "rule": "Each player lays their 12 cards face down in a 4-column by 3-row rectangle (4 cards per row, 3 per column) as their own play area.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "setup",
+      "rule": "Each player then flips 2 cards of their choice face up in their grid.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "setup",
+      "rule": "The player whose two revealed cards have the highest sum starts the first round; play then proceeds clockwise.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "setup",
+      "rule": "If a player reveals a Star card during setup, they may take a face-up Action card and place it next to their cards.",
+      "critical": false
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "On your turn you choose one of three options: draw a game card, draw an Action card, or play an Action card.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "Draw a game card from the top of the draw pile: look at it, then either swap it with any one of your cards (face up or face down), the replaced card going face up on the discard pile, or discard it and flip one of your face-down cards face up.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "turn",
+      "rule": "Alternatively take the top face-up card of the game discard pile: you must immediately swap it with one of your cards (face up or face down); the new card stays face up and the replaced card goes face up on the discard pile.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "turn",
+      "rule": "Draw an Action card either from the 4 face-up Action cards or from the top of the Action draw pile; place it next to your play area.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "turn",
+      "rule": "Play an Action card: carry out its effect and discard it face up on the Action discard pile. An Action card may also be discarded without using its effect.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "special",
+      "rule": "Skyjo rule: if a player reveals or places 3 identical cards in a column, or 4 identical cards in a row, they get rid of those cards by placing them on the discard pile.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "special",
+      "rule": "The Skyjo rule also applies during the last turn when all cards are flipped; if the identical line results from a swap with a drawn or discard card, the identical cards are placed on the discard pile after the swapped-out card.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "special",
+      "rule": "Action cards taken can only be played from the next turn onward (unless a card says otherwise); there is no limit to the number of Action cards a player may hold.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "special",
+      "rule": "Action cards cannot be played during the last turn (after a player has revealed all their cards).",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "special",
+      "rule": "Whenever a Star card is placed or revealed in a player's grid, that player may take one of the 4 face-up Action cards or the top (hidden) card of the Action draw pile, placing it next to their play area.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "special",
+      "rule": "The Star-card Action pickup also applies when taking a face-up Star card from the discard pile and when revealing a Star at round start; it does NOT apply to Stars revealed at the end of a round or via a card swap.",
+      "critical": false
+    },
+    {
+      "id": "k21",
+      "section": "special",
+      "rule": "Star cards act as jokers: they can briefly take any declared number value to complete a line or column, including at end of a turn and end of a round, allowing lines/columns to be removed.",
+      "critical": true
+    },
+    {
+      "id": "k22",
+      "section": "special",
+      "rule": "Removing a complete column or row of Star cards is possible but not mandatory.",
+      "critical": false
+    },
+    {
+      "id": "k23",
+      "section": "special",
+      "rule": "Rounds after the first start with the player who ended the previous round; play continues clockwise.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "end_trigger",
+      "rule": "A round continues until a player has revealed all their cards; every following player then plays one more turn so everyone has had the same number of turns, then the round ends.",
+      "critical": true
+    },
+    {
+      "id": "k25",
+      "section": "end_trigger",
+      "rule": "The game ends at the end of the round in which a player reaches 100 points or more.",
+      "critical": true
+    },
+    {
+      "id": "k26",
+      "section": "scoring",
+      "rule": "At the end of a round each player adds up the values of all their cards, face up and face down, and adds this to their total score.",
+      "critical": true
+    },
+    {
+      "id": "k27",
+      "section": "scoring",
+      "rule": "Number cards count for their printed value, Star cards count 0, and Action cards still in a player's play area count 10 points each.",
+      "critical": true
+    },
+    {
+      "id": "k28",
+      "section": "scoring",
+      "rule": "A column of Star cards scores -10 points and a row of Star cards scores -15 points.",
+      "critical": true
+    },
+    {
+      "id": "k29",
+      "section": "scoring",
+      "rule": "If the player who ended the round (first to reveal all cards) does not have strictly the lowest score of the round, their round score is doubled; this applies only to positive scores.",
+      "critical": true
+    },
+    {
+      "id": "k30",
+      "section": "winner",
+      "rule": "The player with the lowest total score when the game ends wins; the goal is to score as few points as possible.",
+      "critical": true
+    },
+    {
+      "id": "k31",
+      "section": "special",
+      "rule": "Action card 'Take a card from each player': each player in clockwise order removes a card of their choice (Number, Star, or Action) and puts it under the relevant discard pile, then draws a replacement from the draw pile and places it face up in the gap.",
+      "critical": false
+    },
+    {
+      "id": "k32",
+      "section": "special",
+      "rule": "Other Action cards: swap two of your own cards; take 2 extra turns immediately; draw 3 cards and keep one; look at hidden cards of a row or column; defense card protects once against an attack and gives an extra turn if played; play an Action card from the Action discard pile; steal an Action card and play it; swap a card with another player.",
+      "critical": false
+    },
+    {
+      "id": "k33",
+      "section": "variant",
+      "rule": "Single-deck variant: shuffle 5 to 10 Action cards into the game deck; if a player draws or flips one, they may keep it or put it on the discard pile, and then must draw a game card.",
+      "critical": false
+    },
+    {
+      "id": "k34",
+      "section": "variant",
+      "rule": "Play with Number and Star cards only (no Action cards), 1 to 6 players; other rules unchanged.",
+      "critical": false
+    },
+    {
+      "id": "k35",
+      "section": "variant",
+      "rule": "Up to 2 extra players: each player's grid is 9 cards (3x3 square) with only 1 card revealed.",
+      "critical": false
+    },
+    {
+      "id": "k36",
+      "section": "variant",
+      "rule": "Play with Number cards only (no Star or Action cards), 1 to 4 players; other rules unchanged.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 13658,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 13658,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 2581,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 13658,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 13658,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 2581,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

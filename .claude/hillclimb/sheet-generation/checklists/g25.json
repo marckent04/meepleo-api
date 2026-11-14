@@ -1,0 +1,205 @@
+{
+  "game_title": "Taco Chat Bouc Cheese Pizza",
+  "edition_notes": "French-language rulebook, © 2020 Blue Orange Edition, © 2017 Dolphin Hat Games LLC; 2-8 players, ages 8+, about 10 minutes; 64 cards.",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Shuffle the cards and deal them face down to all players according to player count.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "With 2, 3, 4 or 5 players, each player receives 12 cards.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "With 6 players, each player receives 10 cards.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "With 7 or 8 players, each player receives 8 cards.",
+      "critical": true
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "Leftover cards are returned to the box.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "setup",
+      "rule": "Players do not look at their cards; each forms a face-down personal draw pile in front of them.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "setup",
+      "rule": "The player who dealt the cards is the first player of the first round.",
+      "critical": false
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "The game is played in a series of rounds until a player achieves the goal of the game.",
+      "critical": false
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "The first player of the round takes the top card of their pile, places it face up in the center of the table and says \"Taco\".",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "Play continues clockwise: each next player flips the top card of their pile onto the center pile and says the next word in the sequence.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "The word sequence is always Taco, Chat, Bouc, Cheese, Pizza, then repeats (Taco, Chat...), continuing across players without restarting.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "turn",
+      "rule": "Each card must be flipped face up toward the other players, not toward oneself.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "turn",
+      "rule": "A match occurs when the card revealed is the same as the word the player says (e.g., a Pizza card played while saying \"Pizza\"); then all players slap the center pile as fast as possible.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "turn",
+      "rule": "The last player to slap the pile (hand on top) takes all cards in the center pile and adds them face down under their draw pile; that player starts the next round.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "special",
+      "rule": "When a special card (Gorille, Marmotte, Narval) is revealed, all players must perform its action before slapping the pile.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "special",
+      "rule": "Gorille: all players beat their chest.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "special",
+      "rule": "Marmotte: all players hit the table with both hands.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "special",
+      "rule": "Narval: all players place both hands above their head forming a horn.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "special",
+      "rule": "A player who does the wrong action or is the last to slap on a special card takes the whole center pile and puts it under their draw pile.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "special",
+      "rule": "A player who slaps at the wrong time, or starts to slap and retracts, loses their turn and takes the whole center pile under their draw pile.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "special",
+      "rule": "A player who forgets what to say, says the wrong word, or fails to notice it is their turn takes the whole center pile under their draw pile; play must keep a brisk pace.",
+      "critical": true
+    },
+    {
+      "id": "k22",
+      "section": "special",
+      "rule": "A player who obviously tries to peek at their card before playing it loses their turn and takes the whole center pile under their draw pile.",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "special",
+      "rule": "A player who has played all their cards must still say the next word on their turn and must be FIRST to slap on a match or special card to win.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "special",
+      "rule": "If the word announced matches the card already visible in the center (not the one just played), it is not a match and the round continues normally.",
+      "critical": false
+    },
+    {
+      "id": "k25",
+      "section": "special",
+      "rule": "If a player with no cards left is not first to slap, a new round starts and they keep playing until they succeed in slapping first.",
+      "critical": true
+    },
+    {
+      "id": "k26",
+      "section": "end_trigger",
+      "rule": "The game ends when a player has no draw pile left and is first to slap the pile on a match or a special card.",
+      "critical": true
+    },
+    {
+      "id": "k27",
+      "section": "scoring",
+      "rule": "There is no point scoring; the aim is to get rid of all of your cards.",
+      "critical": true
+    },
+    {
+      "id": "k28",
+      "section": "winner",
+      "rule": "The winner is the first player who has no personal draw pile left and is first to slap the pile on a match or after a special card appears.",
+      "critical": true
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 22352,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 22352,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 1665,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 22352,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 22352,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 1665,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

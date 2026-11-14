@@ -1,0 +1,553 @@
+[
+  {
+    "id": "g01",
+    "game_id": "01a1b043-9529-7179-b111-99bd7d2f810d",
+    "language": "fr",
+    "tags": [
+      "recent"
+    ],
+    "meta": {
+      "name": "2 Pommes 3 Pains",
+      "year": 2024,
+      "bgg_id": 414855,
+      "fr_title": "2 Pommes 3 Pains",
+      "prior_confidence": "medium",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g02",
+    "game_id": "01a1b043-8367-726f-806a-4d8bbcb77490",
+    "language": "fr",
+    "tags": [
+      "classic",
+      "renamed-fr"
+    ],
+    "meta": {
+      "name": "6 nimmt! 25 Jahre",
+      "year": 2019,
+      "bgg_id": 268586,
+      "fr_title": "6 qui surprend !",
+      "prior_confidence": "high",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g03",
+    "game_id": "01a1b043-a26f-73d5-b89f-533f096ffda1",
+    "language": "fr",
+    "tags": [
+      "classic",
+      "prior-low"
+    ],
+    "meta": {
+      "name": "7 Wonders",
+      "year": 2010,
+      "bgg_id": 68448,
+      "fr_title": "7 Wonders",
+      "prior_confidence": "low",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g04",
+    "game_id": "01a1b043-8cc1-72aa-95cb-e7e80200d764",
+    "language": "fr",
+    "tags": [
+      "classic"
+    ],
+    "meta": {
+      "name": "Azul",
+      "year": 2017,
+      "bgg_id": 230802,
+      "fr_title": "Azul",
+      "prior_confidence": "high",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g05",
+    "game_id": "01a1b043-5fca-70ea-87fa-a3e394d56567",
+    "language": "fr",
+    "tags": [
+      "recent",
+      "renamed-fr",
+      "prior-low"
+    ],
+    "meta": {
+      "name": "Canal Houses",
+      "year": 2024,
+      "bgg_id": 404845,
+      "fr_title": "Bellevue",
+      "prior_confidence": "low",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g06",
+    "game_id": "01a1b043-7bae-77ce-bec8-2d3b21645444",
+    "language": "fr",
+    "tags": [
+      "classic"
+    ],
+    "meta": {
+      "name": "Carcassonne",
+      "year": 2000,
+      "bgg_id": 822,
+      "fr_title": "Carcassonne",
+      "prior_confidence": "medium",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g07",
+    "game_id": "01a1b043-667e-70eb-b2d7-0493f51faa41",
+    "language": "fr",
+    "tags": [
+      "classic"
+    ],
+    "meta": {
+      "name": "Catan",
+      "year": 1995,
+      "bgg_id": 13,
+      "fr_title": "Catan – Le Jeu de base",
+      "prior_confidence": "medium",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g08",
+    "game_id": "01a1b043-8586-717b-af0d-fabec2b4614d",
+    "language": "fr",
+    "tags": [
+      "recent"
+    ],
+    "meta": {
+      "name": "Courtisans",
+      "year": 2024,
+      "bgg_id": 402283,
+      "fr_title": "Courtisans",
+      "prior_confidence": "medium",
+      "had_rulebook_url": false
+    }
+  },
+  {
+    "id": "g09",
+    "game_id": "01a1b043-7860-71bf-a25f-bcd1bd23a33d",
+    "language": "fr",
+    "tags": [
+      "niche",
+      "name-clash"
+    ],
+    "meta": {
+      "name": "Dekalko",
+      "year": 2019,
+      "bgg_id": 270513,
+      "fr_title": "Dekalko - 1, 2, 3, GO !",
+      "prior_confidence": "high",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g10",
+    "game_id": "01a1b043-7a04-7428-903a-0aa3a6a0a7d1",
+    "language": "fr",
+    "tags": [
+      "recent"
+    ],
+    "meta": {
+      "name": "dnup",
+      "year": 2026,
+      "bgg_id": 432456,
+      "fr_title": "Dnup",
+      "prior_confidence": "medium",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g11",
+    "game_id": "01a1b043-a2c0-755f-8c7a-c34777436e2f",
+    "language": "fr",
+    "tags": [
+      "classic"
+    ],
+    "meta": {
+      "name": "Exploding Kittens",
+      "year": 2015,
+      "bgg_id": 172225,
+      "fr_title": "Exploding Kittens",
+      "prior_confidence": "medium",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g12",
+    "game_id": "01a1b043-9d29-73b1-8ea5-1067ca7336f7",
+    "language": "fr",
+    "tags": [
+      "recent"
+    ],
+    "meta": {
+      "name": "Flip 7",
+      "year": 2024,
+      "bgg_id": 420087,
+      "fr_title": "Flip 7",
+      "prior_confidence": "high",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g13",
+    "game_id": "01a1b043-6a83-7538-9c81-ef654dfd9fe2",
+    "language": "fr",
+    "tags": [
+      "classic"
+    ],
+    "meta": {
+      "name": "Hellapagos",
+      "year": 2017,
+      "bgg_id": 224272,
+      "fr_title": "Hellapagos",
+      "prior_confidence": "high",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g14",
+    "game_id": "01a1b043-7b77-7341-b4cb-335049d498b0",
+    "language": "fr",
+    "tags": [
+      "recent",
+      "name-clash",
+      "prior-low"
+    ],
+    "meta": {
+      "name": "Las Vegas",
+      "year": 2026,
+      "bgg_id": 463783,
+      "fr_title": "Las Vegas",
+      "prior_confidence": "low",
+      "had_rulebook_url": false
+    }
+  },
+  {
+    "id": "g15",
+    "game_id": "01a1b043-7b35-72ca-8012-d8152f89cf8d",
+    "language": "fr",
+    "tags": [
+      "classic",
+      "name-clash"
+    ],
+    "meta": {
+      "name": "Las Vegas",
+      "year": 2012,
+      "bgg_id": 117959,
+      "fr_title": "Vegas",
+      "prior_confidence": "high",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g16",
+    "game_id": "01a1b043-62ba-767f-a50d-a517fdaf286e",
+    "language": "fr",
+    "tags": [
+      "classic",
+      "name-clash"
+    ],
+    "meta": {
+      "name": "Monopoly Deal Card Game",
+      "year": 2008,
+      "bgg_id": 40398,
+      "fr_title": "Monopoly Deal",
+      "prior_confidence": "high",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g17",
+    "game_id": "01a1b043-78b0-7507-bb22-566494caafe9",
+    "language": "fr",
+    "tags": [
+      "niche",
+      "name-clash",
+      "prior-low"
+    ],
+    "meta": {
+      "name": "Monopoly Deal Pocket",
+      "year": 2014,
+      "bgg_id": 164840,
+      "fr_title": "Monopoly Deal Pocket",
+      "prior_confidence": "low",
+      "had_rulebook_url": false
+    }
+  },
+  {
+    "id": "g18",
+    "game_id": "01a1b043-9b56-72d9-9f34-919ec00a1aac",
+    "language": "fr",
+    "tags": [
+      "recent",
+      "prior-low"
+    ],
+    "meta": {
+      "name": "Pili Pili: Extra spicy",
+      "year": 2026,
+      "bgg_id": 474310,
+      "fr_title": "Pili Pili Extra Spicy",
+      "prior_confidence": "low",
+      "had_rulebook_url": false
+    }
+  },
+  {
+    "id": "g19",
+    "game_id": "01a1b043-90bc-70cc-9eeb-a47eb16725d5",
+    "language": "fr",
+    "tags": [
+      "classic"
+    ],
+    "meta": {
+      "name": "Quarto",
+      "year": 1991,
+      "bgg_id": 681,
+      "fr_title": "Quarto",
+      "prior_confidence": "high",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g20",
+    "game_id": "01a1b043-672f-7425-a4df-55776ac66fab",
+    "language": "fr",
+    "tags": [
+      "niche",
+      "prior-low"
+    ],
+    "meta": {
+      "name": "Save Patient Zero",
+      "year": 2021,
+      "bgg_id": 320862,
+      "fr_title": "Save Patient Zero",
+      "prior_confidence": "low",
+      "had_rulebook_url": false
+    }
+  },
+  {
+    "id": "g21",
+    "game_id": "01a1b043-9685-73ce-af2f-34d55e345f53",
+    "language": "fr",
+    "tags": [
+      "classic",
+      "past-failure"
+    ],
+    "meta": {
+      "name": "Skull King",
+      "year": 2013,
+      "bgg_id": 150145,
+      "fr_title": "Skull King",
+      "prior_confidence": "medium",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g22",
+    "game_id": "01a1b043-94e0-7400-9d8b-392c2d1adfea",
+    "language": "fr",
+    "tags": [
+      "classic"
+    ],
+    "meta": {
+      "name": "Skyjo Action",
+      "year": 2019,
+      "bgg_id": 301242,
+      "fr_title": "Skyjo Action",
+      "prior_confidence": "high",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g23",
+    "game_id": "01a1b043-71d2-73fc-8ef4-98a97eb34589",
+    "language": "fr",
+    "tags": [
+      "recent",
+      "renamed-fr",
+      "name-clash"
+    ],
+    "meta": {
+      "name": "Slide",
+      "year": 2024,
+      "bgg_id": 415836,
+      "fr_title": "Dékal",
+      "prior_confidence": "medium",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g24",
+    "game_id": "01a1b043-9cc6-712c-81c3-0fca098de6ad",
+    "language": "fr",
+    "tags": [
+      "classic",
+      "past-failure"
+    ],
+    "meta": {
+      "name": "Smile Life",
+      "year": 2018,
+      "bgg_id": 281663,
+      "fr_title": "Smile Life",
+      "prior_confidence": "high",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g25",
+    "game_id": "01a1b043-7f90-712c-afee-c817ec006420",
+    "language": "fr",
+    "tags": [
+      "classic",
+      "renamed-fr"
+    ],
+    "meta": {
+      "name": "Taco Cat Goat Cheese Pizza",
+      "year": 2018,
+      "bgg_id": 253664,
+      "fr_title": "Taco Chat Bouc Cheese Pizza",
+      "prior_confidence": "high",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g26",
+    "game_id": "01a1b043-8e47-73c0-aafe-74dc6979f513",
+    "language": "fr",
+    "tags": [
+      "recent"
+    ],
+    "meta": {
+      "name": "The Gang",
+      "year": 2024,
+      "bgg_id": 411567,
+      "fr_title": "The Gang",
+      "prior_confidence": "medium",
+      "had_rulebook_url": false
+    }
+  },
+  {
+    "id": "g27",
+    "game_id": "01a1b043-9dea-75d8-95b3-6566ab1c8eee",
+    "language": "fr",
+    "tags": [
+      "classic"
+    ],
+    "meta": {
+      "name": "The Mind",
+      "year": 2018,
+      "bgg_id": 244992,
+      "fr_title": "The Mind",
+      "prior_confidence": "high",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g28",
+    "game_id": "01a1b043-a12b-772a-aec4-cfa5beb515d5",
+    "language": "fr",
+    "tags": [
+      "recent",
+      "past-failure"
+    ],
+    "meta": {
+      "name": "Toy Battle",
+      "year": 2025,
+      "bgg_id": 434654,
+      "fr_title": "Toy Battle",
+      "prior_confidence": "medium",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g29",
+    "game_id": "01a1b043-74fc-7095-a733-5164ac6d9557",
+    "language": "fr",
+    "tags": [
+      "classic",
+      "renamed-fr"
+    ],
+    "meta": {
+      "name": "Tri-Ominos",
+      "year": 1965,
+      "bgg_id": 4040,
+      "fr_title": "Triominos",
+      "prior_confidence": "high",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g30",
+    "game_id": "01a1b043-9825-77f8-ae80-77a9d61269dd",
+    "language": "fr",
+    "tags": [
+      "classic"
+    ],
+    "meta": {
+      "name": "Trio",
+      "year": 2021,
+      "bgg_id": 352515,
+      "fr_title": "Trio",
+      "prior_confidence": "medium",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g31",
+    "game_id": "01a1b043-9b81-762c-86f0-57783bdf547e",
+    "language": "fr",
+    "tags": [
+      "classic"
+    ],
+    "meta": {
+      "name": "UNO",
+      "year": 1971,
+      "bgg_id": 2223,
+      "fr_title": "UNO",
+      "prior_confidence": "medium",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g32",
+    "game_id": "01a1b043-956d-727d-a657-258d68c2b40c",
+    "language": "fr",
+    "tags": [
+      "classic",
+      "name-clash"
+    ],
+    "meta": {
+      "name": "Wasabi!",
+      "year": 2008,
+      "bgg_id": 33154,
+      "fr_title": "Wasabi !",
+      "prior_confidence": "medium",
+      "had_rulebook_url": true
+    }
+  },
+  {
+    "id": "g33",
+    "game_id": "01a1b043-7b0b-7329-a842-4ad230733044",
+    "language": "fr",
+    "tags": [
+      "classic",
+      "name-clash",
+      "past-failure"
+    ],
+    "meta": {
+      "name": "Wazabi",
+      "year": 2008,
+      "bgg_id": 48979,
+      "fr_title": "Wazabi",
+      "prior_confidence": "high",
+      "had_rulebook_url": true
+    }
+  }
+]

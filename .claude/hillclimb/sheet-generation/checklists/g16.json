@@ -1,0 +1,259 @@
+{
+  "game_title": "Monopoly Deal",
+  "edition_notes": "© 1935, 2008 Hasbro; Parker; French-language rulebook (2-5 players, age 8+), reference 0908 01723101",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "The game is for 2 to 5 players (age 8+).",
+      "critical": false
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Remove the 4 quick-rules cards from the deck and set them aside as a guide for the game.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "Shuffle the remaining cards and deal 5 cards face down to each player.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "Players look at their cards and keep them hidden from the others.",
+      "critical": false
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "The rest of the cards are placed face down in the middle as the draw pile.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "setup",
+      "rule": "The youngest player starts and play proceeds clockwise.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "turn",
+      "rule": "Step 1 of a turn: draw 2 cards from the draw pile and add them to your hand.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "If you have no cards in hand at the end of your turn, draw 5 cards at the start of your next turn (instead of 2).",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "Step 2: you may play up to 3 cards from your hand onto the table; playing 1 to 3 cards, or none, is allowed (not obligatory).",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "Type A: place money cards (and/or action cards) in a bank pile in front of you; this money is used to pay debts.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "An action card placed in the bank becomes money permanently and can never be used as an action card for the rest of the game.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "turn",
+      "rule": "Type B: place property cards face up in front of you to build color groups; each card shows how many properties make a complete group (2, 3 or 4).",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "turn",
+      "rule": "You may start as many color groups as you want.",
+      "critical": false
+    },
+    {
+      "id": "k14",
+      "section": "turn",
+      "rule": "Type C: play action cards by following their instructions and placing them in the center next to the draw pile; an action card drawn during your turn may be played immediately or kept for later.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "turn",
+      "rule": "Step 3: at the end of your turn you may hold at most 7 cards in hand (table cards don't count); excess cards go under the draw pile.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "special",
+      "rule": "When paying a debt, cards are never transferred into a player's hand; they go to the receiver's bank or property area.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "special",
+      "rule": "You can never pay with cards from your hand; only cards laid on the table in front of you (bank and properties) can pay.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "special",
+      "rule": "The payer chooses how to pay: bank cards, property cards, or a combination.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "special",
+      "rule": "No change is given: if you overpay, you lose the excess.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "special",
+      "rule": "Property cards used for payment are placed by the receiver among their own properties on the table.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "special",
+      "rule": "If you have no cards on the table to pay a debt, you pay nothing.",
+      "critical": true
+    },
+    {
+      "id": "k22",
+      "section": "special",
+      "rule": "Deal Duel (Forced Deal style): take a property card from any player, except one that is part of a complete group.",
+      "critical": false
+    },
+    {
+      "id": "k23",
+      "section": "special",
+      "rule": "Deal Troc: swap one of your properties with one of another player's properties (not from a complete group).",
+      "critical": false
+    },
+    {
+      "id": "k24",
+      "section": "special",
+      "rule": "Deal Banco: take a complete property group (including buildings) from any player.",
+      "critical": false
+    },
+    {
+      "id": "k25",
+      "section": "special",
+      "rule": "Joker! cancels an action played against you and can be used at any time; the other player can cancel your Joker with their own Joker.",
+      "critical": false
+    },
+    {
+      "id": "k26",
+      "section": "special",
+      "rule": "Deal Jackpot: claim 5M from a player of your choice; It's My Birthday: every player gives you 2M.",
+      "critical": false
+    },
+    {
+      "id": "k27",
+      "section": "special",
+      "rule": "Rent cards: two-color rent makes every player pay rent for one of your property groups matching one of the card's colors; the multicolor rent card charges 1 player of your choice for any of your properties.",
+      "critical": false
+    },
+    {
+      "id": "k28",
+      "section": "special",
+      "rule": "Double Rent is played together with a rent card to double the amount claimed.",
+      "critical": false
+    },
+    {
+      "id": "k29",
+      "section": "special",
+      "rule": "House/Hotel: add to a complete group to increase rent (house +3M, hotel +4M); only one house and one hotel per group, hotel only after a house, and not on railroads or utilities.",
+      "critical": false
+    },
+    {
+      "id": "k30",
+      "section": "special",
+      "rule": "Pass Go card: draw 2 cards; several can be played in the same turn (within the 3-card limit).",
+      "critical": false
+    },
+    {
+      "id": "k31",
+      "section": "special",
+      "rule": "Property Wild cards substitute for a missing property of their colors; the 2 multicolor wilds can replace any color but have no monetary value and cannot be banked.",
+      "critical": false
+    },
+    {
+      "id": "k32",
+      "section": "special",
+      "rule": "At the start of your turn, if you draw a property of the same color as a wild you have placed, you may swap them to take the wild back into your hand or place it on another group.",
+      "critical": false
+    },
+    {
+      "id": "k33",
+      "section": "end_trigger",
+      "rule": "The game ends when a player has 3 complete property groups of different colors.",
+      "critical": true
+    },
+    {
+      "id": "k34",
+      "section": "end_trigger",
+      "rule": "You can only win on your own turn; if you realize you've completed 3 groups during another player's turn, you must wait until your next turn to declare victory.",
+      "critical": true
+    },
+    {
+      "id": "k35",
+      "section": "scoring",
+      "rule": "There is no point scoring; money is only used to pay debts, and the goal is to be first to own 3 complete property groups of different colors.",
+      "critical": true
+    },
+    {
+      "id": "k36",
+      "section": "winner",
+      "rule": "The winner is the first player to have 3 complete property groups of different colors.",
+      "critical": true
+    },
+    {
+      "id": "k37",
+      "section": "variant",
+      "rule": "For 6 or more players, shuffle 2 Monopoly Deal decks together; the rules stay the same.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 9380,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 9380,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 2199,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 9380,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 9380,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 2199,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

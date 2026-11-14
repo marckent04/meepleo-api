@@ -1,0 +1,217 @@
+{
+  "game_title": "Vegas",
+  "edition_notes": "French-language rulebook; alea / Ravensburger Spieleverlag 2012 edition (© 2011 Rüdiger Dorn), code 230513",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Place the 6 casinos side by side in the center of the table in numerical order (1 to 6).",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Shuffle the 54 banknotes and stack them face down next to the casinos.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "Add banknotes from the stack to each casino one by one until the total on that casino is at least $50,000 (greater than or equal to), keeping all values visible.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "Each player takes the 8 dice of one color of their choice.",
+      "critical": true
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "The oldest player receives the first player card and starts the game.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "turn",
+      "rule": "The game is played over four rounds; within a round each player rolls their dice repeatedly on their turns (typically 4 or 5 times) until all their dice are placed.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "turn",
+      "rule": "Play proceeds clockwise starting with the first player.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "On your turn, roll all of your remaining dice (all 8 at the start of a round).",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "After rolling, choose exactly one value among the results and place ALL dice showing that value in the casino with that number; you cannot place only some of them.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "You may place dice in a casino regardless of whether you or other players already have dice there.",
+      "critical": false
+    },
+    {
+      "id": "k11",
+      "section": "special",
+      "rule": "A player with no dice left must pass until the end of the round; the last player with dice may thus play several turns in a row.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "end_trigger",
+      "rule": "A round ends when the last player has placed their last die; then the casinos pay out.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "scoring",
+      "rule": "Payout step 1: in each casino, players with the same number of dice there as another player are cancelled; all those tied dice are returned to their owners' supply and receive nothing.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "scoring",
+      "rule": "Dice cancelled by ties are ignored, so e.g. with 5, 3, 3 and 1 dice the two players with 3 dice are removed and the 5-dice player and 1-die player remain.",
+      "critical": false
+    },
+    {
+      "id": "k15",
+      "section": "scoring",
+      "rule": "Payout step 2: in each casino (starting with the first), the player with the most remaining dice takes the highest-value banknote there and takes back their dice.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "scoring",
+      "rule": "The other banknotes in that casino go to the other remaining players in descending order of their number of dice in that casino.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "scoring",
+      "rule": "If there are not enough banknotes for all players, the remaining players get nothing and take back their dice.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "scoring",
+      "rule": "Banknotes left over in a casino after payout are put face down under the banknote stack.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "scoring",
+      "rule": "All six casinos pay out the same way; banknotes won are kept face down in front of the player (money is the score).",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "turn",
+      "rule": "Next round: refill all six casinos from the stack so each has at least $50,000, as in setup.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "turn",
+      "rule": "At the start of the next round, the first player card passes to the left of the previous first player, who starts the round.",
+      "critical": true
+    },
+    {
+      "id": "k22",
+      "section": "end_trigger",
+      "rule": "The game ends after the fourth round (after the fourth payout), then players count their money.",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "winner",
+      "rule": "The richest player (most total money in banknotes) wins.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "tie_break",
+      "rule": "A tie in money is won by the tied player with the most banknotes.",
+      "critical": true
+    },
+    {
+      "id": "k25",
+      "section": "tie_break",
+      "rule": "If still tied after number of banknotes, the tied players share the victory.",
+      "critical": true
+    },
+    {
+      "id": "k26",
+      "section": "variant",
+      "rule": "Variant for 2 to 4 players: all normal rules apply, but each player also gets neutral dice (recommended white) at the start of each round.",
+      "critical": false
+    },
+    {
+      "id": "k27",
+      "section": "variant",
+      "rule": "In the variant with 2 players, each player receives 4 white dice (12 dice total each).",
+      "critical": false
+    },
+    {
+      "id": "k28",
+      "section": "variant",
+      "rule": "In the variant with 3 or 4 players, each player receives 2 white dice (10 dice total each); with 3 players the 2 remaining white dice are rolled by the first player at the start of each round and placed in the matching casinos.",
+      "critical": false
+    },
+    {
+      "id": "k29",
+      "section": "variant",
+      "rule": "In the variant, you roll your neutral dice together with your own color dice and place them as if all were your color (choose one value, place all dice of that value, including neutral ones).",
+      "critical": false
+    },
+    {
+      "id": "k30",
+      "section": "variant",
+      "rule": "In the variant, at round end the neutral dice count as an additional fictitious player; banknotes won by this fictitious player are put under the banknote stack.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 11292,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 11292,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 1850,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 11292,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 11292,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 1850,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

@@ -1,0 +1,241 @@
+{
+  "game_title": "CATAN – Le Jeu de Base (Livret de règles)",
+  "edition_notes": "© 1995, 2025 KOSMOS Verlag; French edition distributed by Asmodee France (adaptation Edge Studio); 2025 edition with 4 player colors (white, orange, red, blue)",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Assemble the frame pieces and place the 19 terrain tiles (1 desert and 5 other terrain types) inside the frame, either as in the beginner layout diagram or, for the expert setup, shuffled face down and placed randomly then flipped face up.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Each terrain produces one resource: Hills produce Clay, Forest produces Wood, Pasture produces Wool, Fields produce Grain, Mountains produce Ore; the Desert produces nothing.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "Place the number tokens on the terrain tiles (beginner: as in the diagram; expert: tokens A onward placed in alphabetical order in a counter-clockwise spiral toward the center, starting at a corner tile, then flipped to show numbers). The Desert gets no number token and is skipped.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "Place the Robber pawn on the Desert tile.",
+      "critical": true
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "Each player chooses a color and takes the matching pieces: 5 settlements, 4 cities and 15 roads. With 3 players, the white pieces are returned to the box.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "setup",
+      "rule": "Sort the resource cards by type into 5 face-up piles in the trays; shuffle the Development cards and put them face down in the last compartment. The trays form the Supply (Réserve) next to the board.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "setup",
+      "rule": "Each player takes a Building Costs card; the Longest Road and Largest Army special cards and the 2 dice are placed next to the board.",
+      "critical": false
+    },
+    {
+      "id": "k8",
+      "section": "setup",
+      "rule": "Expert setup placement phase: each player rolls the dice, the highest total goes first. In the 1st round, in clockwise order, each player places 1 settlement on any free intersection and connects 1 road to one of its 3 adjacent paths, respecting the Distance Rule.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "setup",
+      "rule": "In the 2nd placement round, the last player to place begins and play proceeds counter-clockwise: each player places a 2nd settlement (respecting the Distance Rule) and connects 1 road to it.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "setup",
+      "rule": "Starting resources: each player takes from the Supply 1 resource card for each terrain tile adjacent to their (second, in expert setup) settlement and keeps them hidden in hand.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "setup",
+      "rule": "Beginner setup: each player starts with 2 settlements and 2 roads already placed on the island as in the diagram (keeping 3 settlements, 13 roads and 4 cities in front of them); the first player is the one with the highest total on a roll of both dice.",
+      "critical": false
+    },
+    {
+      "id": "k12",
+      "section": "turn",
+      "rule": "Players take turns clockwise. On your turn, do in order: 1) Resource phase (roll the dice), 2) Trade and Build phase. Then pass the dice to the left neighbor.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "turn",
+      "rule": "Roll both dice and add them. If the total is not 7, every player with a settlement adjacent to a terrain tile whose number token matches the total receives 1 resource card of that terrain's type; each city gives 2 cards. Multiple buildings each produce separately.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "special",
+      "rule": "If a 7 is rolled, no terrain produces. Every player with more than 7 resource cards must return half of them (their choice) to the Supply, rounding down (e.g. 9 cards → return 4).",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "special",
+      "rule": "On a 7, the active player must move the Robber to a different terrain tile and steals 1 random resource card from the hand of another player who has a settlement or city adjacent to that tile.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "special",
+      "rule": "A terrain tile occupied by the Robber does not produce resources when its number is rolled: owners of adjacent settlements/cities receive nothing.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "turn",
+      "rule": "In the Trade and Build phase, the active player may trade, build and buy Development cards in any order and any number of times, or do nothing.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "turn",
+      "rule": "Trading with players: you may trade resource cards with any other player by negotiating; other players may only trade with the active player, not among themselves.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "turn",
+      "rule": "Trading with the Supply is 4:1: return 4 identical resource cards and take 1 resource card of a different type of your choice.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "turn",
+      "rule": "Harbors: with a settlement or city on a harbor intersection, a generic harbor lets you trade 3:1 (3 identical cards for 1 of your choice); a specialized harbor lets you trade 2:1 only for the resource shown (2 cards of that type for 1 of your choice).",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "turn",
+      "rule": "Road costs 1 Clay + 1 Wood. Roads are built only on paths (edges between tiles or tile and sea), 1 road per path, and must connect to one of your settlements/cities or to an unoccupied intersection extending one of your roads.",
+      "critical": true
+    },
+    {
+      "id": "k22",
+      "section": "turn",
+      "rule": "Settlement costs 1 Clay + 1 Wood + 1 Wool + 1 Grain. It must be built on an intersection reached by at least one of your roads and obey the Distance Rule: all 3 adjacent intersections must be unoccupied by any settlement or city.",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "turn",
+      "rule": "City costs 2 Grain + 3 Ore. It can only be built by upgrading one of your settlements already on the board; the settlement returns to your personal supply.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "turn",
+      "rule": "Development card costs 1 Wool + 1 Grain + 1 Ore: draw the top card, look at it and keep it face down in front of you. Spent resource cards go back to the Supply.",
+      "critical": true
+    },
+    {
+      "id": "k25",
+      "section": "special",
+      "rule": "You may play only 1 Development card per turn (at any time, even before rolling the dice), and cannot play a card bought during the same turn. Each card can be played only once.",
+      "critical": true
+    },
+    {
+      "id": "k26",
+      "section": "special",
+      "rule": "Knight card: move the Robber to another terrain tile and steal 1 resource card from a player adjacent to it, as for a 7; the played Knight stays face up in front of you.",
+      "critical": true
+    },
+    {
+      "id": "k27",
+      "section": "special",
+      "rule": "Monopoly: name 1 resource type; all other players must give you all cards of that type from their hand. Road Building: build 2 roads for free. Year of Plenty (Invention): take any 2 resource cards from the Supply. Played cards are placed face up.",
+      "critical": true
+    },
+    {
+      "id": "k28",
+      "section": "scoring",
+      "rule": "Each settlement is worth 1 victory point and each city is worth 2 victory points.",
+      "critical": true
+    },
+    {
+      "id": "k29",
+      "section": "scoring",
+      "rule": "Longest Road card (2 VP): given to the first player with a continuous road of at least 5 road pieces (branches not counted) not interrupted by an opponent's settlement or city; another player takes it immediately by building a strictly longer road.",
+      "critical": true
+    },
+    {
+      "id": "k30",
+      "section": "scoring",
+      "rule": "Largest Army card (2 VP): given to the first player with 3 played Knight cards face up; another player takes it immediately by having more Knight cards than the current holder.",
+      "critical": true
+    },
+    {
+      "id": "k31",
+      "section": "scoring",
+      "rule": "Victory Point Development cards each give 1 VP; they are kept face down and only revealed if they bring you to 10 points on your turn (several can be revealed, including ones just bought).",
+      "critical": true
+    },
+    {
+      "id": "k32",
+      "section": "end_trigger",
+      "rule": "The game ends when the active player reaches 10 or more victory points during their turn.",
+      "critical": true
+    },
+    {
+      "id": "k33",
+      "section": "winner",
+      "rule": "The first player to reach 10 victory points (on their own turn) is declared the winner immediately.",
+      "critical": true
+    },
+    {
+      "id": "k34",
+      "section": "variant",
+      "rule": "Expert setup variant: shuffle the terrain tiles and place randomly, place number tokens in alphabetical spiral order instead of using the beginner layout, and use the 2-round placement phase.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 30570,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 30570,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 2978,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 30570,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 30570,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 2978,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

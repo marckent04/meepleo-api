@@ -1,0 +1,78 @@
+{
+  "metrics": [
+    {
+      "id": "usable",
+      "label": "Usable",
+      "kind": "binary"
+    },
+    {
+      "id": "correct_game",
+      "label": "Right game",
+      "kind": "binary"
+    },
+    {
+      "id": "coverage",
+      "label": "Coverage",
+      "kind": "float",
+      "scale": 1
+    },
+    {
+      "id": "supported",
+      "label": "Supported",
+      "kind": "float",
+      "scale": 1
+    },
+    {
+      "id": "major_errors",
+      "label": "Major errors",
+      "kind": "float",
+      "scale": 10,
+      "better": "lower"
+    }
+  ],
+  "perf_fields": [
+    {
+      "id": "latency_s",
+      "label": "Latency",
+      "unit": "s"
+    },
+    {
+      "id": "cost_usd",
+      "label": "Cost",
+      "unit": "$"
+    },
+    {
+      "id": "in_tokens",
+      "label": "In tokens"
+    },
+    {
+      "id": "out_tokens",
+      "label": "Out tokens"
+    },
+    {
+      "id": "web_searches",
+      "label": "Searches"
+    },
+    {
+      "id": "web_fetches",
+      "label": "Fetches"
+    }
+  ],
+  "prices": {
+    "claude-haiku-5-5": {
+      "in": 0.1,
+      "out": 0.5
+    },
+    "claude-sonnet-5-5": {
+      "in": 2,
+      "out": 10
+    }
+  },
+  "harness_paths": [
+    ".claude/hillclimb/sheet-generation/judge.mjs",
+    ".claude/hillclimb/sheet-generation/cases.json",
+    ".claude/hillclimb/sheet-generation/rulebooks.json"
+  ],
+  "metrics_md": "See metrics.md",
+  "harness_sha": "b1dda906c2120b91a1fb223af085e436e4f68247c16dde7dd4d286bfa6585c2e"
+}

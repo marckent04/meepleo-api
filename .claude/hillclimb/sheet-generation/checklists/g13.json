@@ -1,0 +1,277 @@
+{
+  "game_title": "Hellapagos",
+  "edition_notes": "Gigamic, 2017 (03-2017); concept by Laurence & Philippe Gamelin; 3-12 players, ages 10+, about 20 minutes",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Put the 6 wooden balls (5 white, 1 black) in the bag; the black ball is the snake.",
+      "critical": false
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Make a stack of the 12 Raft cards and place it near the gameboard.",
+      "critical": false
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "Shuffle the 54 Wreckage cards and deal 4 to each player in a 3-8 player game, or 3 to each player in a 9-12 player game. Each player keeps their hand secret.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "Place the remaining Wreckage cards face down in the card holder as the draw deck.",
+      "critical": false
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "Remove the Hurricane card and 5 random cards from the 12-card Weather deck; shuffle these 6 cards and place them under the rest of the Weather deck, which goes face down on the board.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "setup",
+      "rule": "Place the Wood disc on space 0 of the Raft track.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "setup",
+      "rule": "Place the Food and Water markers on the survival track by player count (Food/Water): 3p 5/6, 4p 7/8, 5p 8/10, 6p 10/12, 7p 12/14, 8p 13/16, 9p 15/18, 10p 16/20, 11p 18/22, 12p 20/24.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "setup",
+      "rule": "Place the 12 Castaway Status cards in a stack beside the board. The first player is whoever most resembles a castaway and takes the First Player card; play proceeds clockwise.",
+      "critical": false
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "A round has 5 phases: 1 change first player, 2 reveal Weather card, 3 each player takes one action, 4 check for survival, 5 check for game end. Players may discuss, negotiate and threaten at any time, with no obligation to keep their word.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "Phase 1: at the start of each round except the first, the first player passes the First Player card to the right. If the First Player is eliminated, the card passes to the player on the right.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "Phase 2: the first player reveals the top Weather card of the deck, precipitation side up.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "turn",
+      "rule": "Phase 3: starting with the first player and in turn order, each player performs exactly one of 4 actions: catch fish, collect water, gather wood, or search the wreckage.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "turn",
+      "rule": "Catch fish: draw one ball from the bag; the fish count on it (1-3) is how many spaces you advance the Food marker. Then return the ball to the bag.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "turn",
+      "rule": "Collect water: advance the Water marker by the number in the droplet on the current Weather card (0-3). On a 0 you collect nothing.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "turn",
+      "rule": "Food and Water reserves are capped at 36; they cannot go above that.",
+      "critical": false
+    },
+    {
+      "id": "k16",
+      "section": "turn",
+      "rule": "Gather wood: first advance the Wood disc 1 step automatically. Then you may announce 1-5 more pieces of wood and draw that many balls at once. If all are white, advance the Wood disc that many more steps.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "turn",
+      "rule": "If you draw the black ball when gathering wood, you are bitten by a snake: you advance no further than the free 1 step, and you become sick. Return all balls to the bag afterward.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "turn",
+      "rule": "The Raft track runs 0 to 6. When the Wood disc reaches space 6, add a Raft card to the raft space and move the disc back to 0. Each Raft card is one seat for one surviving player.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "turn",
+      "rule": "Search the wreckage: draw the top Wreckage card into your hand without showing it to anyone.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "turn",
+      "rule": "Phase 4 consumption: each survivor (including sick players) needs 1 water and 1 food. Resolve water first, then food. If the marker is at least the number of survivors, move it down by the number of survivors.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "turn",
+      "rule": "If there are fewer rations than survivors, players can play Water or Food cards to raise the marker. If still short, a vote eliminates players until the number remaining equals the rations available; the marker then goes to 0. Eliminated players die of thirst or hunger.",
+      "critical": true
+    },
+    {
+      "id": "k22",
+      "section": "turn",
+      "rule": "If a ration marker is already at 0 at the start of consumption, there is no vote for that resource: castaways who can spend a matching card survive and the others die, unless another player helps them or they use the gun.",
+      "critical": false
+    },
+    {
+      "id": "k23",
+      "section": "special",
+      "rule": "Wreckage cards may be played at any time unless they say otherwise, and are discarded after use unless they have a permanent effect. Resource cards (water/food) can be played to raise the survival track, kept for personal rations, or given to other players.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "special",
+      "rule": "Single-use special cards (anti-venom, voodoo doll, etc.) perform their stated action and are then discarded. Anti-venom cures a snakebite so you do not get sick, but you lose all wood. Voodoo doll revives a player of your choice at the beginning of a turn.",
+      "critical": false
+    },
+    {
+      "id": "k25",
+      "section": "special",
+      "rule": "Permanent cards (axe, flask, fishing rod, crystal ball) are placed face up in front of you and usable each round. If you are eliminated, your used permanent cards are discarded, except the gun. Useless cards have no effect but can be traded to trick others.",
+      "critical": false
+    },
+    {
+      "id": "k26",
+      "section": "special",
+      "rule": "Gun plus Bullet card lets you shoot and eliminate a player of your choice; the Bullet is discarded and the Gun is kept. If several players are armed, the first to announce a shot acts first. The shooter receives the victim's hand, and the Gun is the only permanent card taken from a dead player.",
+      "critical": true
+    },
+    {
+      "id": "k27",
+      "section": "special",
+      "rule": "Voting: the first player counts to 3 and everyone simultaneously points at another player; the player with the most votes is eliminated. Debate is allowed beforehand and the first player decides when it ends. Each vote designates only one player, so run separate votes if several must be eliminated.",
+      "critical": true
+    },
+    {
+      "id": "k28",
+      "section": "special",
+      "rule": "If a vote ends tied for most votes, the First Player chooses who is eliminated, even if the First Player is one of the tied players.",
+      "critical": true
+    },
+    {
+      "id": "k29",
+      "section": "special",
+      "rule": "A player designated by a vote for a shortage survives by discarding a card of the missing resource (or if another player gives them a ration); no re-vote is held. They cannot be eliminated for that resource again that round but can be designated for the other resource.",
+      "critical": true
+    },
+    {
+      "id": "k30",
+      "section": "special",
+      "rule": "A player who dies takes a Castaway Status card Dead side up; their hand is shuffled and dealt alternately to their left and right neighbors, and other permanent cards are discarded (a played Gun is added to the hand first).",
+      "critical": true
+    },
+    {
+      "id": "k31",
+      "section": "special",
+      "rule": "Sick (snake bite, Filthy Water, or Rotten Fish): take a Status card Snake side up. You cannot vote at the end of this round, and you can neither take an action nor play cards next round. You can still be eliminated and can still play a Water or Food card to survive a vote. Return the card before Phase 4 of the next round.",
+      "critical": true
+    },
+    {
+      "id": "k32",
+      "section": "end_trigger",
+      "rule": "Leaving the island: at the end of any round, once water and food have been distributed, survivors board the raft if there are at least as many Raft cards as survivors and at least 1 water and 1 food remaining per survivor for the trip.",
+      "critical": true
+    },
+    {
+      "id": "k33",
+      "section": "end_trigger",
+      "rule": "Hurricane: when the Hurricane Weather card is revealed, the raft must leave at the end of that round or all players lose. Players must vote and sacrifice people until Raft cards and supplies (1 additional water and food each) suffice for the survivors; the Fruit Basket cannot count as rations to embark. Sick players may board.",
+      "critical": true
+    },
+    {
+      "id": "k34",
+      "section": "end_trigger",
+      "rule": "Total failure: if everyone dies of thirst or hunger at the end of a round, the game ends and everyone loses.",
+      "critical": true
+    },
+    {
+      "id": "k35",
+      "section": "scoring",
+      "rule": "The base game has no points; it is won or lost by whether players escape.",
+      "critical": false
+    },
+    {
+      "id": "k36",
+      "section": "winner",
+      "rule": "The players who succeed in boarding the raft win together; all survivors can win. If the hurricane arrives and the raft cannot leave, or everyone dies, all players lose.",
+      "critical": true
+    },
+    {
+      "id": "k37",
+      "section": "tie_break",
+      "rule": "There is no end-game tie-break; only tied votes are resolved, by the First Player's choice.",
+      "critical": false
+    },
+    {
+      "id": "k38",
+      "section": "variant",
+      "rule": "Tournament mode: choose a number of games to play, then use either cooperative or solitary scoring.",
+      "critical": false
+    },
+    {
+      "id": "k39",
+      "section": "variant",
+      "rule": "Cooperative tournament: only castaways on the raft score, each earning points equal to the number of players on the raft; the highest total at the end of the tournament wins.",
+      "critical": false
+    },
+    {
+      "id": "k40",
+      "section": "variant",
+      "rule": "Solitary tournament: boarding alone earns points equal to the number of players who started; each additional survivor reduces every survivor's points by 1 (e.g. 8-player game: 1 survivor 8 points, 2 survivors 7 each). Voice of the Dead variant: eliminated players still take part in all votes but cannot be eliminated again.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 33783,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 33783,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 3457,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 33783,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 33783,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 3457,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

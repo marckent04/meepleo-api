@@ -1,0 +1,211 @@
+{
+  "game_title": "6 qui prend !",
+  "edition_notes": "French edition by Gigamic (adaptation and distribution), © AMIGO Spiel + Freizeit GmbH, MMXIX (03-2019); author Wolfgang Kramer, illustrations Franz Vohwinkel, French translation Antoine Prono; 2-10 players, 10+, about 45 min.",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "For the base game, set aside the 28 special cards; only the 104 numbered cards (1 to 104) are used.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Shuffle the numbered cards and deal 10 cards to each player; players sort their hand in ascending numerical order.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "Place the top 4 cards of the undealt deck face up on the table, each starting a row (series); the remaining deck is not used until the next round.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "One player takes the score pad and a pencil to record scores.",
+      "critical": false
+    },
+    {
+      "id": "k5",
+      "section": "turn",
+      "rule": "Each turn, all players simultaneously choose one card from their hand and place it face down in front of them; once everyone has chosen, all cards are revealed.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "turn",
+      "rule": "Revealed cards are placed in the series in ascending order of their numbers: the lowest card is placed first, then the second lowest, and so on up to the highest.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "turn",
+      "rule": "Rule 1: cards in a series must be in ascending numerical order; cards of a series are laid side by side.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "Rule 2: a card must be placed in the series where the difference between the last card of the series and the new card is the smallest.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "Rule 3: a series is complete with 5 cards; the player whose card would be the 6th card of that series must take the 5 cards, and their 6th card becomes the first card of a new series.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "special",
+      "rule": "Rule 4: a player whose card is lower than the last card of every series must take all cards of one series of their choice; their card becomes the first card of a new series there.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "special",
+      "rule": "A player taking a series because of a too-low card usually chooses the series with the fewest bull heads.",
+      "critical": false
+    },
+    {
+      "id": "k12",
+      "section": "special",
+      "rule": "Cards taken are put in the player's own pile of bull heads in front of them, never added to their hand.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "turn",
+      "rule": "The turns are repeated until all 10 cards of the players' hands have been played, which ends the round.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "scoring",
+      "rule": "Each bull head on a card is 1 penalty point; the goal is to collect as few bull heads as possible.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "scoring",
+      "rule": "Cards ending in 5 (5, 15, 25...) have 2 bull heads; cards ending in 0 (10, 20, 30...) have 3 bull heads; double-digit cards (11, 22, 33...) have 5 bull heads.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "scoring",
+      "rule": "Card 55 is both a double and ends in 5, so it has 7 bull heads.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "scoring",
+      "rule": "Other cards have 1 bull head (the rulebook states a range of 1 to 7 bull heads per card).",
+      "critical": false
+    },
+    {
+      "id": "k18",
+      "section": "scoring",
+      "rule": "At the end of each round, each player counts the bull heads in their pile and the result is written on the score pad.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "setup",
+      "rule": "For a new round, shuffle all cards, deal 10 to each player and draw 4 cards to form the 4 rows again.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "end_trigger",
+      "rule": "Rounds are played until at least one player has accumulated more than 66 bull heads in total; the game ends at the end of that round.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "end_trigger",
+      "rule": "Before the game, players may agree on a different point total or a maximum number of rounds.",
+      "critical": false
+    },
+    {
+      "id": "k22",
+      "section": "winner",
+      "rule": "The winner is the player with the fewest bull heads in total.",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "variant",
+      "rule": "Special-cards variant (2 to 8 players): shuffle numbered and special cards separately; deal 12 numbered cards and 3 special cards to each player; place 4 numbered cards face up as rows; return the other numbered cards to the box; unused special cards form a face-down draw pile.",
+      "critical": false
+    },
+    {
+      "id": "k24",
+      "section": "variant",
+      "rule": "Special-cards variant: play only two rounds with base rules; a special card is played before placing your revealed number card and then discarded face up. After round one, reshuffle the 104 cards, deal 12 each, keep leftover special cards and receive 3 more (fewer if not enough).",
+      "critical": false
+    },
+    {
+      "id": "k25",
+      "section": "variant",
+      "rule": "Special-cards variant: when taking a series, a player may discard one special card and draw another; the game ends after the second round, with both rounds' penalty points totaled and the fewest winning.",
+      "critical": false
+    },
+    {
+      "id": "k26",
+      "section": "variant",
+      "rule": "Special cards: 5th series (start a fifth series), 7 qui prend (series holds 6 cards, 7th card takes), Insérer, Remplacer, Glisser, Stop (max 2 on table, blocks a series), Négatif = Positif (cancel bull heads when taking a series).",
+      "critical": false
+    },
+    {
+      "id": "k27",
+      "section": "variant",
+      "rule": "Special-cards variant: ties for fewest penalty points result in several winners.",
+      "critical": false
+    },
+    {
+      "id": "k28",
+      "section": "variant",
+      "rule": "Pro variant 1: play with only (number of players x 10 + 4) cards numbered from 1 up (e.g. 3 players use cards 1 to 34); higher cards are removed.",
+      "critical": false
+    },
+    {
+      "id": "k29",
+      "section": "variant",
+      "rule": "Pro variant 2: lay the cards face up and players take turns picking one card until each has 10 in hand; then 4 cards are placed to form the rows; the rest of the game is as the base game.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 29842,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 29842,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 2147,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 29842,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 29842,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 2147,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

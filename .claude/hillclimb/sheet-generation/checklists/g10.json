@@ -1,0 +1,205 @@
+{
+  "game_title": "dnup",
+  "edition_notes": "Asmodee Group SAS, © Asmodee Group 2026; designed by Kei Kajino and Gilles-Romain Fonteny; French rulebook; 40 cards and 4 player aid cards.",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Remove cards from the deck according to player count: with 5 players no cards are removed; with 4 players remove all cards bearing one specific setup symbol; with 3 players remove all cards bearing two specific setup symbols.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Give each player one Aide de jeu (player aid) card.",
+      "critical": false
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "Before each round (manche), shuffle the deck and deal out all the cards; players pick up their cards without showing them to others.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "A player may sort their hand in any order at any time but must never flip cards to change their value; cards stay in the orientation in which they were picked up.",
+      "critical": true
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "The player holding the 1/5 card with the star symbol starts the round; play then proceeds clockwise.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "turn",
+      "rule": "Goal: get rid of all your cards as fast as possible by playing series in front of you.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "turn",
+      "rule": "A series is 1 or more cards with the same active value; its value is that active value and its size is the number of cards.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "On your turn, step 1: discard any series in front of you (played on your previous turn), stacking the cards face down near the play area.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "On your turn, step 2: perform exactly ONE of four actions: A play a series, B add 1 card to an opponent's series, C take an opponent's series, D flip all cards in your hand.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "Action A: play a series from your hand in front of you. If another player already has a series of the same size on the table, yours must have a higher value, and that player takes back all their cards of that series into hand (flipping them).",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "When playing a series you need not play all cards in your hand of that value.",
+      "critical": false
+    },
+    {
+      "id": "k12",
+      "section": "turn",
+      "rule": "A series of a size with no existing series on the table can be played regardless of value.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "turn",
+      "rule": "Action B: play exactly 1 card from your hand onto an opponent's series; the card's value must equal the series' value.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "turn",
+      "rule": "Action B: after adding, the enlarged series must have higher value than any other series of the same new size on the table; the owner of the lower-value series takes it back to hand, flipping the cards.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "turn",
+      "rule": "Action C: take an opponent's series from in front of them and add it to your hand, flipping the cards.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "turn",
+      "rule": "Action D: flip all the cards in your hand, swapping their active and inactive values.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "special",
+      "rule": "Golden rule: whenever you take cards from the table into your hand, you must flip them so the inactive value becomes active (and vice versa) before adding them to your hand.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "end_trigger",
+      "rule": "The first player to get rid of all their cards scores 2 points and stops playing for the rest of the round; their cards remain in front of them for 1 trip around the table before being discarded.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "special",
+      "rule": "If a series beats the first finisher's series during that trip around the table, their cards are simply discarded.",
+      "critical": false
+    },
+    {
+      "id": "k20",
+      "section": "end_trigger",
+      "rule": "The second player to get rid of all their cards scores 1 point and the round ends immediately.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "scoring",
+      "rule": "Points per round: 2 for the first player out of cards, 1 for the second player out of cards; others score nothing.",
+      "critical": true
+    },
+    {
+      "id": "k22",
+      "section": "end_trigger",
+      "rule": "The game ends as soon as a player accumulates at least 4 points.",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "winner",
+      "rule": "The first player to reach at least 4 points wins the game immediately.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "variant",
+      "rule": "2-player game setup: remove all cards with the three setup symbols (those removed in 3- and 4-player games); each player places 2 player aid cards of the same color in front of them to form zone 1 and zone 2.",
+      "critical": false
+    },
+    {
+      "id": "k25",
+      "section": "variant",
+      "rule": "2-player game: each player takes 2 consecutive turns, first for zone 1 then for zone 2; at each, discard any series in that zone then take 1 action.",
+      "critical": false
+    },
+    {
+      "id": "k26",
+      "section": "variant",
+      "rule": "2-player game: each player can have up to two series (one per zone), and a player's series can conflict with the opponent's and with their own series of the same size.",
+      "critical": false
+    },
+    {
+      "id": "k27",
+      "section": "variant",
+      "rule": "2-player game: the player with the star card starts the round with only one turn, in zone 2 (on their left).",
+      "critical": false
+    },
+    {
+      "id": "k28",
+      "section": "variant",
+      "rule": "2-player game: a player who gets rid of all cards immediately wins the round; the game is played to 2 round wins.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 6511,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 6511,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 1862,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 6511,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 6511,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 1862,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

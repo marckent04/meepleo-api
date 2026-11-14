@@ -1,0 +1,259 @@
+{
+  "game_title": "7 Wonders",
+  "edition_notes": "French-language rulebook (Règles) by Antoine Bauza, illustrated by Miguel Coimbra, published by Repos Production, © 2012.",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "For all three Age decks, return to the box the cards whose player-count marking (3+, 4+, 5+, 6+, 7+) exceeds the number of players; keep cards marked up to the actual player count.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "For the Age III deck, set aside the 10 Guild (purple) cards, randomly and secretly keep only (number of players + 2) of them, and shuffle them into the Age III deck.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "Shuffle the 7 Wonder cards face down and deal one to each player; the card and its orientation determine the Wonder board and side (A or B) used. Players may instead choose boards by common agreement; side A is recommended for first games.",
+      "critical": false
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "Each player starts with 3 coins of value 1 placed on their board; the remaining coins form the bank. Conflict tokens form a reserve next to the coins.",
+      "critical": true
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "Each board shows the resource its city produces from the start of the game (top left of the board).",
+      "critical": false
+    },
+    {
+      "id": "k6",
+      "section": "turn",
+      "rule": "A game is played over 3 Ages (I, then II, then III), each using its own deck. At the start of each Age every player receives a hand of 7 random cards from that Age's deck.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "turn",
+      "rule": "Each Age has 6 turns; in each turn all players simultaneously choose one card from their hand, placing it face down, and then reveal and perform their action simultaneously.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "With the chosen card a player does one of three actions: (a) build the building, (b) build a stage of their Wonder, or (c) discard the card to take 3 coins from the bank.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "After the action, each player passes the remaining hand to a neighbour: Age I to the left (clockwise), Age II to the right (counter-clockwise), Age III to the left (clockwise).",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "On the sixth turn of each Age players hold 2 cards; they play one normally and discard the other face down, without gaining 3 coins for it.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "Building cost: some cards are free, some cost coins (paid to the bank that turn), most cost resources. A player must produce the required resources and/or buy them from the two neighbouring cities.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "turn",
+      "rule": "Resources are not spent when building; a city's production can be used every turn all game, and cards in play are never discarded.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "turn",
+      "rule": "Free construction (chaining): if the player already built the building named on the card's cost line during the previous Age, they can build the card for free.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "turn",
+      "rule": "A player can never build two identical buildings (same name).",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "turn",
+      "rule": "Building a Wonder stage: pay the cost shown on the Wonder board (not the card's cost) and slide the chosen card face down half under the board as a marker; the card has no other effect and is not a building.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "turn",
+      "rule": "Wonder stages must be built in order from left to right, each only once per game; stages are not tied to Ages, several can be built in one Age, and building the Wonder is not mandatory.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "turn",
+      "rule": "Discarding for coins: the discarded card goes face down in the centre discard pile and the player takes 3 coins from the bank. A player who can build neither the building nor a stage must discard this way.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "special",
+      "rule": "Trade: a player can buy resources from the left and right neighbours' Wonder-board resource, brown cards and grey cards, paying 2 coins per resource to that neighbour. Resources from yellow cards and Wonder stages cannot be bought.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "special",
+      "rule": "Trade details: players cannot refuse to trade; selling a resource does not stop the owner using it the same turn; bought resources only count the turn they are bought; the buyer can split purchases between neighbours and chooses the supplier if both have it.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "special",
+      "rule": "Coins needed for trade must be held at the start of the turn; coins earned from trade that turn can only be spent from the next turn.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "special",
+      "rule": "Some yellow buildings reduce the price of purchased resources from 2 to 1 coin, starting the turn after they are built (East/West Trading Post for raw materials from one neighbour, Marketplace for manufactured goods from both).",
+      "critical": false
+    },
+    {
+      "id": "k22",
+      "section": "special",
+      "rule": "Dual-resource cards produce one OR the other resource per turn, not both; neighbours can buy either one.",
+      "critical": false
+    },
+    {
+      "id": "k23",
+      "section": "special",
+      "rule": "Military resolution at the end of each Age: each player compares total Shields on their red cards (and Rhodes' Wonder) with each neighbour. Higher total takes a Victory token (+1 Age I, +3 Age II, +5 Age III); lower total takes a Defeat token (-1); equal gives nothing.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "end_trigger",
+      "rule": "The game ends after the third Age (sixth turn of Age III) once Age III conflicts have been resolved and tokens distributed.",
+      "critical": true
+    },
+    {
+      "id": "k25",
+      "section": "scoring",
+      "rule": "Military: sum all Victory and Defeat tokens (total can be negative).",
+      "critical": true
+    },
+    {
+      "id": "k26",
+      "section": "scoring",
+      "rule": "Treasury: 1 victory point per set of 3 coins held at the end of the game.",
+      "critical": true
+    },
+    {
+      "id": "k27",
+      "section": "scoring",
+      "rule": "Wonder: add the victory points shown on the built Wonder stages (e.g., side A: 3 for stage 1, 7 for stage 3, Giza stage 2 gives 5).",
+      "critical": true
+    },
+    {
+      "id": "k28",
+      "section": "scoring",
+      "rule": "Civil buildings (blue cards): add the victory points printed on each.",
+      "critical": true
+    },
+    {
+      "id": "k29",
+      "section": "scoring",
+      "rule": "Science (green cards), identical symbols: for each of the 3 symbols score the square of the number held (1 symbol=1, 2=4, 3=9, 4=16 points).",
+      "critical": true
+    },
+    {
+      "id": "k30",
+      "section": "scoring",
+      "rule": "Science, sets: each group of 3 different symbols scores 7 points; this is added to the identical-symbol points.",
+      "critical": true
+    },
+    {
+      "id": "k31",
+      "section": "scoring",
+      "rule": "Commercial buildings: certain Age III yellow cards give victory points at game end (e.g., Chamber of Commerce 2 points per grey card in own city).",
+      "critical": true
+    },
+    {
+      "id": "k32",
+      "section": "scoring",
+      "rule": "Guilds (purple): each scores points based on the player's and/or neighbours' cities (e.g., Spies' Guild 1 point per red card in neighbouring cities).",
+      "critical": true
+    },
+    {
+      "id": "k33",
+      "section": "winner",
+      "rule": "The player with the highest total victory points wins.",
+      "critical": true
+    },
+    {
+      "id": "k34",
+      "section": "tie_break",
+      "rule": "In case of a tie, the tied player with the most coins in their treasury wins; a tie on coins is not broken.",
+      "critical": true
+    },
+    {
+      "id": "k35",
+      "section": "variant",
+      "rule": "Two-player expert variant: use the 3-player card set (3+ only), add a third 'Free City' Wonder board and the Border card between the players; each player gets 7 cards, the other 7 form a draw pile, and players and the Free City each start with 3 coins.",
+      "critical": false
+    },
+    {
+      "id": "k36",
+      "section": "variant",
+      "rule": "Two-player variant turn: the player holding the Free City card draws a card from the pile, picks one card for their own city then one for the Free City; the Free City discards for 3 coins only if it cannot play the card, and free chaining for it must be used. Players alternate holding the Free City card each turn.",
+      "critical": false
+    },
+    {
+      "id": "k37",
+      "section": "variant",
+      "rule": "Players may choose Wonder boards instead of random assignment, and side B boards (more complex but balanced) can be mixed with side A.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 39565,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 39565,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 2891,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 39565,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 39565,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 2891,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "game_title": "Courtisans",
+  "edition_notes": "Pandasaurus Games / Catch Up Games, ©2024; designers Romaric Galonnier & Anthony Perone; art Noëmie Chevalier; 2-5 players, 20 min, ages 8+",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Place the game mat in the center of the table.",
+      "critical": false
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "Shuffle all Courtier cards and, without revealing them, randomly remove cards according to player count: 2 players remove 30 (60 left), 3 players remove 18 (72 left), 4 players remove 6 (84 left), 5 players remove none (all 90 used).",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "Deal 3 face-down Courtier cards to each player; players look at their own cards secretly.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "Place the remaining Courtier cards face down as a draw deck near the mat.",
+      "critical": false
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "Deal each player 2 Secret Mission cards, one blue and one white; players keep them secret and may look at them anytime but never reveal them until game end.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "setup",
+      "rule": "Unused Secret Mission cards go back in the box without being looked at.",
+      "critical": false
+    },
+    {
+      "id": "k7",
+      "section": "setup",
+      "rule": "Randomly choose the first player.",
+      "critical": false
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "Play proceeds in clockwise turns, starting with the first player.",
+      "critical": false
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "On your turn you must play all 3 cards in your hand, face up (except spies), placing exactly one card in each of 3 areas: the Queen's table, your own domain, and an opponent's domain.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "You may play the 3 cards in any order, as long as there is one card per area.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "At the Queen's table, place the card in the column of its family, choosing to place it above or below the mat.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "turn",
+      "rule": "After playing your 3 cards, draw 3 new cards from the top of the deck for your next turn.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "turn",
+      "rule": "If the deck was empty when you needed to draw, that was your last turn; wait for the round to finish.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "special",
+      "rule": "Assassin (2 per family): when played in an area, you may eliminate one other Courtier card in that area; the card is removed from the game. Use is optional.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "special",
+      "rule": "An assassin played at the Queen's table may eliminate any card there, regardless of family or above/below placement, even a spy (without looking at or revealing it).",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "special",
+      "rule": "Guard (3 per family): cannot be eliminated by assassins; once played it cannot be removed.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "special",
+      "rule": "Noble (4 per family): at game end counts as two cards, in a player's domain or at the Queen's table.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "special",
+      "rule": "Spy (2 per family): always played face down; no one may look at it, not even the player who played it.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "special",
+      "rule": "A spy played at the Queen's table is placed in the Queen's column, above or below her seat on the mat, hiding its family.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "end_trigger",
+      "rule": "The game ends when the Courtier deck is empty and no one has cards left in hand.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "scoring",
+      "rule": "At game end, reveal all spies; those at the Queen's table move to their family's column keeping their level (above stays above, below stays below).",
+      "critical": true
+    },
+    {
+      "id": "k22",
+      "section": "scoring",
+      "rule": "A family with more cards above the mat than below is esteemed; more below than above is fallen from grace; equal is neutral (nobles count as two cards).",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "scoring",
+      "rule": "Each courtier in your domain or in front of you (including those placed by opponents) in an esteemed family gives you 1 point; each in a fallen family loses you 1 point; neutral families have no effect; nobles count double.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "scoring",
+      "rule": "Each player reveals Secret Missions; each fulfilled mission card is worth 3 extra points, unfulfilled ones are worth nothing.",
+      "critical": true
+    },
+    {
+      "id": "k25",
+      "section": "winner",
+      "rule": "The player with the most points wins.",
+      "critical": true
+    },
+    {
+      "id": "k26",
+      "section": "tie_break",
+      "rule": "In case of a tie, tied players share the victory.",
+      "critical": true
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 6305,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 6305,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 1645,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 6305,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 6305,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 1645,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "game_title": "Save Patient Zero",
+  "edition_notes": "Helvetiq; game design Cédric Martinez, illustration Emiliano Ponzi; trilingual rulebook (English/French/German); 1–7 players, 10+, 30 min; optional free companion app can act as Savvy",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "One player is chosen to be Savvy (the lab computer / game master); the remaining players split into 2 teams (Lab-T and Lab-M) of 1 to 3 players each. The free app can replace Savvy.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "The two teams sit on opposite sides of the table facing each other, each hiding their material behind their screen.",
+      "critical": false
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "Each team takes its lab components: 1 screen, 1 Tool Cards deck, 1 Sample Cards deck, 1 Scanpad, 1 Centrifugo, 1 Estugamo, 1 Research sheet, 1 pencil.",
+      "critical": false
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "Each team writes its team name and player names on the Research sheet, which shows 25 numbered molecules surrounded by lab tools.",
+      "critical": false
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "For beginners, only use these tools: Dedukto, Samply, Analyzer, Scanpad, Intervallo, Antidote; all other tool cards go back in the box.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "setup",
+      "rule": "Each team shuffles its Sample Cards deck and places its Tool Cards faceup in front of it, sorted by type.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "setup",
+      "rule": "Savvy randomly draws 3 cards from the Molecule Cards deck, memorizes them (the secret antidote molecules) and sets them aside hidden from both teams; the remaining Molecule Cards form a facedown deck between the teams.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "At the start of each round, each team freely chooses one Tool Card from its available cards and passes it facedown to Savvy.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "When both teams have chosen, Savvy reveals the tools; then each lab applies its tool with Savvy's help.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "The team that selected its tool first plays first; a lab cannot proceed to the next round until the other lab finishes applying its tool for the round.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "special",
+      "rule": "Each Tool Card can only be played once, but a team may have several cards for the same tool (number of copies per lab shown per tool). Used Tool Cards stay faceup and visible to everyone.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "special",
+      "rule": "Teams should discuss discreetly (whispering) so the opponents don't benefit; bluffing is allowed.",
+      "critical": false
+    },
+    {
+      "id": "k13",
+      "section": "special",
+      "rule": "Samply (3x per lab): draw 3 cards from the top of your Sample deck and give them to Savvy, who places them on the right (✔) side of the sheet if the card contains at least one secret molecule, on the left (✘) side if none. You may look at them anytime.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "special",
+      "rule": "Mikroskopo (3x): the team has one minute to look through the whole Sample deck and choose 2 Sample Cards for Savvy, who sorts them ✔/✘ as with Samply; then shuffle the Sample deck. (Not in beginner set.)",
+      "critical": false
+    },
+    {
+      "id": "k15",
+      "section": "special",
+      "rule": "Dedukto (1x): receive 5 Molecule Cards from Savvy that contain none of the secret molecules; keep them hidden behind your screen.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "special",
+      "rule": "Analyzer (3x): usable only if Samply or Mikroskopo was used before; give up to 3 cards from the ✔ side to Savvy, who returns them to the x1, x2 or x3 slot according to how many secret molecules (1, 2, 3) the card contains.",
+      "critical": true
+    },
+    {
+      "id": "k17",
+      "section": "special",
+      "rule": "Intervallo (1x): choose Min or Max; Savvy marks the row of the Research sheet containing the secret molecule with the lowest (Min) or highest (Max) number.",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "special",
+      "rule": "Scanpad (1x): place the Scanpad over 6 molecules (vertically or horizontally); Savvy marks how many of them (0 to 3) are part of the solution.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "special",
+      "rule": "Other tools outside the beginner set: Centrifugo (4 molecules, at least one secret?), Estugamo (row or column of 5, at least one secret?), Hackz (copy the opponent's tool, they also play it), Spionado (see 2 cards from opponent's ✘ side), Fuzio (sum zone of the 3 secret numbers), Substrakto (difference of 2 random secret molecules, 2x), Kolozomi (needs Dedukto; color match, 2x), Mezakol (color of the middle secret molecule).",
+      "critical": false
+    },
+    {
+      "id": "k20",
+      "section": "special",
+      "rule": "Antidote (2x per lab): circle the 3 molecules you think form the antidote; Savvy checks a box on the Antidote section (0 to 3 correct). A 3 wins the game; otherwise the team gets one more chance.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "special",
+      "rule": "A team that fails to find the antidote with its second Antidote card loses, and the other team keeps searching for the antidote.",
+      "critical": true
+    },
+    {
+      "id": "k22",
+      "section": "end_trigger",
+      "rule": "The game ends as soon as a team plays the Antidote tool and correctly identifies all 3 secret molecules. A game typically lasts 6 to 8 rounds.",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "scoring",
+      "rule": "There are no points in the standard game; the goal is to find the antidote first. Optionally in solo/Lean mode, rate performance by number of Tool Cards used: 4 or fewer = 2 Nobel prizes; 5 = Nobel potential; 6 = world-acclaimed; 7 = tenured professors; 8 = excellent researchers; 9 = up and coming lab technicians; 10 or more = promising students.",
+      "critical": false
+    },
+    {
+      "id": "k24",
+      "section": "winner",
+      "rule": "The first team to find the antidote (3 correct molecules) wins; also a team wins if the opponent has used up both Antidote cards without success and it itself finds the antidote.",
+      "critical": true
+    },
+    {
+      "id": "k25",
+      "section": "tie_break",
+      "rule": "Ties are not possible, so no tie-break is needed.",
+      "critical": false
+    },
+    {
+      "id": "k26",
+      "section": "variant",
+      "rule": "No Savvy mode (2+ players): each lab draws 3 Molecule Cards for the opposing team to find, each team acts as Savvy for the other; remove the Spionado tool; when playing Dedukto, the Savvy side must not see the Molecule Cards given.",
+      "critical": false
+    },
+    {
+      "id": "k27",
+      "section": "variant",
+      "rule": "Lean mode (1–2 players): one lab plus Savvy (a player or the app); goal is to find the antidote with the fewest Tool Cards played, rated on the 'How good were you?' scale.",
+      "critical": false
+    },
+    {
+      "id": "k28",
+      "section": "variant",
+      "rule": "Agile mode (1–7 players): for each lab randomly remove 10 Tool Cards from the deck, making sure the 2 Antidote cards remain.",
+      "critical": false
+    },
+    {
+      "id": "k29",
+      "section": "variant",
+      "rule": "Disruption mode (1–7 players): shuffle the Disruption deck facedown in front of Savvy; after each lab has played 3 tools, Savvy draws a disruption card whose effect applies to both labs for the rest of the game.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 53547,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 53547,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 2673,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 53547,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 53547,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 2673,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

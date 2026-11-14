@@ -1,0 +1,211 @@
+{
+  "game_title": "Flip 7",
+  "edition_notes": "USAopoly (The Op), Copyright 2025, Ruleset Edition 3.1; designed by Eric Olsen; 3+ players, ages 8+, 20 min.",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "Shuffle the 94-card deck thoroughly and choose a player to be the Dealer for the round; keep a pen and paper to track scores.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "The Dealer deals one card face up to each player in turn order, including themself.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "If an Action card comes up during the initial deal, pause dealing immediately to resolve it, then continue dealing until everyone has been dealt a card.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "turn",
+      "rule": "On their turn, an active player chooses to Hit (get dealt another card) or Stay (exit the round and bank their points); the Dealer offers this choice to each player in turn.",
+      "critical": true
+    },
+    {
+      "id": "k5",
+      "section": "turn",
+      "rule": "Number cards go in a single row in front of the player, with Score Modifier cards placed above them; Action cards are set above the Number cards.",
+      "critical": false
+    },
+    {
+      "id": "k6",
+      "section": "turn",
+      "rule": "A player may Stay only if they have at least one card in front of them.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "special",
+      "rule": "Bust: if a player draws a second Number card with the same number as one already in their line, they bust, are out of the round and score nothing for it.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "special",
+      "rule": "An active player is one who has not busted or stayed; inactive players flip their cards over until the round ends.",
+      "critical": false
+    },
+    {
+      "id": "k9",
+      "section": "special",
+      "rule": "Action cards can be played on any active player including yourself; if you are the only active player you must play it on yourself.",
+      "critical": true
+    },
+    {
+      "id": "k10",
+      "section": "special",
+      "rule": "Freeze: the player receiving it banks all points collected and is out of the round.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "special",
+      "rule": "Flip Three: the receiving player must accept the next three cards, flipping them one at a time, stopping early if they bust or achieve Flip 7.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "special",
+      "rule": "During Flip Three, Number, Action and Modifier cards all count toward the three cards.",
+      "critical": false
+    },
+    {
+      "id": "k13",
+      "section": "special",
+      "rule": "If a Flip Three reveals another Flip Three or Freeze, it is resolved only AFTER all three cards are drawn and only if the player has not busted; a revealed Second Chance may be set aside and used.",
+      "critical": true
+    },
+    {
+      "id": "k14",
+      "section": "special",
+      "rule": "Second Chance: the player keeps it; if they are dealt a duplicate number, discard both the Second Chance and the duplicate card instead of busting.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "special",
+      "rule": "A player may hold only one Second Chance; if dealt another, they give it to another active player who has none, or discard it if no one can take it.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "special",
+      "rule": "All Second Chance cards are discarded at the end of a round even if unused.",
+      "critical": false
+    },
+    {
+      "id": "k17",
+      "section": "special",
+      "rule": "Modifier cards are not Number cards, don't count toward Flip 7, and cannot cause a bust; a player may end with only a Modifier and still score it (unless it is x2).",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "end_trigger",
+      "rule": "A round ends when there are no active players (all busted or stayed), or when one player gets 7 unique Number cards (Flip 7), ending the round immediately for everyone.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "end_trigger",
+      "rule": "The game ends at the end of a round in which at least one player has reached 200 points.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "scoring",
+      "rule": "Round score: add the values of your Number cards (the 0 card is worth 0).",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "scoring",
+      "rule": "If you have the x2 modifier, double the sum of your Number cards first, then add the +2 to +10 modifiers.",
+      "critical": true
+    },
+    {
+      "id": "k22",
+      "section": "scoring",
+      "rule": "+2, +4, +6, +8, +10 Modifier cards add the shown amount to the round score.",
+      "critical": true
+    },
+    {
+      "id": "k23",
+      "section": "scoring",
+      "rule": "Flip 7: having seven unique face-up Number cards scores an additional 15 bonus points.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "scoring",
+      "rule": "A player who busts scores 0 for the round; players who Stay or Freeze bank their round points.",
+      "critical": true
+    },
+    {
+      "id": "k25",
+      "section": "turn",
+      "rule": "Next round: set all cards from the round aside without shuffling them into the deck; pass the remaining deck to the left, and that player becomes the new Dealer.",
+      "critical": true
+    },
+    {
+      "id": "k26",
+      "section": "special",
+      "rule": "When the deck runs out, shuffle all discarded cards to form a new deck; if reshuffling mid-round, leave cards in front of players where they are, even busted players' cards.",
+      "critical": true
+    },
+    {
+      "id": "k27",
+      "section": "winner",
+      "rule": "When the game ends, the player with the most points wins.",
+      "critical": true
+    },
+    {
+      "id": "k28",
+      "section": "setup",
+      "rule": "Number cards: the number of copies equals the card's value (twelve 12s down to one 1) plus a single 0.",
+      "critical": false
+    },
+    {
+      "id": "k29",
+      "section": "variant",
+      "rule": "With more than 18 players, use a second deck.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 5726,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 5726,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 1857,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 5726,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 5726,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 1857,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}

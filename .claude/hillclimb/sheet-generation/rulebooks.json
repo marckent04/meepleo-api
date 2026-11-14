@@ -1,0 +1,266 @@
+{
+  "g01": {
+    "game": "2 Pommes 3 Pains",
+    "year": 2024,
+    "url": "https://www.regles-du-jeu.net/wp-content/uploads/2026/10/Regles-de-2-Pommes-3-Pains.pdf",
+    "verified": false,
+    "status": "missing",
+    "note": "regles-du-jeu.net copy describes a DIFFERENT card-selling game with the same name; excluded until the real Prétexte rulebook is supplied"
+  },
+  "g02": {
+    "game": "6 nimmt! 25 Jahre",
+    "year": 2019,
+    "url": "https://cdn.1j1ju.com/medias/ca/1f/5c-6-qui-surprend-regle.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": "6 qui surprend ! rulebook: base rules + the 25th-anniversary special cards (listed as variant)"
+  },
+  "g03": {
+    "game": "7 Wonders",
+    "year": 2010,
+    "url": "https://cdn.1j1ju.com/medias/ce/c4/60-7-wonders-regle.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  },
+  "g04": {
+    "game": "Azul",
+    "year": 2017,
+    "url": "https://cdn.svc.asmodee.net/production-nextmove/uploads/2024/04/FR-Azul-Rules-Low-res.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  },
+  "g05": {
+    "game": "Canal Houses",
+    "year": 2024,
+    "url": "https://export.gigamic.com/wp-content/uploads/2025/03/GIGAMIC_BELLEVUE_RULES-EN.pdf",
+    "verified": false,
+    "note": "EN rules of Bellevue (the fr edition name); no FR PDF found yet",
+    "status": "check"
+  },
+  "g06": {
+    "game": "Carcassonne",
+    "year": 2000,
+    "url": "https://cdn.svc.asmodee.net/production-asmodeeca/uploads/2023/01/HIGCARCHI01FR_Rules_FR-LOW.pdf",
+    "verified": false,
+    "note": "Official Asmodee FR (2023 edition); was an unofficial download page. File is titled Winter edition but its rules are the standard base game (checked)",
+    "status": "replaced"
+  },
+  "g07": {
+    "game": "Catan",
+    "year": 1995,
+    "url": "https://cdn.svc.asmodee.net/production-asmodeeca/uploads/2025/11/CATAN-REGLES.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  },
+  "g08": {
+    "game": "Courtisans",
+    "year": 2024,
+    "url": "https://officialgamerules.org/wp-content/uploads/2025/05/courtisans_rulebook_en-PAN-v1-spread.pdf",
+    "verified": false,
+    "note": "Catch Up Games rulebook, EN only (FR PDF is behind the play-in.com button)",
+    "status": "found"
+  },
+  "g09": {
+    "game": "Dekalko",
+    "year": 2019,
+    "url": "https://www.tikieditions.com/wp-content/uploads/2021/02/DEKALKO-Regles-FR.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  },
+  "g10": {
+    "game": "dnup",
+    "year": 2026,
+    "url": "https://www.dnup.game/rules/rules_fr.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  },
+  "g11": {
+    "game": "Exploding Kittens",
+    "year": 2015,
+    "url": "https://dumekj556jp75.cloudfront.net/exploding-kittens/English.pdf",
+    "verified": false,
+    "note": "Official but EN",
+    "status": "check"
+  },
+  "g12": {
+    "game": "Flip 7",
+    "year": 2024,
+    "url": "https://bghub.org/r/flip7.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  },
+  "g13": {
+    "game": "Hellapagos",
+    "year": 2017,
+    "url": "https://cdn.1j1ju.com/medias/4b/cb/51-hellapagos-rulebook.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  },
+  "g14": {
+    "game": "Las Vegas",
+    "year": 2026,
+    "url": "",
+    "verified": false,
+    "note": "No 2026-edition rulebook found; the 2012 FR rules exist (g15). Decide: drop the case or supply the box rules",
+    "status": "missing"
+  },
+  "g15": {
+    "game": "Las Vegas",
+    "year": 2012,
+    "url": "https://cdn.1j1ju.com/medias/08/3b/35-las-vegas-regle.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  },
+  "g16": {
+    "game": "Monopoly Deal Card Game",
+    "year": 2008,
+    "url": "https://www.monopolypedia.fr/editions/derives/deal/5471-1-notice-jeu-de-cartes-monopoly-deal-pdf.pdf",
+    "verified": false,
+    "note": "Fan site (monopolypedia) copy of the notice",
+    "status": "check"
+  },
+  "g17": {
+    "game": "Monopoly Deal Pocket",
+    "year": 2014,
+    "url": "",
+    "verified": false,
+    "note": "Only rulespal.com online (EN). Supply the box rules or drop",
+    "status": "missing"
+  },
+  "g18": {
+    "game": "Pili Pili: Extra spicy",
+    "year": 2026,
+    "url": "",
+    "verified": false,
+    "note": "Only rulespal.com online (EN). Supply the box rules or drop",
+    "status": "missing"
+  },
+  "g19": {
+    "game": "Quarto",
+    "year": 1991,
+    "url": "https://export.gigamic.com/wp-content/uploads/2021/01/INS-RULE_QUARTO-CLASSIC_11-2016.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  },
+  "g20": {
+    "game": "Save Patient Zero",
+    "year": 2021,
+    "url": "https://helvetiq.com/media/hexaattachment/products/attachments/save-patient-zero_rules_EN_FR_DE.pdf",
+    "verified": false,
+    "note": "Official Helvetiq, includes FR",
+    "status": "found"
+  },
+  "g21": {
+    "game": "Skull King",
+    "year": 2013,
+    "url": "https://cdn.shopify.com/s/files/1/0565/3230/4053/files/sk_rulebook_optimized.pdf",
+    "verified": false,
+    "note": "Official Grandpa Beck's EN (play-in FR copy is 404); downloaded with a browser user agent",
+    "status": "replaced"
+  },
+  "g22": {
+    "game": "Skyjo Action",
+    "year": 2019,
+    "url": "https://lesdragonsnains.com/wp-content/uploads/2024/01/skyjo_action_regles_fr.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  },
+  "g23": {
+    "game": "Slide",
+    "year": 2024,
+    "url": "https://www.gigamic.com/index.php?controller=attachment&id_attachment=500",
+    "verified": false,
+    "note": "Gigamic attachment: confirm it is Slide/Dékal and not another game",
+    "status": "check"
+  },
+  "g24": {
+    "game": "Smile Life",
+    "year": 2018,
+    "url": "https://media.play-in.com/pdf/rules_games/smile_life_regles_fr.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  },
+  "g25": {
+    "game": "Taco Cat Goat Cheese Pizza",
+    "year": 2018,
+    "url": "https://blueorangegames.eu/wp-content/uploads/2023/05/TacoChat-Regles-FR.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  },
+  "g26": {
+    "game": "The Gang",
+    "year": 2024,
+    "url": "https://cms.kosmos.de/Downloads/4002051683887_TheGang_Manual_DE_web.pdf",
+    "verified": false,
+    "note": "Official Kosmos, DE only; no FR PDF found",
+    "status": "found"
+  },
+  "g27": {
+    "game": "The Mind",
+    "year": 2018,
+    "url": "https://cdn.1j1ju.com/medias/4c/1e/25-the-mind-rulebook.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  },
+  "g28": {
+    "game": "Toy Battle",
+    "year": 2025,
+    "url": "https://cdn.svc.asmodee.net/production-rprod/storage/games/toy_battle/rules/toy-fr01-rules-1744030098Pk1fi.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  },
+  "g29": {
+    "game": "Tri-Ominos",
+    "year": 1965,
+    "url": "https://cdn.1j1ju.com/medias/76/ac/dc-tri-ominos-rulebook.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  },
+  "g30": {
+    "game": "Trio",
+    "year": 2021,
+    "url": "https://www.cocktailgames.com/wp-content/uploads/2022/11/trio_regles_BD.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  },
+  "g31": {
+    "game": "UNO",
+    "year": 1971,
+    "url": "https://service.mattel.com/instruction_sheets/42885-0920_Uno_30th_Instr.pdf",
+    "verified": false,
+    "status": "replaced",
+    "note": "Stored sheet was a Harry Potter UNO edition; Mattel standard rules (30th anniversary sheet)"
+  },
+  "g32": {
+    "game": "Wasabi!",
+    "year": 2008,
+    "url": "https://m.desktopgames.com.ua/games/468/Wasabi_Rules.pdf",
+    "verified": false,
+    "note": "Stored URL was the WAZABI rulebook (wrong game). Only copy found (desktopgames.com.ua) has a self-signed TLS cert: please download it in your browser to rulebooks/g32.pdf",
+    "status": "missing"
+  },
+  "g33": {
+    "game": "Wazabi",
+    "year": 2008,
+    "url": "https://www.provincedeliege.be/sites/default/files/media/15553/Wazabi%20-%20R%C3%A8gle.pdf",
+    "verified": false,
+    "status": "ok",
+    "note": ""
+  }
+}

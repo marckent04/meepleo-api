@@ -1,0 +1,187 @@
+{
+  "game_title": "The Mind",
+  "edition_notes": "Designed by Wolfgang Warsch; published by Nürnberger-Spielkarten-Verlag GmbH (NSV); 2-4 players, age 8+, approx. 20 min.",
+  "items": [
+    {
+      "id": "k1",
+      "section": "setup",
+      "rule": "All players form a single cooperative team; the game is played with 2-4 players.",
+      "critical": true
+    },
+    {
+      "id": "k2",
+      "section": "setup",
+      "rule": "With 2 players use levels 1-12, 2 lives and 1 throwing star.",
+      "critical": true
+    },
+    {
+      "id": "k3",
+      "section": "setup",
+      "rule": "With 3 players use levels 1-10, 3 lives and 1 throwing star.",
+      "critical": true
+    },
+    {
+      "id": "k4",
+      "section": "setup",
+      "rule": "With 4 players use levels 1-8, 4 lives and 1 throwing star.",
+      "critical": true
+    },
+    {
+      "id": "k5",
+      "section": "setup",
+      "rule": "Lives and throwing stars in use are laid out openly on the table; the remaining ones are set aside at the table edge for later rewards.",
+      "critical": true
+    },
+    {
+      "id": "k6",
+      "section": "setup",
+      "rule": "Level cards in use are stacked in ascending order as an open deck with level 1 on top; unused levels go back in the box.",
+      "critical": true
+    },
+    {
+      "id": "k7",
+      "section": "setup",
+      "rule": "Shuffle the 100 number cards (1-100) and deal each player one card for level 1, held hidden from the others; the rest form a face-down draw pile at the table edge.",
+      "critical": true
+    },
+    {
+      "id": "k8",
+      "section": "turn",
+      "rule": "At level N each player is dealt N cards; for each new level all 100 cards are reshuffled and each player gets one more card than in the previous level.",
+      "critical": true
+    },
+    {
+      "id": "k9",
+      "section": "turn",
+      "rule": "Before each level starts, every player who is ready places one hand palm down on the table; when all are ready, hands are lifted and play begins.",
+      "critical": false
+    },
+    {
+      "id": "k10",
+      "section": "turn",
+      "rule": "There are no turns: whoever believes they hold the lowest card currently available plays it face up onto a single open stack in the centre.",
+      "critical": true
+    },
+    {
+      "id": "k11",
+      "section": "turn",
+      "rule": "Cards are played one at a time and each player must always play the lowest card in their hand first; a player holding consecutive-low cards may play them one after the other.",
+      "critical": true
+    },
+    {
+      "id": "k12",
+      "section": "special",
+      "rule": "Players must not disclose or show their card values; no consultation and no secret signals are allowed.",
+      "critical": true
+    },
+    {
+      "id": "k13",
+      "section": "special",
+      "rule": "Any player may say \"stop\" at any time to interrupt play; everyone places a hand on the table to refocus, then removes hands and play continues.",
+      "critical": false
+    },
+    {
+      "id": "k14",
+      "section": "turn",
+      "rule": "If all cards are played in correct ascending order, the level is completed; the top level card is put in the box and the next level is prepared.",
+      "critical": true
+    },
+    {
+      "id": "k15",
+      "section": "special",
+      "rule": "Rewards for completing levels 2, 3, 5, 6, 8 and 9 are shown at the bottom right of the level card: 1 life or 1 throwing star (level 2 gives a throwing star), taken from the table edge.",
+      "critical": true
+    },
+    {
+      "id": "k16",
+      "section": "special",
+      "rule": "The team can hold at most 5 lives and 3 throwing stars.",
+      "critical": false
+    },
+    {
+      "id": "k17",
+      "section": "special",
+      "rule": "Error: if a card is played in the wrong order, whoever holds a lower card halts the game immediately and the team loses 1 life (a life card goes to the table edge).",
+      "critical": true
+    },
+    {
+      "id": "k18",
+      "section": "special",
+      "rule": "After an error, all held cards lower than the last card played are set aside (discarded); then the team refocuses and continues the current level without restarting it.",
+      "critical": true
+    },
+    {
+      "id": "k19",
+      "section": "special",
+      "rule": "Throwing star: any player may suggest using one by raising a hand; if all players agree, each player discards their lowest card face up to one side and one throwing star is set aside, then everyone refocuses and play continues.",
+      "critical": true
+    },
+    {
+      "id": "k20",
+      "section": "end_trigger",
+      "rule": "The game ends in collective victory when the team completes all levels in the stack.",
+      "critical": true
+    },
+    {
+      "id": "k21",
+      "section": "end_trigger",
+      "rule": "The game ends in failure when the team loses its last life.",
+      "critical": true
+    },
+    {
+      "id": "k22",
+      "section": "scoring",
+      "rule": "There are no points; success is measured only by completing all levels before losing all lives.",
+      "critical": false
+    },
+    {
+      "id": "k23",
+      "section": "winner",
+      "rule": "Everyone wins together if all levels are completed; everyone loses together if the last life is lost.",
+      "critical": true
+    },
+    {
+      "id": "k24",
+      "section": "variant",
+      "rule": "Blind mode: after completing all levels, the team may continue by restarting at level 1 with its remaining lives and throwing stars, playing all cards face down on the stack.",
+      "critical": false
+    },
+    {
+      "id": "k25",
+      "section": "variant",
+      "rule": "In blind mode the stack is turned over at the end of the level to check the order; a mistake costs one life, and other rules are unchanged; the goal is to see how many levels can be completed blind.",
+      "critical": false
+    }
+  ],
+  "judge_model": "claude-sonnet-5-5",
+  "judge_usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 6429,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 6429,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "iterations": [
+      {
+        "input_tokens": 22,
+        "output_tokens": 1671,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 6429,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 6429,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "type": "message",
+        "model": null
+      }
+    ],
+    "output_tokens": 1671,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+  }
+}
