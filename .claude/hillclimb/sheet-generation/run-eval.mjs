@@ -177,6 +177,14 @@ async function bootApp(ctx) {
     promise.then((response) => store?.push({ params, response }), () => {});
     return promise;
   };
+  // Streamed requests (v1+): record the final message the same way.
+  const stream = client.messages.stream.bind(client.messages);
+  client.messages.stream = (params, options) => {
+    const store = callLog.getStore();
+    const s = stream(params, options);
+    s.finalMessage().then((response) => store?.push({ params, response }), () => {});
+    return s;
+  };
   eprint(`app booted: model under test ${ctx.model}, judge ${JUDGE_MODEL}`);
 }
 
