@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { type ICommand, type IEvent, ofType, Saga } from '@nestjs/cqrs'
-import { filter, map, type Observable } from 'rxjs'
+import { filter, map, mergeMap, type Observable } from 'rxjs'
+import { SUPPORTED_LOCALES } from '@/shared/i18n/locale'
 import { GameAddedToCatalogEvent } from '../../catalog/events'
 import { GameAddedToWishlistEvent } from '../../wishlist/events'
 import {
@@ -58,6 +59,27 @@ export class GameSheetSagas {
             gameId: job.gameId,
             language: job.language,
           }),
+      ),
+    )
+
+  /**
+   * Translates a newly generated sheet into every other supported language
+   * right away, so the sheet is ready before it is requested in that
+   * language. It also covers requests made while the generation was in
+   * progress, which returned `pending` without reserving a translation.
+   */
+  @Saga()
+  sheetGeneratedTranslations = (
+    events$: Observable<IEvent>,
+  ): Observable<ICommand> =>
+    events$.pipe(
+      ofType(GameSheetAggregatedEvent),
+      filter(({ job }) => job.operation === 'generation'),
+      mergeMap(({ job }) =>
+        SUPPORTED_LOCALES.filter((language) => language !== job.language).map(
+          (language) =>
+            new RequestGameSheetCommand({ gameId: job.gameId, language }),
+        ),
       ),
     )
 }

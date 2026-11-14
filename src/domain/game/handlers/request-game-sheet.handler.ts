@@ -97,7 +97,7 @@ export class RequestGameSheetHandler extends AppCommandHandler<
       ? status.supportedLanguages[0]
       : null
     // A generation in another language is in progress: the translation
-    // will start on a later request, once the sheet is generated.
+    // starts once the sheet is generated (GameSheetSagas).
     if (
       !sourceLanguage &&
       (await this.gameAggregationRunRepository.hasRunningGeneration(

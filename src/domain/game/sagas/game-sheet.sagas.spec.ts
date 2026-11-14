@@ -89,4 +89,30 @@ describe('GameSheetSagas', () => {
       }),
     ])
   })
+
+  it('requests the translations of a generated sheet only', async () => {
+    const sagas = new GameSheetSagas()
+    const generation: GameSheetAggregationJob = {
+      ...job,
+      language: 'fr',
+      operation: 'generation',
+      sourceLanguage: null,
+    }
+
+    const commands = await lastValueFrom(
+      sagas
+        .sheetGeneratedTranslations(
+          of(
+            new GameSheetAggregationStartedEvent(generation),
+            new GameSheetAggregatedEvent(job),
+            new GameSheetAggregatedEvent(generation),
+          ),
+        )
+        .pipe(toArray()),
+    )
+
+    expect(commands).toEqual([
+      new RequestGameSheetCommand({ gameId: job.gameId, language: 'en' }),
+    ])
+  })
 })
